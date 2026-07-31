@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkpartner_api_demo=self.webpackChunkpartner_api_demo||[]).push([["8620"],{8391(e,a,r){r.d(a,{createInfoServices:()=>p.v});var p=r(6491);r(1400)}}]);

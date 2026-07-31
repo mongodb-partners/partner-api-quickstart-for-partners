@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkpartner_api_demo=self.webpackChunkpartner_api_demo||[]).push([["4515"],{8478(e,a,r){r.d(a,{createWardleyServices:()=>p.J});var p=r(8937);r(1400)}}]);

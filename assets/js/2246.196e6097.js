@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkpartner_api_demo=self.webpackChunkpartner_api_demo||[]).push([["2246"],{4229(e,a,r){r.d(a,{createCynefinServices:()=>p.t});var p=r(3486);r(1400)}}]);

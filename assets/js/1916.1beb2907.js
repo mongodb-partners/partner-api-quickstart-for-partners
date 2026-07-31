@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkpartner_api_demo=self.webpackChunkpartner_api_demo||[]).push([["1916"],{7671(e,a,r){r.d(a,{createTreemapServices:()=>p.d});var p=r(4687);r(1400)}}]);
