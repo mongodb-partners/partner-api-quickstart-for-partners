@@ -1,8 +1,0 @@
-{
-  "label": "Partner API Guide",
-  "position": 4,
-  "link": {
-    "type": "generated-index",
-    "description": "Complete reference for the MongoDB Atlas Partner API — OAuth flows, API endpoints, the FastAPI demo server, and troubleshooting."
-  }
-}

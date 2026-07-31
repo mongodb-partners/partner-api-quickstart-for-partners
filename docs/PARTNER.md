@@ -1,19 +1,14 @@
----
-id: lovable
-sidebar_position: 1
-title: Lovable
-description: End-to-end onboarding guide for Lovable integrating with the MongoDB Atlas Partner API.
----
+# Partner — Atlas Partner API Onboarding
 
-# Lovable — Atlas Partner API Onboarding
+This guide covers the end-to-end steps for a partner to onboard as an OAuth partner on the MongoDB Atlas platform, obtain OAuth credentials, and integrate the Atlas Partner API into their product.
 
-This guide covers the end-to-end steps for Lovable to onboard as an OAuth partner on the MongoDB Atlas platform, obtain OAuth credentials, and integrate the Atlas Partner API into the Lovable product.
+> Replace the placeholders below (`<partner-name>`, `<partner-app-domain>`, etc.) with your own company and product details.
 
 ## Overview
 
-Lovable is a web-based AI app builder. By integrating with the Atlas Partner API, Lovable can allow users to provision and connect an Atlas database cluster directly from within the Lovable UI — without users leaving the product, and without Lovable ever handling Atlas credentials.
+By integrating with the Atlas Partner API, a partner application can allow users to provision and connect an Atlas database cluster directly from within the partner's product UI — without users leaving the product, and without the partner ever handling Atlas credentials.
 
-### What Lovable gets access to
+### What the partner gets access to
 
 | Operation | API Endpoint | Method |
 |---|---|---|
@@ -25,9 +20,7 @@ Lovable is a web-based AI app builder. By integrating with the Atlas Partner API
 | Get Cluster Status | `/api/atlas/v2/groups/{projectId}/clusters/{name}` | `GET` |
 | Delete a Cluster | `/api/atlas/v2/groups/{projectId}/clusters/{name}` | `DELETE` |
 
-:::note
-The user's Atlas Organization must have [Delegated Partner Access](/partner-api-guide/enable-delegated-access) enabled before delegated tokens can call these endpoints.
-:::
+> **Note:** The user's Atlas Organization must have Delegated Partner Access enabled (see `PARTNER_API_GUIDE.md`) before delegated tokens can call these endpoints.
 
 ---
 
@@ -35,9 +28,9 @@ The user's Atlas Organization must have [Delegated Partner Access](/partner-api-
 
 Contact your MongoDB partner manager or solutions engineer to begin onboarding. Provide:
 
-- **Company name:** Lovable
-- **Product name:** Lovable AI App Builder
-- **Use case:** Allow users to provision and connect an Atlas cluster from within the Lovable UI
+- **Company name:** `<partner-name>`
+- **Product name:** `<partner-product-name>`
+- **Use case:** Allow users to provision and connect an Atlas cluster from within your product UI
 - **Target environment to start:** Dev (`cloud-dev.mongodb.com`)
 - **Technical contact:** name and email of the engineer owning the integration
 - **Operational contact email:** for OAuth app ownership and incident notifications
@@ -46,23 +39,22 @@ Contact your MongoDB partner manager or solutions engineer to begin onboarding. 
 
 ## Step 2 — Agree on OAuth App Configuration
 
-Work with the MongoDB team to agree on the following settings for the Lovable OAuth app:
+Work with the MongoDB team to agree on the following settings for your OAuth app:
 
 | Field | Recommended value | Notes |
 |---|---|---|
-| `client_name` | `Lovable` | Shown on the Atlas consent screen |
-| `client_type` | `web_app` | Lovable has a backend — use a confidential client |
+| `client_name` | `<partner-name>` | Shown on the Atlas consent screen |
+| `client_type` | `web_app` | Use a confidential client if your app has a backend |
 | `token_endpoint_auth_method` | `client_secret_basic` | Backend-to-backend token exchange |
-| `redirect_uris` | `https://app.lovable.dev/oauth/atlas/callback` | HTTPS required in production |
+| `redirect_uris` | `https://<partner-app-domain>/oauth/atlas/callback` | HTTPS required in production |
 | `grant_types` | `["authorization_code", "refresh_token"]` | Include refresh tokens for persistent sessions |
 | `access_token_lifetime` | `600` | 10 minutes |
 | `maximum_refresh_token_lifetime` | `2592000` | 30 days |
 | `allow_saved_consent` | `true` | No re-prompt after first consent |
 | `resources` | `["https://api.mongodb.com/api/atlas"]` | Production; use `api-dev` for dev |
 
-:::info Why `web_app` and not `single_page_app`?
-Lovable's backend server handles the token exchange — this is a confidential client. Public (SPA) clients cannot hold a `client_secret` and do not support refresh tokens. Since Lovable needs persistent sessions without repeated browser logins, `web_app` is correct.
-:::
+> **Why `web_app` and not `single_page_app`?**
+> If your backend server handles the token exchange, this is a confidential client. Public (SPA) clients cannot hold a `client_secret` and do not support refresh tokens. If you need persistent sessions without repeated browser logins, `web_app` is the correct choice.
 
 ---
 
@@ -70,12 +62,10 @@ Lovable's backend server handles the token exchange — this is a confidential c
 
 Once provisioned, MongoDB will share:
 
-- **`client_id`** — a UUID identifying the Lovable OAuth app
-- **`client_secret`** — for backend-to-backend token exchange
+- **`client_id`** — a UUID identifying your OAuth app
+- **`client_secret`** — for backend-to-backend token exchange (confidential clients only)
 
-:::danger Security requirement
-Store `client_secret` in a secrets manager (AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault). Never commit it to source control, log it, or expose it to the browser.
-:::
+> **Security requirement:** Store `client_secret` in a secrets manager (AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault). Never commit it to source control, log it, or expose it to the browser.
 
 ```ini title=".env (local dev) or secrets manager (staging/production)"
 CLIENT_ID=<client-id-provided-by-mongodb>
@@ -83,7 +73,7 @@ CLIENT_SECRET=<client-secret-provided-by-mongodb>
 OAUTH_BASE=https://authorize-dev.mongodb.com
 CLOUD_BASE=https://cloud-dev.mongodb.com
 RESOURCE=https://api-dev.mongodb.com/api/atlas
-REDIRECT_URI=https://app.lovable.dev/oauth/atlas/callback
+REDIRECT_URI=https://<partner-app-domain>/oauth/atlas/callback
 ```
 
 ---
@@ -96,7 +86,7 @@ Register at `https://cloud-dev.mongodb.com/account/register` using a **tagged em
 
 | Your email | Register with |
 |---|---|
-| `eng@lovable.dev` | `eng+mongodb.com@lovable.dev` |
+| `you@<partner-app-domain>` | `you+mongodb.com@<partner-app-domain>` |
 
 After registration, note your **Organization ID** from the Atlas URL:
 ```
@@ -111,9 +101,9 @@ No email restrictions. Register at `https://cloud-stage.mongodb.com/account/regi
 
 ## Step 5 — Enable Delegated Partner Access
 
-For your own test organization during development, follow the [Enable Delegated Partner Access](/partner-api-guide/enable-delegated-access) guide.
+For your own test organization during development, follow the "Enable Delegated Partner Access" section in `PARTNER_API_GUIDE.md`.
 
-In the Lovable product, guide users through enabling it in their own Atlas org, or surface a link to Atlas settings.
+In your product, guide users through enabling it in their own Atlas org, or surface a link to Atlas settings.
 
 ---
 
@@ -135,7 +125,7 @@ curl -s "https://api-dev.mongodb.com/api/atlas/v2/orgs" \
   -H "Accept: application/vnd.atlas.2025-03-12+json" | jq .
 ```
 
-Also verify token refresh (since Lovable uses a confidential client with refresh tokens):
+Also verify token refresh (if you registered a confidential client with refresh tokens):
 
 ```bash
 python3 oauthdemo/get_token.py --refresh-token
@@ -143,17 +133,17 @@ python3 oauthdemo/get_token.py --refresh-token
 
 ---
 
-## Step 7 — Integrate into the Lovable Product
+## Step 7 — Integrate into Your Product
 
 ### Authorization redirect
 
-When a user clicks "Connect MongoDB Atlas" in the Lovable UI:
+When a user clicks "Connect MongoDB Atlas" in your product UI:
 
 ```
 https://cloud.mongodb.com/oauth/authorize
   ?response_type=code
   &client_id=<your-client-id>
-  &redirect_uri=https://app.lovable.dev/oauth/atlas/callback
+  &redirect_uri=https://<partner-app-domain>/oauth/atlas/callback
   &code_challenge=<S256-pkce-challenge>
   &code_challenge_method=S256
   &state=<random-csrf-token>
@@ -162,7 +152,7 @@ https://cloud.mongodb.com/oauth/authorize
 
 ### Callback handler
 
-At `https://app.lovable.dev/oauth/atlas/callback`, your backend:
+At `https://<partner-app-domain>/oauth/atlas/callback`, your backend:
 
 1. Validates the `state` parameter (CSRF protection)
 2. Exchanges the code for tokens:
@@ -175,7 +165,7 @@ Authorization: Basic base64(<client_id>:<client_secret>)
 grant_type=authorization_code
 &code=<authorization-code>
 &code_verifier=<pkce-verifier>
-&redirect_uri=https://app.lovable.dev/oauth/atlas/callback
+&redirect_uri=https://<partner-app-domain>/oauth/atlas/callback
 ```
 
 3. Stores `refresh_token` server-side only — never in the browser
@@ -197,14 +187,14 @@ Always store the new `refresh_token` returned in the response (MongoDB may rotat
 
 ### Atlas provisioning flow
 
-Recommended sequence for provisioning an Atlas database for a new Lovable project:
+Recommended sequence for provisioning an Atlas database for a new partner-managed project:
 
 ```
 1. GET  /api/atlas/v2/orgs
         → show user their organizations; they select one
 
 2. POST /api/atlas/v2/groups
-        { "name": "<lovable-project-name>", "orgId": "<selected-org-id>" }
+        { "name": "<project-name>", "orgId": "<selected-org-id>" }
         → creates a dedicated Atlas project
 
 3. POST /api/atlas/v2/groups/{projectId}/clusters
@@ -220,8 +210,8 @@ Recommended sequence for provisioning an Atlas database for a new Lovable projec
 
 1. Work with your MongoDB partner contact to register the OAuth app in staging, then production.
 2. Use separate `CLIENT_ID` / `CLIENT_SECRET` values per environment — store each in the appropriate secrets manager.
-3. Update `redirect_uris` to production URLs (`https://app.lovable.dev/oauth/atlas/callback`).
-4. Confirm `published: true` so the Lovable app appears in the Atlas governance UX.
+3. Update `redirect_uris` to production URLs (`https://<partner-app-domain>/oauth/atlas/callback`).
+4. Confirm `published: true` so your app appears in the Atlas governance UX.
 
 ---
 
@@ -231,11 +221,11 @@ Full registration payload to submit to MongoDB:
 
 ```json
 {
-  "client_name": "Lovable",
+  "client_name": "<partner-name>",
   "client_type": "web_app",
   "token_endpoint_auth_method": "client_secret_basic",
   "redirect_uris": [
-    "https://app.lovable.dev/oauth/atlas/callback"
+    "https://<partner-app-domain>/oauth/atlas/callback"
   ],
   "grant_types": ["authorization_code", "refresh_token"],
   "response_types": ["code"],
@@ -244,14 +234,14 @@ Full registration payload to submit to MongoDB:
   "maximum_refresh_token_lifetime": 2592000,
   "allow_saved_consent": true,
   "published": true,
-  "client_uri": "https://lovable.dev",
-  "tos_uri": "https://lovable.dev/terms",
-  "policy_uri": "https://lovable.dev/privacy",
-  "logo_uri": "https://lovable.dev/logo.png",
+  "client_uri": "https://<partner-app-domain>",
+  "tos_uri": "https://<partner-app-domain>/terms",
+  "policy_uri": "https://<partner-app-domain>/privacy",
+  "logo_uri": "https://<partner-app-domain>/logo.png",
   "owner": {
-    "name": "Lovable",
+    "name": "<partner-name>",
     "operational_contacts": {
-      "emails": ["<lovable-ops-contact@lovable.dev>"]
+      "emails": ["<ops-contact@partner-app-domain>"]
     }
   }
 }
@@ -289,8 +279,8 @@ If the refresh token expires (30 days inactivity) or is revoked, the user must r
 |---|---|---|
 | `Invalid request to preauthorize` | `client_id` or `redirect_uri` mismatch | Confirm values exactly match what MongoDB provisioned |
 | `401` from Atlas API | Access token expired | Use refresh token; if that fails, re-run browser login |
-| `403 Forbidden` | Delegated Partner Access not enabled | Guide user to enable it in their org — [see guide](/partner-api-guide/enable-delegated-access) |
+| `403 Forbidden` | Delegated Partner Access not enabled | Guide user to enable it in their org — see `PARTNER_API_GUIDE.md` |
 | `400 invalid_grant` | Code already used or expired | Restart the auth flow |
 | `400 grant_type not supported` | `refresh_token` not in `grant_types` | Confirm registration includes `"grant_types": ["authorization_code", "refresh_token"]` |
 | `406 INVALID_VERSION_DATE` | Missing `Accept` header | Add `Accept: application/vnd.atlas.2025-03-12+json` to every Atlas API request |
-| `Authentication failed (E0000004)` | Dev login with base email | Use `eng+mongodb.com@lovable.dev` format for dev accounts |
+| `Authentication failed (E0000004)` | Dev login with base email | Use `you+mongodb.com@<partner-app-domain>` format for dev accounts |

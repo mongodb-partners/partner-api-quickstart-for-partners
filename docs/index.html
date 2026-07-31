@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MongoDB Atlas Partner API — Docs</title>
+<meta name="description" content="OAuth 2.0 integration guide for the MongoDB Atlas Partner API." />
+
+<!-- Markdown renderer (client-side, no build step needed) -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+
+<style>
+  :root {
+    --mdb-green: #00684a;
+    --mdb-green-dark: #004732;
+    --mdb-green-light: #e3f4ee;
+    --mdb-bg: #f7f9fb;
+    --mdb-text: #1c2d38;
+    --mdb-border: #dfe3e6;
+    --sidebar-width: 280px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--mdb-text);
+    background: var(--mdb-bg);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    background: #ffffff;
+    border-right: 1px solid var(--mdb-border);
+    padding: 24px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 24px 20px;
+    border-bottom: 1px solid var(--mdb-border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-header img {
+    height: 28px;
+    width: auto;
+  }
+
+  .sidebar-header span {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--mdb-green-dark);
+    line-height: 1.3;
+  }
+
+  .nav-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #8a97a0;
+    padding: 8px 24px;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 8px 24px;
+    color: var(--mdb-text);
+    text-decoration: none;
+    font-size: 14px;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+  }
+
+  .nav-link:hover {
+    background: var(--mdb-green-light);
+  }
+
+  .nav-link.active {
+    background: var(--mdb-green-light);
+    border-left-color: var(--mdb-green);
+    color: var(--mdb-green-dark);
+    font-weight: 600;
+  }
+
+  /* Main content */
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 40px 48px;
+    max-width: 900px;
+  }
+
+  #content {
+    background: #ffffff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 8px;
+    padding: 40px 48px;
+  }
+
+  #content h1 {
+    color: var(--mdb-green-dark);
+    border-bottom: 2px solid var(--mdb-green-light);
+    padding-bottom: 12px;
+  }
+
+  #content h2 {
+    color: var(--mdb-green-dark);
+    margin-top: 2em;
+  }
+
+  #content h3 {
+    color: var(--mdb-text);
+  }
+
+  #content a {
+    color: var(--mdb-green);
+  }
+
+  #content code {
+    background: #f0f2f4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
+  #content pre {
+    background: #f6f8fa;
+    border: 1px solid var(--mdb-border);
+    border-radius: 6px;
+    padding: 16px;
+    overflow-x: auto;
+  }
+
+  #content pre code {
+    background: none;
+    padding: 0;
+  }
+
+  #content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.5em 0;
+    font-size: 14px;
+  }
+
+  #content th, #content td {
+    border: 1px solid var(--mdb-border);
+    padding: 8px 12px;
+    text-align: left;
+  }
+
+  #content th {
+    background: var(--mdb-green-light);
+    color: var(--mdb-green-dark);
+  }
+
+  #content blockquote {
+    border-left: 4px solid var(--mdb-green);
+    background: var(--mdb-green-light);
+    margin: 1.5em 0;
+    padding: 12px 20px;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .loading {
+    color: #8a97a0;
+    font-style: italic;
+  }
+
+  footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--mdb-border);
+    font-size: 13px;
+    color: #8a97a0;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    body { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: static; }
+    .main { padding: 20px; }
+    #content { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <span>MongoDB Atlas<br/>Partner API</span>
+  </div>
+
+  <div class="nav-group-title">Getting Started</div>
+  <a class="nav-link" data-doc="README.md">Overview &amp; Quick Start</a>
+
+  <div class="nav-group-title">Guides</div>
+  <a class="nav-link" data-doc="PARTNER_API_GUIDE.md">Partner API Guide</a>
+  <a class="nav-link" data-doc="PARTNER.md">Partner Onboarding</a>
+
+  <div class="nav-group-title">Links</div>
+  <a class="nav-link" href="https://www.mongodb.com/docs/atlas/reference/api-resources-spec/" target="_blank" rel="noopener">Atlas Admin API Reference ↗</a>
+  <a class="nav-link" href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub Repository ↗</a>
+</nav>
+
+<main class="main">
+  <div id="content">
+    <p class="loading">Loading…</p>
+  </div>
+  <footer>
+    Copyright © MongoDB, Inc. — Atlas Partner API Documentation
+  </footer>
+</main>
+
+<script>
+  const contentEl = document.getElementById('content');
+  const navLinks = document.querySelectorAll('.nav-link[data-doc]');
+
+  marked.setOptions({
+    highlight: function (code, lang) {
+      if (lang && hljs.getLanguage(lang)) {
+        return hljs.highlight(code, { language: lang }).value;
+      }
+      return hljs.highlightAuto(code).value;
+    },
+    breaks: false,
+  });
+
+  async function loadDoc(filename) {
+    contentEl.innerHTML = '<p class="loading">Loading…</p>';
+    try {
+      const res = await fetch(filename, { cache: 'no-cache' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const markdown = await res.text();
+      contentEl.innerHTML = marked.parse(markdown);
+      document.querySelectorAll('#content pre code').forEach((block) => {
+        hljs.highlightElement(block);
+      });
+      window.scrollTo(0, 0);
+    } catch (err) {
+      contentEl.innerHTML =
+        '<p style="color:#b3261e;">Failed to load <code>' + filename + '</code>: ' + err.message + '</p>';
+    }
+  }
+
+  navLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      navLinks.forEach((l) => l.classList.remove('active'));
+      link.classList.add('active');
+      const doc = link.getAttribute('data-doc');
+      history.replaceState(null, '', '#' + doc);
+      loadDoc(doc);
+    });
+  });
+
+  // Load doc from URL hash, or default to README.md
+  const initialDoc = (location.hash && location.hash.slice(1)) || 'README.md';
+  const initialLink = document.querySelector('.nav-link[data-doc="' + initialDoc + '"]');
+  if (initialLink) initialLink.classList.add('active');
+  loadDoc(initialDoc);
+</script>
+
+</body>
+</html>
