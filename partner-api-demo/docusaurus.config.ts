@@ -11,12 +11,14 @@ const config: Config = {
     v4: true,
   },
 
-  // GitHub Pages URL: https://<org>.github.io/<repo>/
-  url: 'https://10gen.github.io',
-  baseUrl: '/atlas-oauth-demos/',
+  // GitHub Pages URL: https://mongodb-partners.github.io/partner-api-quickstart-for-partners/
+  url: 'https://mongodb-partners.github.io',
+  baseUrl: '/partner-api-quickstart-for-partners/',
+  trailingSlash: false,
 
-  organizationName: '10gen',
-  projectName: 'atlas-oauth-demos',
+  organizationName: 'mongodb-partners',
+  projectName: 'partner-api-quickstart-for-partners',
+  deploymentBranch: 'gh-pages',
 
   onBrokenLinks: 'throw',
   markdown: {
@@ -68,7 +70,7 @@ const config: Config = {
           label: 'Docs',
         },
         {
-          href: 'https://github.com/10gen/atlas-oauth-demos',
+          href: 'https://github.com/mongodb-partners/partner-api-quickstart-for-partners',
           label: 'GitHub',
           position: 'right',
         },
