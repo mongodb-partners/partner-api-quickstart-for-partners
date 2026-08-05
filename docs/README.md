@@ -53,7 +53,7 @@ The partner app never sees the user's password and holds only a short-lived, use
 
 ## How It Works
 
-The flow follows **OAuth 2.0 Authorization Code + PKCE**:
+The flow follows **OAuth 2.1 Authorization Code + PKCE**:
 
 ```
 User clicks "Connect to Atlas" in your app

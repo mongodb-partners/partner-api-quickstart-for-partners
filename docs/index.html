@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>MongoDB Atlas Admin API - V2 — Partner Docs</title>
-<meta name="description" content="OAuth 2.0 integration guide for the MongoDB Atlas Admin API - V2." />
+<meta name="description" content="OAuth 2.1 integration guide for the MongoDB Atlas Admin API - V2." />
 
 <!-- Markdown renderer + syntax highlighting — vendored locally (docs/vendor/) so the
      page never breaks due to a CDN outage, 404, or network/CSP restriction. -->
@@ -495,6 +495,21 @@
     font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     background: transparent;
     color: #d6e4df;
+  }
+
+  /* Exchange & Call Atlas (bash snippets): render highlight.js blue tokens in orange */
+  .code-shell .language-bash .hljs-attr,
+  .code-shell .language-bash .hljs-attribute,
+  .code-shell .language-bash .hljs-variable,
+  .code-shell .language-bash .hljs-template-variable,
+  .code-shell .language-bash .hljs-literal,
+  .code-shell .language-bash .hljs-number,
+  .code-shell .language-bash .hljs-meta,
+  .code-shell .language-bash .hljs-string,
+  .code-shell .language-bash .hljs-template-string,
+  .code-shell .language-bash .hljs-regexp,
+  .code-shell .language-bash .hljs-subst {
+    color: #ffa657;
   }
 
   /* Consent visual */
@@ -1781,7 +1796,7 @@
       <path d="M12 7v13" stroke="#00ed64" stroke-width="0.7" stroke-linecap="round"/>
     </svg>
     <div class="hero-inner">
-      <span class="eyebrow">MongoDB Atlas · OAuth 2.0 for Partners</span>
+      <span class="eyebrow">MongoDB Atlas · OAuth 2.1 for Partners</span>
       <h1>Call Atlas on behalf of your users. <span class="accent">No API keys required.</span></h1>
       <p class="lede">
         The MongoDB Atlas Admin API - V2 lets your application provision and manage Atlas
@@ -1789,7 +1804,7 @@
         your app never sees a user's credentials.
       </p>
       <div class="hero-stats">
-        <span class="stat-chip"><strong>OAuth 2.0</strong> Authorization Code + PKCE</span>
+        <span class="stat-chip"><strong>OAuth 2.1</strong> Authorization Code + PKCE</span>
         <span class="stat-chip"><strong>600s</strong> delegated token lifetime</span>
         <span class="stat-chip"><strong>3</strong> environments · dev → staging → prod</span>
         <span class="stat-chip"><strong>0</strong> user credentials handled</span>
@@ -1800,7 +1815,7 @@
   <!-- Architecture diagram -->
   <section class="section">
     <h2 class="section-title reveal">Onboarding at a glance</h2>
-    <p class="section-sub reveal">From invite-only partner onboarding to the runtime OAuth 2.0 delegated access flow — the full picture in one diagram.</p>
+    <p class="section-sub reveal">From invite-only partner onboarding to the runtime OAuth 2.1 delegated access flow — the full picture in one diagram.</p>
     <div class="diagram-card reveal">
       <a href="onboarding-architecture.png" target="_blank" rel="noopener">
         <img src="onboarding-architecture.png" alt="Architecture diagram: MongoDB Atlas Admin API - V2 partner onboarding and delegated access flow" loading="lazy" />
@@ -1850,7 +1865,7 @@
   <!-- Interactive OAuth flow -->
   <section class="section">
     <h2 class="section-title reveal">How the delegated flow works</h2>
-    <p class="section-sub reveal">Click through the four steps of the OAuth 2.0 Authorization Code + PKCE flow your app performs.</p>
+    <p class="section-sub reveal">Click through the four steps of the OAuth 2.1 Authorization Code + PKCE flow your app performs.</p>
     <div class="flow reveal">
       <div class="flow-steps" role="tablist" aria-label="OAuth flow steps">
         <button class="flow-step active" role="tab" aria-selected="true" data-step="0"><span class="n">1</span>Authorize</button>
@@ -2504,7 +2519,7 @@
           </svg>
           Atlas Admin API - V2
         </div>
-        <p class="footer-tag">OAuth 2.0 delegated access for ISV and Technology Partners — call Atlas Admin API endpoints on behalf of your users.</p>
+        <p class="footer-tag">OAuth 2.1 delegated access for ISV and Technology Partners — call Atlas Admin API endpoints on behalf of your users.</p>
       </div>
       <div class="footer-col">
         <h4>Documentation</h4>
@@ -2561,7 +2576,7 @@
       <a class="nav-link" href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub Repository ↗</a>
     </div>
 
-    <div class="sidebar-footer">OAuth 2.0 · Delegated Access</div>
+    <div class="sidebar-footer">OAuth 2.1 · Delegated Access</div>
   </nav>
 
   <main class="main">

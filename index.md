@@ -1,6 +1,6 @@
 # MongoDB Atlas Admin API - V2: Quickstart for Partners
 
-Welcome to the documentation site for the MongoDB Atlas Admin API - V2 partner quickstart. These guides show ISV and Technology Partners how to call Atlas Admin API endpoints on behalf of their users with OAuth 2.0 delegated access tokens.
+Welcome to the documentation site for the MongoDB Atlas Admin API - V2 partner quickstart. These guides show ISV and Technology Partners how to call Atlas Admin API endpoints on behalf of their users with OAuth 2.1 delegated access tokens.
 
 ---
 
