@@ -1056,6 +1056,250 @@
   }
 
   /* ============================================================
+     Delegation playground
+     ============================================================ */
+  .playground {
+    background: var(--mdb-dark);
+    border-radius: 20px;
+    padding: 32px 30px;
+    box-shadow: var(--shadow-lift);
+  }
+
+  .pg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+
+  .pg-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6e8a80;
+    margin-bottom: 12px;
+  }
+
+  .pg-org {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px 18px;
+    margin-bottom: 12px;
+  }
+
+  .pg-org-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .pg-org-head .pg-id {
+    margin-left: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10.5px;
+    color: #6e8a80;
+    font-weight: 400;
+  }
+
+  .pg-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+  }
+
+  .pg-row-label { color: #b9cdc7; font-size: 12.5px; }
+
+  .seg {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 999px;
+    padding: 3px;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+
+  .seg-btn {
+    border: none;
+    background: transparent;
+    color: #8aa79e;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 13px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .seg-btn:hover { color: #fff; }
+  .seg-btn.active-on { background: var(--mdb-green-bright); color: var(--mdb-dark); }
+  .seg-btn.active-off { background: #e0655a; color: #fff; }
+
+  .pg-decision {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 11px 14px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #d6e4df;
+  }
+
+  .pg-decision .icon { font-size: 15px; line-height: 1.3; }
+  .pg-decision .ok { color: var(--mdb-green-bright); font-weight: 700; }
+  .pg-decision .no { color: #ff9c8f; font-weight: 700; }
+  .pg-decision .reason { color: #8aa79e; font-size: 12px; margin-top: 2px; }
+
+  .pg-actions { margin-top: 16px; }
+  .pg-output { margin-top: 16px; }
+  .pg-code { min-height: 0; }
+
+  .pg-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 28px 0 16px; }
+
+  .pg-tabpane { display: none; }
+  .pg-tabpane.active { display: block; animation: fadeUp 0.3s ease both; }
+
+  .pg-note { margin-top: 14px; color: #8aa79e; font-size: 12.5px; line-height: 1.6; }
+  .pg-note strong { color: #d6e4df; }
+
+  .pg-tree-node {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 11px 14px;
+    margin-bottom: 9px;
+    font-size: 13px;
+    color: #d6e4df;
+  }
+
+  .pg-tree-sub {
+    margin: 9px 0 2px 18px;
+    padding-left: 14px;
+    border-left: 1px solid rgba(255, 255, 255, 0.14);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pg-tree-badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-left: 9px;
+    white-space: nowrap;
+  }
+
+  .pg-tree-badge.in { background: rgba(0, 237, 100, 0.15); color: var(--mdb-green-bright); }
+  .pg-tree-badge.out { background: rgba(255, 156, 143, 0.12); color: #ff9c8f; }
+
+  .pg-scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+
+  .pg-scope-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 13px 15px;
+    margin-bottom: 11px;
+  }
+
+  .pg-scope-proj { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .pg-scope-proj label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .pg-scope-item input[type="checkbox"] {
+    accent-color: var(--mdb-green-bright);
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+  }
+
+  .pg-scope-perm {
+    margin-left: auto;
+    background: #06202f;
+    color: #d6e4df;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 11.5px;
+    padding: 5px 9px;
+    cursor: pointer;
+  }
+
+  .pg-scope-perm:disabled { opacity: 0.35; cursor: default; }
+
+  .pg-scope-clusters {
+    margin: 9px 0 2px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .pg-scope-clusters label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #b9cdc7;
+    cursor: pointer;
+  }
+
+  .pg-scope-line {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 9px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11.5px;
+    color: #d6e4df;
+    line-height: 1.7;
+  }
+
+  .pg-scope-line .perm { color: var(--mdb-green-bright); font-weight: 700; }
+
+  @media (max-width: 860px) {
+    .pg-scope-grid { grid-template-columns: 1fr; }
+  }
+
+  .pg-formula {
+    margin-top: 20px;
+    color: #6e8a80;
+    font-size: 12px;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .pg-formula code {
+    background: rgba(255, 255, 255, 0.08);
+    color: #b9cdc7;
+    padding: 1px 7px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  @media (max-width: 860px) {
+    .pg-grid { grid-template-columns: 1fr; }
+    .playground { padding: 24px 18px; }
+  }
+
+  /* ============================================================
      Environment switcher
      ============================================================ */
   .env-picker {
@@ -1582,6 +1826,12 @@
         <p>Register with MongoDB, receive OAuth credentials, and take your integration from dev to production.</p>
         <span class="card-link">Open checklist <span class="arrow">→</span></span>
       </a>
+      <a class="card reveal" data-doc-link="partner-delegations.md">
+        <div class="card-icon">🔐</div>
+        <h3>Partner Delegation</h3>
+        <p>How organization opt-in and user consent work today (M1) — and the scoped delegation and governance coming next.</p>
+        <span class="card-link">Current &amp; future state <span class="arrow">→</span></span>
+      </a>
       <a class="card reveal" href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">
         <div class="card-icon">🔌</div>
         <h3>Atlas Admin API Reference</h3>
@@ -2086,6 +2336,125 @@
     </div>
   </section>
 
+  <!-- Delegation playground -->
+  <section class="section">
+    <h2 class="section-title reveal">See how access is decided</h2>
+    <p class="section-sub reveal">In the current M1 model, the partner token reaches an organization only when the <strong>user is a member</strong> and the <strong>org owner enabled delegation</strong>. Flip the toggles — then call the API to see what comes back.</p>
+    <div class="playground reveal">
+      <div class="pg-grid">
+        <div>
+          <div class="pg-label">Organizations &amp; settings</div>
+
+          <div class="pg-org">
+            <div class="pg-org-head">🏢 Org A <span class="pg-id">64a1b2c3d4e5f6071829301a</span></div>
+            <div class="pg-row">
+              <span class="pg-row-label">Delegation setting (org owner)</span>
+              <span class="seg">
+                <button class="seg-btn" data-org="A" data-field="deleg" data-value="READ_WRITE">READ_WRITE</button>
+                <button class="seg-btn" data-org="A" data-field="deleg" data-value="DISALLOWED">DISALLOWED</button>
+              </span>
+            </div>
+            <div class="pg-row">
+              <span class="pg-row-label">User membership</span>
+              <span class="seg">
+                <button class="seg-btn" data-org="A" data-field="member" data-value="true">Member</button>
+                <button class="seg-btn" data-org="A" data-field="member" data-value="false">Not a member</button>
+              </span>
+            </div>
+          </div>
+
+          <div class="pg-org">
+            <div class="pg-org-head">🏢 Org B <span class="pg-id">64b2c3d4e5f6071829301b2c</span></div>
+            <div class="pg-row">
+              <span class="pg-row-label">Delegation setting (org owner)</span>
+              <span class="seg">
+                <button class="seg-btn" data-org="B" data-field="deleg" data-value="READ_WRITE">READ_WRITE</button>
+                <button class="seg-btn" data-org="B" data-field="deleg" data-value="DISALLOWED">DISALLOWED</button>
+              </span>
+            </div>
+            <div class="pg-row">
+              <span class="pg-row-label">User membership</span>
+              <span class="seg">
+                <button class="seg-btn" data-org="B" data-field="member" data-value="true">Member</button>
+                <button class="seg-btn" data-org="B" data-field="member" data-value="false">Not a member</button>
+              </span>
+            </div>
+          </div>
+
+          <div class="pg-org">
+            <div class="pg-org-head">🏢 Org C <span class="pg-id">64c3d4e5f6071829301c3d2e</span></div>
+            <div class="pg-row">
+              <span class="pg-row-label">Delegation setting (org owner)</span>
+              <span class="seg">
+                <button class="seg-btn" data-org="C" data-field="deleg" data-value="READ_WRITE">READ_WRITE</button>
+                <button class="seg-btn" data-org="C" data-field="deleg" data-value="DISALLOWED">DISALLOWED</button>
+              </span>
+            </div>
+            <div class="pg-row">
+              <span class="pg-row-label">User membership</span>
+              <span class="seg">
+                <button class="seg-btn" data-org="C" data-field="member" data-value="true">Member</button>
+                <button class="seg-btn" data-org="C" data-field="member" data-value="false">Not a member</button>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="pg-label">Effective access for the partner token</div>
+          <div id="pg-decisions"></div>
+          <div class="pg-actions">
+            <button class="demo-nav-btn primary" id="pg-send">Call GET /api/atlas/v2/orgs →</button>
+          </div>
+          <div class="pg-output json-hidden" id="pg-output-wrap">
+            <div class="pg-label">Response — 200 OK (only accessible orgs are returned)</div>
+            <pre class="demo-code pg-code" id="pg-output"></pre>
+          </div>
+        </div>
+      </div>
+      <div class="pg-tabs">
+        <button class="demo-pill pg-tab active" data-pgtab="now">Today — project access (M1)</button>
+        <button class="demo-pill pg-tab" data-pgtab="future">Future — scoped delegation</button>
+      </div>
+
+      <div class="pg-tabpane active" id="pg-pane-now">
+        <div class="pg-label">Project-level view — inherits the org toggles above</div>
+        <div id="pg-tree"></div>
+        <div class="pg-note">
+          <strong>No project picker today:</strong> consent covers <strong>every project in every eligible org</strong>
+          the user can access. Selecting a single org, project, or cluster is not possible yet — the grant is broad by design in M1.
+        </div>
+      </div>
+
+      <div class="pg-tabpane" id="pg-pane-future">
+        <div class="pg-label">Scoped grant picker — choose exactly what gets delegated</div>
+        <div class="pg-scope-grid">
+          <div id="pg-scope-picker"></div>
+          <div>
+            <div class="pg-label">Resulting least-privilege grant</div>
+            <div id="pg-scope-summary"></div>
+            <div class="pg-actions">
+              <button class="demo-nav-btn primary" id="pg-scope-token">Show future token scope →</button>
+            </div>
+            <div class="pg-output json-hidden" id="pg-scope-wrap">
+              <div class="pg-label">Future delegated token — scope claim</div>
+              <pre class="demo-code pg-code" id="pg-scope-json"></pre>
+            </div>
+          </div>
+        </div>
+        <div class="pg-note">
+          <strong>Planned, not available in M1:</strong> pick specific orgs, projects, clusters, roles,
+          and read-only vs read-write — potentially with an expiry. Shown for illustration only.
+        </div>
+      </div>
+
+      <div class="pg-formula">
+        Effective access = <code>user membership</code> + <code>user roles</code> + <code>org delegation setting</code> + <code>supported endpoint</code>
+        · an org owner can set <code>DISALLOWED</code> at any time to cut off existing grants — no re-consent needed
+      </div>
+    </div>
+  </section>
+
   <!-- Environment switcher -->
   <section class="section">
     <h2 class="section-title reveal">Pick your environment</h2>
@@ -2141,6 +2510,7 @@
         <h4>Documentation</h4>
         <a data-doc-link="README.md">Partner Integration Guide</a>
         <a data-doc-link="PARTNER.md">Partner Onboarding</a>
+        <a data-doc-link="partner-delegations.md">Partner Delegation</a>
       </div>
       <div class="footer-col">
         <h4>Resources</h4>
@@ -2178,6 +2548,11 @@
     <div class="nav-group">
       <div class="nav-group-title">Onboarding</div>
       <a class="nav-link" data-doc="PARTNER.md">Partner Onboarding Checklist</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Delegation Model</div>
+      <a class="nav-link" data-doc="partner-delegations.md">Current &amp; Future State</a>
     </div>
 
     <div class="nav-group">
@@ -2245,9 +2620,11 @@
     loadDoc(filename);
   }
 
+  const DOCS = ['README.md', 'PARTNER.md', 'partner-delegations.md'];
+
   function route() {
     const hash = (location.hash || '').slice(1);
-    if (hash === 'README.md' || hash === 'PARTNER.md') showDocs(hash);
+    if (DOCS.includes(hash)) showDocs(hash);
     else showHome();
   }
 
@@ -2435,6 +2812,224 @@
   });
 
   goStage(0);
+
+  /* ---------------- Delegation playground ---------------- */
+
+  // Defaults mirror the documented M1 example: A = member + READ_WRITE,
+  // B = member + DISALLOWED, C = not a member + READ_WRITE.
+  const PG_ORGS = {
+    A: { name: 'Org A', id: '64a1b2c3d4e5f6071829301a', deleg: 'READ_WRITE', member: true },
+    B: { name: 'Org B', id: '64b2c3d4e5f6071829301b2c', deleg: 'DISALLOWED', member: true },
+    C: { name: 'Org C', id: '64c3d4e5f6071829301c3d2e', deleg: 'READ_WRITE', member: false }
+  };
+
+  const pgDecisions = document.getElementById('pg-decisions');
+  const pgOutput = document.getElementById('pg-output');
+  const pgOutputWrap = document.getElementById('pg-output-wrap');
+  let pgSent = false;
+
+  const pgAccess = (o) => o.member && o.deleg === 'READ_WRITE';
+
+  function renderPgJson() {
+    const allowed = Object.values(PG_ORGS).filter(pgAccess);
+    pgOutput.textContent = JSON.stringify(
+      { results: allowed.map((o) => ({ id: o.id, name: o.name })), totalCount: allowed.length },
+      null, 2
+    );
+  }
+
+  function renderPg() {
+    document.querySelectorAll('.seg-btn[data-org]').forEach((b) => {
+      const o = PG_ORGS[b.dataset.org];
+      const active = b.dataset.field === 'deleg'
+        ? o.deleg === b.dataset.value
+        : String(o.member) === b.dataset.value;
+      const positive = b.dataset.value === 'READ_WRITE' || b.dataset.value === 'true';
+      b.classList.toggle('active-on', active && positive);
+      b.classList.toggle('active-off', active && !positive);
+    });
+
+    pgDecisions.innerHTML = Object.values(PG_ORGS).map((o) => {
+      if (pgAccess(o)) {
+        return '<div class="pg-decision"><span class="icon ok">✅</span><div>' +
+          '<span class="ok">' + o.name + ' — access granted</span>' +
+          '<div class="reason">member + READ_WRITE → the partner token works here</div></div></div>';
+      }
+      const reason = !o.member
+        ? 'user is not a member of this org'
+        : 'org owner set delegation to DISALLOWED';
+      return '<div class="pg-decision"><span class="icon no">⛔</span><div>' +
+        '<span class="no">' + o.name + ' — blocked</span>' +
+        '<div class="reason">' + reason + '</div></div></div>';
+    }).join('');
+
+    if (pgSent) renderPgJson();
+    renderPgTree();
+  }
+
+  /* --- Today tab: project-level view under the broad M1 grant --- */
+
+  const PG_PROJECTS = {
+    A: [
+      { name: 'partner-prod', clusters: ['cluster0 (M0)', 'demo-cluster (M10)'] },
+      { name: 'analytics', clusters: ['reports (M10)'] }
+    ],
+    B: [{ name: 'backoffice', clusters: ['billing (M10)'] }],
+    C: [{ name: 'sandbox', clusters: ['scratch (M0)'] }]
+  };
+
+  function renderPgTree() {
+    document.getElementById('pg-tree').innerHTML = Object.entries(PG_ORGS).map(([key, o]) => {
+      const allowed = pgAccess(o);
+      const orgBadge = allowed
+        ? '<span class="pg-tree-badge in">accessible</span>'
+        : '<span class="pg-tree-badge out">blocked</span>';
+      const why = allowed ? '' :
+        '<div style="color:#8aa79e;font-size:11.5px;margin-top:3px;">' +
+        (!o.member ? 'user is not a member' : 'delegation DISALLOWED') + ' — all projects hidden</div>';
+      const subs = PG_PROJECTS[key].map((p) => {
+        const pBadge = allowed
+          ? '<span class="pg-tree-badge in">included — broad grant</span>'
+          : '<span class="pg-tree-badge out">blocked</span>';
+        return '<div class="pg-tree-node">📁 ' + p.name + pBadge +
+          '<div style="color:#8aa79e;font-size:11.5px;margin-top:3px;">🍃 ' + p.clusters.join(' · ') + '</div></div>';
+      }).join('');
+      return '<div class="pg-tree-node"><strong style="color:#fff;">🏢 ' + o.name + '</strong>' + orgBadge + why +
+        '<div class="pg-tree-sub">' + subs + '</div></div>';
+    }).join('');
+  }
+
+  /* --- Future tab: scoped delegation picker --- */
+
+  const PERMS = ['Project Read Only', 'Project Read Write', 'Cluster Management'];
+
+  const FUTURE_SCOPE = [
+    { org: 'Org A', orgId: '64a1b2c3d4e5f6071829301a', projects: [
+      { name: 'partner-prod', id: '64b2f2bbc3d4e5f6a7b8c9d1', checked: true, perm: 'Project Read Only',
+        clusters: [{ name: 'cluster0', checked: false }, { name: 'demo-cluster', checked: true }] },
+      { name: 'analytics', id: '64c4a1b2c3d4e5f6a7b8c9e5', checked: false, perm: 'Project Read Only',
+        clusters: [{ name: 'reports', checked: false }] }
+    ] },
+    { org: 'Org B', orgId: '64b2c3d4e5f6071829301b2c', projects: [
+      { name: 'backoffice', id: '64d5b2c3d4e5f6a7b8c9f912', checked: true, perm: 'Cluster Management',
+        clusters: [{ name: 'billing', checked: true }] }
+    ] }
+  ];
+
+  const scopePicker = document.getElementById('pg-scope-picker');
+  const scopeSummary = document.getElementById('pg-scope-summary');
+  const scopeWrap = document.getElementById('pg-scope-wrap');
+  const scopeJson = document.getElementById('pg-scope-json');
+  let scopeSent = false;
+
+  function renderScopePicker() {
+    scopePicker.innerHTML = FUTURE_SCOPE.map((o, oi) =>
+      '<div class="pg-scope-item">' +
+        '<div style="color:#fff;font-weight:700;font-size:13px;margin-bottom:9px;">🏢 ' + o.org + '</div>' +
+        o.projects.map((p, pi) =>
+          '<div class="pg-scope-proj">' +
+            '<label><input type="checkbox" data-oi="' + oi + '" data-pi="' + pi + '"' + (p.checked ? ' checked' : '') + '> 📁 ' + p.name + '</label>' +
+            '<select class="pg-scope-perm" data-oi="' + oi + '" data-pi="' + pi + '"' + (p.checked ? '' : ' disabled') + '>' +
+              PERMS.map((perm) => '<option' + (perm === p.perm ? ' selected' : '') + '>' + perm + '</option>').join('') +
+            '</select>' +
+          '</div>' +
+          '<div class="pg-scope-clusters">' +
+            p.clusters.map((c, ci) =>
+              '<label><input type="checkbox" data-oi="' + oi + '" data-pi="' + pi + '" data-ci="' + ci + '"' +
+                (c.checked ? ' checked' : '') + (p.checked ? '' : ' disabled') + '> 🍃 ' + c.name + '</label>'
+            ).join('') +
+          '</div>'
+        ).join('') +
+      '</div>'
+    ).join('');
+  }
+
+  function scopeEntries() {
+    const out = [];
+    FUTURE_SCOPE.forEach((o) => o.projects.forEach((p) => {
+      if (!p.checked) return;
+      out.push({
+        org: o.org, orgId: o.orgId, proj: p.name, projId: p.id, perm: p.perm,
+        clusters: p.clusters.filter((c) => c.checked).map((c) => c.name)
+      });
+    }));
+    return out;
+  }
+
+  function renderScopeJson() {
+    const permMap = { 'Project Read Only': 'read', 'Project Read Write': 'read-write', 'Cluster Management': 'manage-clusters' };
+    scopeJson.textContent = JSON.stringify({
+      access_token: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6…',
+      token_type: 'Bearer',
+      expires_in: 600,
+      scope: scopeEntries().map((e) => 'org:' + e.orgId + '/project:' + e.projId + ':' + permMap[e.perm])
+    }, null, 2);
+  }
+
+  function renderScopeSummary() {
+    const entries = scopeEntries();
+    scopeSummary.innerHTML = entries.length
+      ? entries.map((e) =>
+          '<div class="pg-scope-line">' + e.org + ' / ' + e.proj +
+          (e.clusters.length ? ' / [' + e.clusters.join(', ') + ']' : '') +
+          '<br><span class="perm">' + e.perm + '</span></div>').join('')
+      : '<div class="pg-scope-line" style="color:#8aa79e;">Nothing selected — a scoped token would carry no grants (deny by default).</div>';
+    if (scopeSent) renderScopeJson();
+  }
+
+  scopePicker.addEventListener('change', (e) => {
+    const t = e.target;
+    const oi = t.dataset.oi, pi = t.dataset.pi, ci = t.dataset.ci;
+    if (oi === undefined) return;
+    const p = FUTURE_SCOPE[oi].projects[pi];
+    if (t.tagName === 'SELECT') {
+      p.perm = t.value;
+    } else if (ci !== undefined) {
+      p.clusters[ci].checked = t.checked;
+    } else {
+      p.checked = t.checked;
+      scopePicker.querySelectorAll('[data-oi="' + oi + '"][data-pi="' + pi + '"]').forEach((el) => {
+        if (el !== t) el.disabled = !p.checked;
+      });
+    }
+    renderScopeSummary();
+  });
+
+  document.getElementById('pg-scope-token').addEventListener('click', () => {
+    scopeSent = true;
+    scopeWrap.classList.add('show');
+    renderScopeJson();
+  });
+
+  /* --- Playground tabs --- */
+
+  document.querySelectorAll('.pg-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.pg-tab').forEach((t) => t.classList.toggle('active', t === tab));
+      document.getElementById('pg-pane-now').classList.toggle('active', tab.dataset.pgtab === 'now');
+      document.getElementById('pg-pane-future').classList.toggle('active', tab.dataset.pgtab === 'future');
+    });
+  });
+
+  renderScopePicker();
+  renderScopeSummary();
+
+  document.querySelectorAll('.seg-btn[data-org]').forEach((b) => {
+    b.addEventListener('click', () => {
+      const o = PG_ORGS[b.dataset.org];
+      if (b.dataset.field === 'deleg') o.deleg = b.dataset.value;
+      else o.member = b.dataset.value === 'true';
+      renderPg();
+    });
+  });
+
+  document.getElementById('pg-send').addEventListener('click', () => {
+    pgSent = true;
+    pgOutputWrap.classList.add('show');
+    renderPgJson();
+  });
+
+  renderPg();
 
   /* ---------------- Copy buttons (home + docs) ---------------- */
 
