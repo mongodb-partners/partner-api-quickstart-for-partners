@@ -3,244 +3,1287 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MongoDB Atlas Partner API — Docs</title>
-<meta name="description" content="OAuth 2.0 integration guide for the MongoDB Atlas Partner API." />
+<title>MongoDB Atlas Admin API - V2 — Partner Docs</title>
+<meta name="description" content="OAuth 2.0 integration guide for the MongoDB Atlas Admin API - V2." />
 
-<!-- Markdown renderer (client-side, no build step needed) -->
-<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
-<!-- Code syntax highlighting (browser-ready CDN bundle, not the raw npm package) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/styles/github.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+<!-- Markdown renderer + syntax highlighting — vendored locally (docs/vendor/) so the
+     page never breaks due to a CDN outage, 404, or network/CSP restriction. -->
+<script src="vendor/marked.min.js"></script>
+<link rel="stylesheet" href="vendor/github.min.css">
+<script src="vendor/highlight.min.js"></script>
 
 <style>
   :root {
+    --mdb-dark: #001e2b;
+    --mdb-dark-soft: #0b2b3a;
+    --mdb-dark-softer: #11384a;
     --mdb-green: #00684a;
     --mdb-green-dark: #004732;
-    --mdb-green-light: #e3f4ee;
-    --mdb-bg: #f7f9fb;
+    --mdb-green-bright: #00ed64;
+    --mdb-green-soft: #e3f4ee;
+    --mdb-bg: #f3f6f5;
     --mdb-text: #1c2d38;
-    --mdb-border: #dfe3e6;
-    --sidebar-width: 280px;
+    --mdb-muted: #5f6f76;
+    --mdb-border: #e2e8ea;
+    --mdb-sidebar-width: 288px;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(0, 30, 43, 0.05), 0 10px 30px rgba(0, 30, 43, 0.07);
+    --shadow-lift: 0 2px 6px rgba(0, 30, 43, 0.08), 0 18px 44px rgba(0, 30, 43, 0.14);
+    --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
 
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--mdb-text);
     background: var(--mdb-bg);
-    display: flex;
-    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* Sidebar */
-  .sidebar {
-    width: var(--sidebar-width);
+  ::selection {
+    background: rgba(0, 237, 100, 0.28);
+    color: var(--mdb-dark);
+  }
+
+  /* ============================================================
+     Announcement bar (like mongodb.com blog banner)
+     ============================================================ */
+  .announce {
+    background: linear-gradient(90deg, var(--mdb-green-dark), var(--mdb-green) 60%, #0a7a56);
+    color: #eafaf2;
+    font-size: 13.5px;
+    text-align: center;
+    padding: 9px 16px;
+    letter-spacing: 0.01em;
+  }
+
+  .announce a {
+    color: var(--mdb-green-bright);
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+
+  .announce a:hover { text-decoration: underline; }
+
+  /* ============================================================
+     Top navigation (mongodb.com style)
+     ============================================================ */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(0, 30, 43, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 1.25;
     flex-shrink: 0;
-    background: #ffffff;
-    border-right: 1px solid var(--mdb-border);
-    padding: 24px 0;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .nav-links a {
+    color: #c4d4cf;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .nav-links a:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 10px 18px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.18s var(--ease-spring), box-shadow 0.18s ease, background 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .btn-green {
+    background: var(--mdb-green-bright);
+    color: var(--mdb-dark);
+    box-shadow: 0 2px 10px rgba(0, 237, 100, 0.35);
+  }
+
+  .btn-green:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0, 237, 100, 0.45); }
+
+  .btn-ghost {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+  }
+
+  .btn-ghost:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
+
+  /* ============================================================
+     Hero (dark, mongodb.com style)
+     ============================================================ */
+  .hero {
+    position: relative;
+    background:
+      radial-gradient(900px 480px at 85% -10%, rgba(0, 237, 100, 0.16), transparent 60%),
+      radial-gradient(700px 420px at 10% 110%, rgba(0, 104, 74, 0.5), transparent 65%),
+      var(--mdb-dark);
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 96px 24px 88px;
+    position: relative;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mdb-green-bright);
+    margin-bottom: 22px;
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 5.4vw, 62px);
+    line-height: 1.06;
+    letter-spacing: -0.025em;
+    margin: 0 0 22px;
+    max-width: 14em;
+  }
+
+  .hero h1 .accent { color: var(--mdb-green-bright); }
+
+  .hero p.lede {
+    font-size: clamp(16px, 1.6vw, 19px);
+    line-height: 1.6;
+    color: #b9cdc7;
+    max-width: 620px;
+    margin: 0 0 36px;
+  }
+
+  .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 54px;
+  }
+
+  .stat-chip {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #d6e4df;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+  }
+
+  .stat-chip strong { color: var(--mdb-green-bright); font-weight: 700; }
+
+  /* Floating leaf accent */
+  .hero-leaf {
+    position: absolute;
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 420px;
+    opacity: 0.13;
+    pointer-events: none;
+    animation: float 7s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(-52%); }
+    50% { transform: translateY(-48%); }
+  }
+
+  /* ============================================================
+     Sections
+     ============================================================ */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 84px 24px 20px;
+  }
+
+  .section-title {
+    font-size: clamp(26px, 3vw, 36px);
+    letter-spacing: -0.02em;
+    color: var(--mdb-dark);
+    margin: 0 0 12px;
+  }
+
+  .section-sub {
+    color: var(--mdb-muted);
+    font-size: 16px;
+    max-width: 640px;
+    margin: 0 0 40px;
+    line-height: 1.6;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.6s ease, transform 0.6s var(--ease-spring);
+  }
+
+  .reveal.revealed { opacity: 1; transform: none; }
+
+  /* ============================================================
+     Guide cards
+     ============================================================ */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    padding: 26px 24px 22px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.22s var(--ease-spring), box-shadow 0.22s ease, border-color 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lift);
+    border-color: rgba(0, 104, 74, 0.35);
+  }
+
+  .card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--mdb-green-soft);
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+  }
+
+  .card h3 {
+    margin: 0;
+    font-size: 17px;
+    color: var(--mdb-dark);
+    letter-spacing: -0.01em;
+  }
+
+  .card p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--mdb-muted);
+    flex: 1;
+  }
+
+  .card .card-link {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--mdb-green);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .card:hover .card-link { color: var(--mdb-green-dark); }
+  .card .card-link .arrow { transition: transform 0.18s var(--ease-spring); }
+  .card:hover .card-link .arrow { transform: translateX(4px); }
+
+  /* ============================================================
+     Interactive OAuth flow (tabs + code)
+     ============================================================ */
+  .flow {
+    background: var(--mdb-dark);
+    border-radius: 20px;
+    padding: 40px 36px;
+    color: #d6e4df;
+    box-shadow: var(--shadow-lift);
+  }
+
+  .flow-steps {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+  }
+
+  .flow-step {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #b9cdc7;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-spring);
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .flow-step .n {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    color: #eafaf2;
+    font-size: 11.5px;
+    display: grid;
+    place-items: center;
+    transition: all 0.2s ease;
+  }
+
+  .flow-step:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+
+  .flow-step.active {
+    background: rgba(0, 237, 100, 0.14);
+    border-color: rgba(0, 237, 100, 0.55);
+    color: #fff;
+  }
+
+  .flow-step.active .n { background: var(--mdb-green-bright); color: var(--mdb-dark); }
+
+  .flow-panel { display: none; animation: fadeUp 0.35s ease both; }
+  .flow-panel.active { display: block; }
+
+  .flow-panel p {
+    margin: 0 0 18px;
+    font-size: 15px;
+    line-height: 1.65;
+    color: #b9cdc7;
+    max-width: 720px;
+  }
+
+  .flow-panel strong { color: #fff; }
+
+  .code-shell {
+    background: #06202f;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .code-shell-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 12px;
+    color: #6e8a80;
+    letter-spacing: 0.04em;
+  }
+
+  .copy-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #d6e4df;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .copy-btn:hover { background: rgba(0, 237, 100, 0.18); border-color: rgba(0, 237, 100, 0.5); color: #fff; }
+  .copy-btn.copied { background: var(--mdb-green-bright); border-color: var(--mdb-green-bright); color: var(--mdb-dark); }
+
+  .code-shell pre {
+    margin: 0;
+    padding: 20px 22px;
+    overflow-x: auto;
+    font-size: 13.5px;
+    line-height: 1.65;
+    background: transparent !important;
+  }
+
+  .code-shell pre code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    background: transparent;
+    color: #d6e4df;
+  }
+
+  /* Consent visual */
+  .consent-track {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 26px 4px 10px;
+  }
+
+  .consent-node {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+  }
+
+  .consent-node small { display: block; font-weight: 400; color: #8aa79e; margin-top: 4px; font-size: 12px; }
+
+  .consent-arrow { color: var(--mdb-green-bright); font-size: 20px; }
+
+  /* ============================================================
+     Environment switcher
+     ============================================================ */
+  .env-picker {
+    display: inline-flex;
+    background: #e4ece9;
+    border-radius: 999px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 22px;
+  }
+
+  .env-btn {
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--mdb-muted);
+    padding: 8px 22px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+
+  .env-btn:hover { color: var(--mdb-dark); }
+
+  .env-btn.active {
+    background: var(--mdb-dark);
+    color: var(--mdb-green-bright);
+    box-shadow: 0 2px 8px rgba(0, 30, 43, 0.25);
+  }
+
+  .env-table-wrap {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  .env-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+  .env-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--mdb-border);
+  }
+
+  .env-table tr:last-child td { border-bottom: none; }
+
+  .env-table td:first-child {
+    color: var(--mdb-muted);
+    font-weight: 600;
+    width: 220px;
+  }
+
+  .env-table code {
+    background: #edf4f0;
+    color: #0b3b2e;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  /* ============================================================
+     Operations grid
+     ============================================================ */
+  .ops-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 14px;
+  }
+
+  .op {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 12px;
+    padding: 15px 18px;
+    font-size: 13.5px;
+    transition: transform 0.18s var(--ease-spring), box-shadow 0.18s ease, border-color 0.15s ease;
+  }
+
+  .op:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+    border-color: rgba(0, 104, 74, 0.35);
+  }
+
+  .op-method {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+
+  .op-method.get { background: #e3f4ee; color: var(--mdb-green-dark); }
+  .op-method.post { background: #fff3d6; color: #8a6100; }
+  .op-method.delete { background: #fde8e7; color: #a12c25; }
+
+  .op-path { color: var(--mdb-text); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; word-break: break-all; }
+
+  /* ============================================================
+     Footer (dark, mongodb.com style)
+     ============================================================ */
+  .site-footer {
+    background: var(--mdb-dark);
+    color: #8aa79e;
+    margin-top: 100px;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 24px 40px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 36px;
+  }
+
+  .footer-brand { color: #fff; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px; }
+  .footer-tag { font-size: 13.5px; line-height: 1.6; margin-top: 14px; max-width: 280px; }
+
+  .footer-col h4 {
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 14px;
+  }
+
+  .footer-col a {
+    display: block;
+    color: #8aa79e;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 5px 0;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .footer-col a:hover { color: var(--mdb-green-bright); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 20px 24px;
+    text-align: center;
+    font-size: 12.5px;
+  }
+
+  /* ============================================================
+     Docs reader view (sidebar + markdown)
+     ============================================================ */
+  #view-docs { display: none; }
+  #view-docs.active { display: flex; min-height: 100vh; }
+  #view-home.hidden { display: none; }
+  body.reader .site-header, body.reader .announce { display: none; }
+
+  .top-accent {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--mdb-green) 0%, var(--mdb-green-bright) 50%, var(--mdb-green) 100%);
+    z-index: 60;
+  }
+
+  .sidebar {
+    width: var(--mdb-sidebar-width);
+    flex-shrink: 0;
+    background: var(--mdb-dark);
+    color: #dbe7e3;
+    padding: 28px 0 0;
     position: sticky;
     top: 0;
     height: 100vh;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
+
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 4px; }
 
   .sidebar-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 0 24px 20px;
-    border-bottom: 1px solid var(--mdb-border);
-    margin-bottom: 16px;
-  }
-
-  .sidebar-header img {
-    height: 28px;
-    width: auto;
+    gap: 12px;
+    padding: 0 24px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 18px;
+    cursor: pointer;
   }
 
   .sidebar-header span {
     font-weight: 700;
     font-size: 15px;
-    color: var(--mdb-green-dark);
-    line-height: 1.3;
+    letter-spacing: 0.01em;
+    color: #ffffff;
+    line-height: 1.35;
   }
+
+  .back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 24px 14px;
+    color: #8aa79e;
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .back-home:hover { color: var(--mdb-green-bright); }
+
+  .nav-group { margin-bottom: 10px; }
 
   .nav-group-title {
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #8a97a0;
-    padding: 8px 24px;
+    letter-spacing: 0.09em;
+    color: #6e8a80;
+    padding: 10px 26px 6px;
   }
 
   .nav-link {
     display: block;
-    padding: 8px 24px;
-    color: var(--mdb-text);
+    margin: 2px 14px;
+    padding: 9px 14px;
+    color: #c4d4cf;
     text-decoration: none;
     font-size: 14px;
-    border-left: 3px solid transparent;
+    border-radius: 8px;
     cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
   }
 
-  .nav-link:hover {
-    background: var(--mdb-green-light);
-  }
+  .nav-link:hover { background: rgba(255, 255, 255, 0.07); color: #ffffff; }
 
   .nav-link.active {
-    background: var(--mdb-green-light);
-    border-left-color: var(--mdb-green);
-    color: var(--mdb-green-dark);
+    background: rgba(0, 237, 100, 0.14);
+    box-shadow: inset 3px 0 0 var(--mdb-green-bright);
+    color: #ffffff;
     font-weight: 600;
   }
 
-  /* Main content */
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 18px 26px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 12px;
+    color: #6e8a80;
+    letter-spacing: 0.02em;
+  }
+
   .main {
     flex: 1;
     min-width: 0;
-    padding: 40px 48px;
-    max-width: 900px;
+    padding: 48px 56px 40px;
+    max-width: 980px;
   }
 
   #content {
     background: #ffffff;
     border: 1px solid var(--mdb-border);
-    border-radius: 8px;
-    padding: 40px 48px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 48px 56px;
+    font-size: 15.5px;
+    line-height: 1.75;
+  }
+
+  #content.loaded > * { animation: fadeUp 0.35s ease both; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
   }
 
   #content h1 {
-    color: var(--mdb-green-dark);
-    border-bottom: 2px solid var(--mdb-green-light);
-    padding-bottom: 12px;
+    font-size: 30px;
+    letter-spacing: -0.02em;
+    color: var(--mdb-dark);
+    margin-top: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  #content h1::after {
+    content: "";
+    display: block;
+    width: 56px;
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 16px;
+    background: linear-gradient(90deg, var(--mdb-green), var(--mdb-green-bright));
   }
 
   #content h2 {
-    color: var(--mdb-green-dark);
-    margin-top: 2em;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    color: var(--mdb-dark);
+    margin-top: 2.4em;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--mdb-border);
+    scroll-margin-top: 24px;
   }
 
-  #content h3 {
-    color: var(--mdb-text);
-  }
+  #content h3 { font-size: 17px; color: var(--mdb-dark); margin-top: 1.9em; }
+  #content h4 { font-size: 15px; color: var(--mdb-dark); margin-top: 1.6em; }
+  #content p { margin: 1em 0; }
 
   #content a {
     color: var(--mdb-green);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 104, 74, 0.25);
+    transition: color 0.15s ease, border-color 0.15s ease;
   }
 
+  #content a:hover { color: var(--mdb-green-dark); border-bottom-color: var(--mdb-green-dark); }
+
   #content code {
-    background: #f0f2f4;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.9em;
+    background: #edf4f0;
+    color: #0b3b2e;
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 0.88em;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   }
 
   #content pre {
-    background: #f6f8fa;
+    background: #f6f8f7;
     border: 1px solid var(--mdb-border);
-    border-radius: 6px;
-    padding: 16px;
+    border-radius: 10px;
+    padding: 18px 20px;
     overflow-x: auto;
+    line-height: 1.6;
+    position: relative;
   }
 
-  #content pre code {
-    background: none;
-    padding: 0;
+  #content pre code { background: none; padding: 0; color: inherit; font-size: 13.5px; }
+
+  .doc-copy {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    color: var(--mdb-muted);
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 11px;
+    border-radius: 6px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
   }
 
-  #content table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 1.5em 0;
-    font-size: 14px;
+  #content pre:hover .doc-copy { opacity: 1; }
+  .doc-copy:hover { background: var(--mdb-green-soft); color: var(--mdb-green-dark); }
+  .doc-copy.copied { background: var(--mdb-green); border-color: var(--mdb-green); color: #fff; opacity: 1; }
+
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 10px;
+    margin: 1.6em 0;
+    border: 1px solid var(--mdb-border);
   }
+
+  #content table { border-collapse: collapse; width: 100%; margin: 0; font-size: 14px; }
 
   #content th, #content td {
-    border: 1px solid var(--mdb-border);
-    padding: 8px 12px;
+    border: none;
+    border-bottom: 1px solid var(--mdb-border);
+    padding: 10px 14px;
     text-align: left;
   }
 
-  #content th {
-    background: var(--mdb-green-light);
-    color: var(--mdb-green-dark);
-  }
+  #content tr:last-child td { border-bottom: none; }
+  #content th { background: var(--mdb-green-soft); color: var(--mdb-green-dark); font-weight: 600; }
+  #content tbody tr:nth-child(even) { background: #fafcfb; }
+  #content tbody tr:hover { background: var(--mdb-green-soft); }
 
   #content blockquote {
     border-left: 4px solid var(--mdb-green);
-    background: var(--mdb-green-light);
-    margin: 1.5em 0;
-    padding: 12px 20px;
-    border-radius: 0 6px 6px 0;
+    background: #f2faf6;
+    margin: 1.6em 0;
+    padding: 14px 22px;
+    border-radius: 0 10px 10px 0;
+    color: #234138;
   }
 
-  .loading {
-    color: #8a97a0;
-    font-style: italic;
-  }
+  #content blockquote code { background: rgba(255, 255, 255, 0.85); }
 
-  footer {
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid var(--mdb-border);
+  #content hr { border: none; height: 1px; background: var(--mdb-border); margin: 2.4em 0; }
+  #content img { max-width: 100%; }
+  #content ul, #content ol { padding-left: 1.5em; }
+  #content li { margin: 0.35em 0; }
+
+  .loading { color: var(--mdb-muted); font-style: italic; animation: pulse 1.4s ease-in-out infinite; }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+  .reader-footer {
+    margin-top: 28px;
+    padding-top: 18px;
     font-size: 13px;
-    color: #8a97a0;
+    color: var(--mdb-muted);
     text-align: center;
   }
 
+  /* ============================================================
+     Responsive
+     ============================================================ */
+  @media (max-width: 960px) {
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    .hero-leaf { display: none; }
+  }
+
+  @media (max-width: 860px) {
+    .nav-links { display: none; }
+    .flow { padding: 28px 20px; }
+  }
+
   @media (max-width: 768px) {
-    body { flex-direction: column; }
+    #view-docs.active { flex-direction: column; }
     .sidebar { width: 100%; height: auto; position: static; }
-    .main { padding: 20px; }
-    #content { padding: 24px; }
+    .sidebar-footer { display: none; }
+    .main { padding: 22px 16px; }
+    #content { padding: 28px 22px; }
+    .hero-inner { padding: 64px 20px 60px; }
+    .footer-inner { grid-template-columns: 1fr; gap: 26px; }
   }
 </style>
 </head>
 <body>
 
-<nav class="sidebar">
-  <div class="sidebar-header">
-    <span>MongoDB Atlas<br/>Partner API</span>
+<div class="top-accent"></div>
+
+<!-- ======================= HOME VIEW ======================= -->
+<div id="view-home">
+
+  <div class="announce">
+    Now in Early Access — Atlas OAuth for partners is invite-only.
+    <a data-doc-link="PARTNER.md">Read the onboarding guide →</a>
   </div>
 
-  <div class="nav-group-title">Getting Started</div>
-  <a class="nav-link" data-doc="README.md">Overview &amp; Quick Start</a>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" data-home-link>
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+          <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
+          <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Atlas Admin API - V2
+      </a>
+      <div class="nav-links">
+        <a data-doc-link="README.md">Integration Guide</a>
+        <a data-doc-link="PARTNER.md">Partner Onboarding</a>
+        <a href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">API Reference ↗</a>
+        <a href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+      <button class="btn btn-green" data-doc-link="README.md">Get Started</button>
+    </nav>
+  </header>
 
-  <div class="nav-group-title">Guides</div>
-  <a class="nav-link" data-doc="PARTNER_API_GUIDE.md">Partner API Guide</a>
-  <a class="nav-link" data-doc="PARTNER.md">Partner Onboarding</a>
+  <!-- Hero -->
+  <section class="hero">
+    <svg class="hero-leaf" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
+      <path d="M12 7v13" stroke="#00ed64" stroke-width="0.7" stroke-linecap="round"/>
+    </svg>
+    <div class="hero-inner">
+      <span class="eyebrow">MongoDB Atlas · OAuth 2.0 for Partners</span>
+      <h1>Call Atlas on behalf of your users. <span class="accent">No API keys required.</span></h1>
+      <p class="lede">
+        The MongoDB Atlas Admin API - V2 lets your application provision and manage Atlas
+        organizations, projects, and clusters using short-lived, user-scoped OAuth tokens —
+        your app never sees a user's credentials.
+      </p>
+      <div class="hero-stats">
+        <span class="stat-chip"><strong>OAuth 2.0</strong> Authorization Code + PKCE</span>
+        <span class="stat-chip"><strong>600s</strong> delegated token lifetime</span>
+        <span class="stat-chip"><strong>3</strong> environments · dev → staging → prod</span>
+        <span class="stat-chip"><strong>0</strong> user credentials handled</span>
+      </div>
+    </div>
+  </section>
 
-  <div class="nav-group-title">Links</div>
-  <a class="nav-link" href="https://www.mongodb.com/docs/atlas/reference/api-resources-spec/" target="_blank" rel="noopener">Atlas Admin API Reference ↗</a>
-  <a class="nav-link" href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub Repository ↗</a>
-</nav>
+  <!-- Guide cards -->
+  <section class="section">
+    <h2 class="section-title reveal">Start building</h2>
+    <p class="section-sub reveal">Everything you need to integrate the Atlas Admin API - V2 into your product — from first credentials to production.</p>
+    <div class="card-grid">
+      <a class="card reveal" data-doc-link="README.md">
+        <div class="card-icon">📘</div>
+        <h3>Partner Integration Guide</h3>
+        <p>Obtain and use access tokens, call the Atlas Admin API with curl, and run the local FastAPI demo server.</p>
+        <span class="card-link">Open guide <span class="arrow">→</span></span>
+      </a>
+      <a class="card reveal" data-doc-link="PARTNER.md">
+        <div class="card-icon">🤝</div>
+        <h3>Partner Onboarding</h3>
+        <p>Register with MongoDB, receive OAuth credentials, and take your integration from dev to production.</p>
+        <span class="card-link">Open checklist <span class="arrow">→</span></span>
+      </a>
+      <a class="card reveal" href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">
+        <div class="card-icon">🔌</div>
+        <h3>Atlas Admin API Reference</h3>
+        <p>Full endpoint documentation for the Atlas Administration API, with request and response schemas.</p>
+        <span class="card-link">mongodb.com/docs <span class="arrow">↗</span></span>
+      </a>
+      <a class="card reveal" href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">
+        <div class="card-icon">💻</div>
+        <h3>Code & Examples</h3>
+        <p>Token helper script, FastAPI proxy server, and ready-to-run curl examples in the GitHub repository.</p>
+        <span class="card-link">View repository <span class="arrow">↗</span></span>
+      </a>
+    </div>
+  </section>
 
-<main class="main">
-  <div id="content">
-    <p class="loading">Loading…</p>
-  </div>
-  <footer>
-    Copyright © MongoDB, Inc. — Atlas Partner API Documentation
+  <!-- Interactive OAuth flow -->
+  <section class="section">
+    <h2 class="section-title reveal">How the delegated flow works</h2>
+    <p class="section-sub reveal">Click through the four steps of the OAuth 2.0 Authorization Code + PKCE flow your app performs.</p>
+    <div class="flow reveal">
+      <div class="flow-steps" role="tablist" aria-label="OAuth flow steps">
+        <button class="flow-step active" role="tab" aria-selected="true" data-step="0"><span class="n">1</span>Authorize</button>
+        <button class="flow-step" role="tab" aria-selected="false" data-step="1"><span class="n">2</span>Consent</button>
+        <button class="flow-step" role="tab" aria-selected="false" data-step="2"><span class="n">3</span>Exchange</button>
+        <button class="flow-step" role="tab" aria-selected="false" data-step="3"><span class="n">4</span>Call Atlas</button>
+      </div>
+
+      <div class="flow-panel active" role="tabpanel">
+        <p><strong>Redirect the user to Atlas.</strong> When a user clicks "Connect MongoDB Atlas" in your product, send them to the authorization endpoint with a PKCE challenge and CSRF state token.</p>
+        <div class="code-shell">
+          <div class="code-shell-bar"><span>HTTP — authorization request</span><button class="copy-btn">Copy</button></div>
+          <pre><code class="language-http">GET https://cloud.mongodb.com/oauth/authorize
+  ?response_type=code
+  &client_id=<your-client-id>
+  &redirect_uri=https://app.example.com/oauth/atlas/callback
+  &code_challenge=<S256-pkce-challenge>
+  &code_challenge_method=S256
+  &state=<random-csrf-token>
+  &resource=https://api.mongodb.com/api/atlas</code></pre>
+        </div>
+      </div>
+
+      <div class="flow-panel" role="tabpanel">
+        <p><strong>The user logs in and grants consent.</strong> Atlas authenticates the user and shows a consent screen naming your application. Your app never sees the user's password.</p>
+        <div class="consent-track">
+          <div class="consent-node">User signs in<small>cloud.mongodb.com</small></div>
+          <span class="consent-arrow">→</span>
+          <div class="consent-node">Consent screen<small>grants your app access</small></div>
+          <span class="consent-arrow">→</span>
+          <div class="consent-node">Redirect back<small>with authorization code</small></div>
+        </div>
+      </div>
+
+      <div class="flow-panel" role="tabpanel">
+        <p><strong>Exchange the code for tokens.</strong> Your backend POSTs the authorization code and PKCE verifier to the token endpoint — a back-channel call the browser never sees.</p>
+        <div class="code-shell">
+          <div class="code-shell-bar"><span>SHELL — token exchange</span><button class="copy-btn">Copy</button></div>
+          <pre><code class="language-bash">curl -X POST "https://authorize.mongodb.com/tokens" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -H "Authorization: Basic $(echo -n '&lt;client_id&gt;:&lt;client_secret&gt;' | base64)" \
+  -d "grant_type=authorization_code" \
+  -d "code=&lt;authorization-code&gt;" \
+  -d "code_verifier=&lt;pkce-verifier&gt;" \
+  -d "redirect_uri=https://app.example.com/oauth/atlas/callback"</code></pre>
+        </div>
+      </div>
+
+      <div class="flow-panel" role="tabpanel">
+        <p><strong>Call the Atlas Admin API.</strong> Use the delegated access token as a Bearer token. It is scoped to what the logged-in user is allowed to do — no org-level API key needed.</p>
+        <div class="code-shell">
+          <div class="code-shell-bar"><span>SHELL — authenticated API call</span><button class="copy-btn">Copy</button></div>
+          <pre><code class="language-bash">curl "https://api.mongodb.com/api/atlas/v2/orgs" \
+  -H "Authorization: Bearer &lt;access_token&gt;" \
+  -H "Accept: application/vnd.atlas.2025-03-12+json"</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Environment switcher -->
+  <section class="section">
+    <h2 class="section-title reveal">Pick your environment</h2>
+    <p class="section-sub reveal">Endpoints differ per environment. Start in dev, then promote through staging to production.</p>
+    <div class="reveal">
+      <div class="env-picker" role="tablist" aria-label="Environments">
+        <button class="env-btn active" role="tab" aria-selected="true" data-env="dev">Dev</button>
+        <button class="env-btn" role="tab" aria-selected="false" data-env="stage">Staging</button>
+        <button class="env-btn" role="tab" aria-selected="false" data-env="prod">Production</button>
+      </div>
+      <div class="env-table-wrap">
+        <table class="env-table">
+          <tbody>
+            <tr><td>Atlas UI</td><td><code id="env-cloud"></code></td></tr>
+            <tr><td>OAuth / Token endpoint</td><td><code id="env-oauth"></code></td></tr>
+            <tr><td>Atlas Admin API</td><td><code id="env-api"></code></td></tr>
+            <tr><td>Resource indicator</td><td><code id="env-resource"></code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supported operations -->
+  <section class="section">
+    <h2 class="section-title reveal">What your app can do</h2>
+    <p class="section-sub reveal">With a delegated user token, your app can perform these Atlas operations on the user's behalf.</p>
+    <div class="ops-grid reveal">
+      <div class="op"><span class="op-method get">GET</span><span class="op-path">/api/atlas/v2/orgs</span></div>
+      <div class="op"><span class="op-method get">GET</span><span class="op-path">/api/atlas/v2/groups?orgId={orgId}</span></div>
+      <div class="op"><span class="op-method post">POST</span><span class="op-path">/api/atlas/v2/groups</span></div>
+      <div class="op"><span class="op-method get">GET</span><span class="op-path">/api/atlas/v2/groups/{projectId}/clusters</span></div>
+      <div class="op"><span class="op-method post">POST</span><span class="op-path">/api/atlas/v2/groups/{projectId}/clusters</span></div>
+      <div class="op"><span class="op-method get">GET</span><span class="op-path">/api/atlas/v2/groups/{projectId}/clusters/{name}</span></div>
+      <div class="op"><span class="op-method delete">DELETE</span><span class="op-path">/api/atlas/v2/groups/{projectId}/clusters/{name}</span></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
+            <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
+            <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          Atlas Admin API - V2
+        </div>
+        <p class="footer-tag">OAuth 2.0 delegated access for ISV and Technology Partners — call Atlas Admin API endpoints on behalf of your users.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Documentation</h4>
+        <a data-doc-link="README.md">Partner Integration Guide</a>
+        <a data-doc-link="PARTNER.md">Partner Onboarding</a>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">Atlas Admin API Reference ↗</a>
+        <a href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub Repository ↗</a>
+      </div>
+      <div class="footer-col">
+        <h4>MongoDB</h4>
+        <a href="https://www.mongodb.com/docs/" target="_blank" rel="noopener">Documentation ↗</a>
+        <a href="https://www.mongodb.com/products/platform/atlas-database" target="_blank" rel="noopener">MongoDB Atlas ↗</a>
+      </div>
+    </div>
+    <div class="footer-bottom">Copyright © MongoDB, Inc. — Atlas Admin API - V2 Documentation</div>
   </footer>
-</main>
+</div>
+
+<!-- ======================= DOCS READER VIEW ======================= -->
+<div id="view-docs">
+  <nav class="sidebar">
+    <div class="sidebar-header" data-home-link>
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+        <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
+        <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <span>MongoDB Atlas<br/>Admin API - V2</span>
+    </div>
+
+    <a class="back-home" data-home-link>← Back to home</a>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Documentation</div>
+      <a class="nav-link" data-doc="README.md">Partner Integration Guide</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Onboarding</div>
+      <a class="nav-link" data-doc="PARTNER.md">Partner Onboarding Checklist</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Resources</div>
+      <a class="nav-link" href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">Atlas Admin API Reference ↗</a>
+      <a class="nav-link" href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub Repository ↗</a>
+    </div>
+
+    <div class="sidebar-footer">OAuth 2.0 · Delegated Access</div>
+  </nav>
+
+  <main class="main">
+    <div id="content">
+      <p class="loading">Loading…</p>
+    </div>
+    <div class="reader-footer">
+      Copyright © MongoDB, Inc. — Atlas Admin API - V2 Documentation
+    </div>
+  </main>
+</div>
 
 <script>
   const contentEl = document.getElementById('content');
+  const viewHome = document.getElementById('view-home');
+  const viewDocs = document.getElementById('view-docs');
   const navLinks = document.querySelectorAll('.nav-link[data-doc]');
 
-  marked.setOptions({
-    highlight: function (code, lang) {
-      if (lang && hljs.getLanguage(lang)) {
-        return hljs.highlight(code, { language: lang }).value;
-      }
-      return hljs.highlightAuto(code).value;
-    },
-    breaks: false,
+  // Guard against either library failing to load — the page should still render
+  // markdown as plain HTML rather than showing a hard error.
+  const hasMarked = typeof marked !== 'undefined';
+  const hasHljs = typeof hljs !== 'undefined';
+
+  if (!hasMarked) console.error('marked.js failed to load — check docs/vendor/marked.min.js is reachable.');
+  if (!hasHljs) console.warn('highlight.js failed to load — code blocks will render without syntax highlighting.');
+
+  if (hasMarked) marked.setOptions({ breaks: false, gfm: true });
+
+  function highlightAll(root) {
+    if (!hasHljs) return;
+    root.querySelectorAll('pre code').forEach((block) => {
+      try { hljs.highlightElement(block); } catch (e) { /* unknown language — skip */ }
+    });
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+  }
+
+  /* ---------------- View routing ---------------- */
+
+  function showHome() {
+    document.body.classList.remove('reader');
+    viewDocs.classList.remove('active');
+    viewHome.classList.remove('hidden');
+    history.replaceState(null, '', '#home');
+    window.scrollTo(0, 0);
+  }
+
+  function showDocs(filename) {
+    document.body.classList.add('reader');
+    viewHome.classList.add('hidden');
+    viewDocs.classList.add('active');
+    navLinks.forEach((l) => l.classList.toggle('active', l.getAttribute('data-doc') === filename));
+    history.replaceState(null, '', '#' + filename);
+    loadDoc(filename);
+  }
+
+  function route() {
+    const hash = (location.hash || '').slice(1);
+    if (hash === 'README.md' || hash === 'PARTNER.md') showDocs(hash);
+    else showHome();
+  }
+
+  // Any element with data-doc-link opens a doc; data-home-link returns home.
+  document.querySelectorAll('[data-doc-link]').forEach((el) => {
+    el.addEventListener('click', (e) => { e.preventDefault(); showDocs(el.getAttribute('data-doc-link')); });
   });
+  document.querySelectorAll('[data-home-link]').forEach((el) => {
+    el.addEventListener('click', (e) => { e.preventDefault(); showHome(); });
+  });
+  navLinks.forEach((link) => {
+    link.addEventListener('click', (e) => { e.preventDefault(); showDocs(link.getAttribute('data-doc')); });
+  });
+  window.addEventListener('hashchange', route);
+
+  /* ---------------- Docs reader ---------------- */
+
+  function wrapTables() {
+    document.querySelectorAll('#content table').forEach((table) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'table-wrap';
+      table.parentNode.insertBefore(wrap, table);
+      wrap.appendChild(table);
+    });
+  }
+
+  function addCopyButtons() {
+    document.querySelectorAll('#content pre').forEach((pre) => {
+      const btn = document.createElement('button');
+      btn.className = 'doc-copy';
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', () => copyText(pre.querySelector('code').innerText, btn));
+      pre.appendChild(btn);
+    });
+  }
+
+  function animateContent() {
+    contentEl.classList.remove('loaded');
+    void contentEl.offsetHeight; // force reflow
+    contentEl.classList.add('loaded');
+  }
 
   async function loadDoc(filename) {
     contentEl.innerHTML = '<p class="loading">Loading…</p>';
@@ -248,10 +1291,15 @@
       const res = await fetch(filename, { cache: 'no-cache' });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const markdown = await res.text();
-      contentEl.innerHTML = marked.parse(markdown);
-      document.querySelectorAll('#content pre code').forEach((block) => {
-        hljs.highlightElement(block);
-      });
+
+      contentEl.innerHTML = hasMarked
+        ? marked.parse(markdown)
+        : '<pre style="white-space:pre-wrap;">' + escapeHtml(markdown) + '</pre>';
+
+      highlightAll(contentEl);
+      wrapTables();
+      addCopyButtons();
+      animateContent();
       window.scrollTo(0, 0);
     } catch (err) {
       contentEl.innerHTML =
@@ -259,22 +1307,112 @@
     }
   }
 
-  navLinks.forEach((link) => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      navLinks.forEach((l) => l.classList.remove('active'));
-      link.classList.add('active');
-      const doc = link.getAttribute('data-doc');
-      history.replaceState(null, '', '#' + doc);
-      loadDoc(doc);
+  /* ---------------- Home: interactive flow tabs ---------------- */
+
+  const flowSteps = document.querySelectorAll('.flow-step');
+  const flowPanels = document.querySelectorAll('.flow-panel');
+
+  flowSteps.forEach((step) => {
+    step.addEventListener('click', () => {
+      const idx = Number(step.getAttribute('data-step'));
+      flowSteps.forEach((s, i) => {
+        s.classList.toggle('active', i === idx);
+        s.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+      });
+      flowPanels.forEach((p, i) => p.classList.toggle('active', i === idx));
     });
   });
 
-  // Load doc from URL hash, or default to README.md
-  const initialDoc = (location.hash && location.hash.slice(1)) || 'README.md';
-  const initialLink = document.querySelector('.nav-link[data-doc="' + initialDoc + '"]');
-  if (initialLink) initialLink.classList.add('active');
-  loadDoc(initialDoc);
+  /* ---------------- Copy buttons (home + docs) ---------------- */
+
+  async function copyText(text, btn) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      // Fallback for non-secure contexts
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1600);
+  }
+
+  document.querySelectorAll('.code-shell .copy-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const code = btn.closest('.code-shell').querySelector('code');
+      copyText(code.innerText, btn);
+    });
+  });
+
+  /* ---------------- Environment switcher ---------------- */
+
+  const ENVIRONMENTS = {
+    dev: {
+      cloud: 'https://cloud-dev.mongodb.com',
+      oauth: 'https://authorize-dev.mongodb.com',
+      api: 'https://api-dev.mongodb.com',
+      resource: 'https://api-dev.mongodb.com/api/atlas'
+    },
+    stage: {
+      cloud: 'https://cloud-stage.mongodb.com',
+      oauth: 'https://authorize-stage.mongodb.com',
+      api: 'https://api-stage.mongodb.com',
+      resource: 'https://api-stage.mongodb.com/api/atlas'
+    },
+    prod: {
+      cloud: 'https://cloud.mongodb.com',
+      oauth: 'https://authorize.mongodb.com',
+      api: 'https://api.mongodb.com',
+      resource: 'https://api.mongodb.com/api/atlas'
+    }
+  };
+
+  const envBtns = document.querySelectorAll('.env-btn');
+  const envCells = {
+    cloud: document.getElementById('env-cloud'),
+    oauth: document.getElementById('env-oauth'),
+    api: document.getElementById('env-api'),
+    resource: document.getElementById('env-resource')
+  };
+
+  function setEnv(key) {
+    const env = ENVIRONMENTS[key];
+    envCells.cloud.textContent = env.cloud;
+    envCells.oauth.textContent = env.oauth;
+    envCells.api.textContent = env.api;
+    envCells.resource.textContent = env.resource;
+    envBtns.forEach((b) => {
+      const active = b.getAttribute('data-env') === key;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+  }
+
+  envBtns.forEach((b) => b.addEventListener('click', () => setEnv(b.getAttribute('data-env'))));
+  setEnv('dev');
+
+  /* ---------------- Scroll reveal ---------------- */
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+
+  /* ---------------- Init ---------------- */
+
+  highlightAll(viewHome); // syntax-highlight the flow snippets
+  route();
 </script>
 
 </body>
