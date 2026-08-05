@@ -278,6 +278,40 @@
   .reveal.revealed { opacity: 1; transform: none; }
 
   /* ============================================================
+     Architecture diagram card
+     ============================================================ */
+  .diagram-card {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.22s var(--ease-spring), box-shadow 0.22s ease;
+  }
+
+  .diagram-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .diagram-card a { display: block; }
+
+  .diagram-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .diagram-caption {
+    padding: 12px 20px;
+    font-size: 13px;
+    color: var(--mdb-muted);
+    border-top: 1px solid var(--mdb-border);
+    background: #fafcfb;
+    text-align: center;
+  }
+
+  /* ============================================================
      Guide cards
      ============================================================ */
   .card-grid {
@@ -486,6 +520,540 @@
   .consent-node small { display: block; font-weight: 400; color: #8aa79e; margin-top: 4px; font-size: 12px; }
 
   .consent-arrow { color: var(--mdb-green-bright); font-size: 20px; }
+
+  /* ============================================================
+     Clickable auth walkthrough demo
+     ============================================================ */
+  .demo {
+    background: var(--mdb-dark);
+    border-radius: 20px;
+    padding: 32px 30px;
+    box-shadow: var(--shadow-lift);
+  }
+
+  .demo-steps {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .demo-pill {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #b9cdc7;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+
+  .demo-pill:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+
+  .demo-pill.active {
+    background: rgba(0, 237, 100, 0.16);
+    border-color: rgba(0, 237, 100, 0.55);
+    color: var(--mdb-green-bright);
+  }
+
+  .demo-pill.done { color: #fff; border-color: rgba(255, 255, 255, 0.3); }
+
+  .demo-browser {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.4);
+  }
+
+  .demo-urlbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #eef2f1;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--mdb-border);
+  }
+
+  .demo-dots { display: flex; gap: 6px; flex-shrink: 0; }
+  .demo-dots span { width: 11px; height: 11px; border-radius: 50%; }
+  .demo-dots span:nth-child(1) { background: #ff5f57; }
+  .demo-dots span:nth-child(2) { background: #febc2e; }
+  .demo-dots span:nth-child(3) { background: #28c840; }
+
+  .demo-url {
+    flex: 1;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    color: #43565e;
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 7px;
+    padding: 6px 12px;
+    white-space: nowrap;
+    overflow-x: auto;
+  }
+
+  .demo-pane { display: none; min-height: 400px; background: #f7faf9; }
+  .demo-pane.active { display: block; animation: fadeUp 0.3s ease both; }
+
+  .demo-desc {
+    margin: 18px 2px 0;
+    color: #b9cdc7;
+    font-size: 14.5px;
+    line-height: 1.65;
+    min-height: 72px;
+  }
+
+  .demo-desc strong { color: #fff; }
+  .demo-desc code {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--mdb-green-bright);
+    padding: 1px 7px;
+    border-radius: 5px;
+    font-size: 0.88em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .demo-controls { display: flex; gap: 10px; margin-top: 16px; }
+
+  .demo-nav-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #d6e4df;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .demo-nav-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.16); color: #fff; }
+  .demo-nav-btn:disabled { opacity: 0.35; cursor: default; }
+
+  .demo-nav-btn.primary {
+    background: var(--mdb-green-bright);
+    border-color: var(--mdb-green-bright);
+    color: var(--mdb-dark);
+  }
+
+  .demo-nav-btn.primary:hover:not(:disabled) { background: #4bf087; color: var(--mdb-dark); }
+
+  /* --- Mock partner app --- */
+  .mock-app-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 22px;
+    background: #fff;
+    border-bottom: 1px solid var(--mdb-border);
+    font-weight: 700;
+    font-size: 14.5px;
+    color: var(--mdb-dark);
+  }
+
+  .mock-logo {
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, var(--mdb-green), var(--mdb-green-bright));
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .mock-nav { margin-left: auto; font-size: 12px; color: var(--mdb-muted); font-weight: 400; }
+  .mock-app-body { padding: 22px; }
+
+  .mock-card {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    box-shadow: 0 1px 3px rgba(0, 30, 43, 0.06);
+    margin-bottom: 16px;
+  }
+
+  .mock-card-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--mdb-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .mock-int-row { display: flex; align-items: center; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
+  .mock-int-row svg { flex-shrink: 0; }
+  .mock-int-name { font-weight: 600; font-size: 14px; color: var(--mdb-dark); }
+
+  .mock-badge {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+
+  .mock-badge.off { background: #eef2f1; color: var(--mdb-muted); }
+  .mock-badge.on { background: var(--mdb-green-soft); color: var(--mdb-green-dark); }
+  .mock-int-row .btn, .mock-int-row .btn-outline { margin-left: auto; }
+
+  .btn-sm { padding: 8px 15px; font-size: 13px; }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    color: var(--mdb-text);
+    border: 1px solid var(--mdb-border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .btn-outline:hover { background: #f3f6f5; border-color: #c9d6d1; }
+
+  .mock-tree { margin-top: 14px; font-size: 13.5px; color: var(--mdb-text); }
+  .mock-tree-row { display: flex; align-items: center; gap: 10px; padding: 7px 0 7px 14px; border-left: 2px solid var(--mdb-border); margin-left: 8px; }
+  .mock-tree-row:first-child { border-left: none; margin-left: 0; padding-left: 0; }
+  .mock-tree code {
+    background: #edf4f0;
+    color: #0b3b2e;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  /* --- Mock chat application --- */
+  .mock-chat { display: flex; min-height: 400px; text-align: left; }
+
+  .mock-chat-sidebar {
+    width: 158px;
+    flex-shrink: 0;
+    background: var(--mdb-dark-soft);
+    color: #b9cdc7;
+    padding: 16px 10px;
+  }
+
+  .mock-chat-sidebar .ws {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+    padding: 0 6px 14px;
+  }
+
+  .mock-channel { font-size: 12.5px; padding: 5px 8px; border-radius: 6px; }
+  .mock-channel.active { background: rgba(0, 237, 100, 0.16); color: #fff; font-weight: 600; }
+
+  .mock-chat-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  .mock-chat-header {
+    padding: 12px 18px;
+    background: #fff;
+    border-bottom: 1px solid var(--mdb-border);
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--mdb-dark);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .mock-chat-topic {
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--mdb-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mock-msgs { flex: 1; padding: 18px; display: flex; flex-direction: column; gap: 15px; }
+  .mock-msg { display: flex; gap: 10px; }
+
+  .mock-avatar {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .mock-msg-name { font-size: 12.5px; font-weight: 700; color: var(--mdb-dark); margin-bottom: 2px; }
+  .mock-msg-name .time { color: var(--mdb-muted); font-weight: 400; font-size: 11px; margin-left: 6px; }
+
+  .mock-app-tag {
+    background: #eef2f1;
+    color: var(--mdb-muted);
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 4px;
+  }
+
+  .mock-msg-text { font-size: 13px; color: #43565e; line-height: 1.55; }
+
+  .mock-msg-text code {
+    background: #edf4f0;
+    color: #0b3b2e;
+    padding: 1px 6px;
+    border-radius: 5px;
+    font-size: 11.5px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .mock-chat-input {
+    margin: 0 18px 16px;
+    border: 1px solid var(--mdb-border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--mdb-muted);
+    background: #fff;
+  }
+
+  .mock-msg-code {
+    display: block;
+    margin-top: 6px;
+    background: #06202f;
+    color: #d6e4df;
+    border-radius: 8px;
+    padding: 9px 13px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11.5px;
+    line-height: 1.7;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .mock-connectors {
+    width: 252px;
+    flex-shrink: 0;
+    background: #fff;
+    border-left: 1px solid var(--mdb-border);
+    padding: 16px 14px;
+    overflow-y: auto;
+  }
+
+  .mock-conn-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--mdb-muted);
+    margin-bottom: 12px;
+  }
+
+  .mock-conn {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px 10px;
+    border: 1px solid var(--mdb-border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .mock-conn-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    background: #f3f6f5;
+    flex-shrink: 0;
+  }
+
+  .mock-conn-body { flex: 1; min-width: 100px; }
+  .mock-conn-name { font-size: 13px; font-weight: 700; color: var(--mdb-dark); }
+  .mock-conn-desc { font-size: 11px; color: var(--mdb-muted); margin: 1px 0 7px; }
+  .mock-conn-restart { text-align: center; margin-top: 6px; }
+
+  @media (max-width: 860px) {
+    .mock-chat { flex-direction: column; }
+    .mock-chat-sidebar { display: none; }
+    .mock-connectors { width: 100%; border-left: none; border-top: 1px solid var(--mdb-border); }
+  }
+
+  /* --- Mock Atlas auth card --- */
+  .mock-center { display: grid; place-items: center; padding: 36px 20px; min-height: 400px; }
+
+  .mock-auth-card {
+    background: #fff;
+    width: 350px;
+    max-width: 94%;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    padding: 26px 26px 22px;
+    box-shadow: 0 6px 24px rgba(0, 30, 43, 0.1);
+  }
+
+  .mock-auth-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin-bottom: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--mdb-dark);
+  }
+
+  .mock-auth-sub { text-align: center; font-size: 12.5px; color: var(--mdb-muted); margin-bottom: 18px; }
+
+  .mock-field { margin-bottom: 12px; text-align: left; }
+
+  .mock-field label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--mdb-muted);
+    margin-bottom: 5px;
+  }
+
+  .mock-field input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--mdb-border);
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-family: inherit;
+    background: #f6f8f7;
+    color: var(--mdb-text);
+  }
+
+  .mock-full { width: 100%; justify-content: center; margin-top: 8px; }
+  .mock-footnote { font-size: 11px; color: var(--mdb-muted); margin-top: 12px; text-align: center; line-height: 1.5; }
+
+  .mock-perm {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--mdb-border);
+    font-size: 13px;
+    color: var(--mdb-text);
+    line-height: 1.45;
+  }
+
+  .mock-perm .check { color: var(--mdb-green); font-weight: 700; flex-shrink: 0; }
+  .mock-actions { display: flex; gap: 10px; margin-top: 18px; }
+  .mock-actions .btn, .mock-actions .btn-outline { flex: 1; justify-content: center; }
+
+  .mock-error {
+    display: none;
+    background: #fde8e7;
+    color: #a12c25;
+    font-size: 12.5px;
+    line-height: 1.5;
+    padding: 11px 14px;
+    border-radius: 8px;
+    margin-top: 16px;
+  }
+
+  .mock-error.show { display: block; animation: fadeUp 0.25s ease both; }
+  .mock-error code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; }
+
+  /* --- Callback spinner --- */
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3.5px solid var(--mdb-border);
+    border-top-color: var(--mdb-green);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+    margin: 0 auto 16px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .center-col { text-align: center; max-width: 560px; }
+  .center-col h4 { margin: 0 0 6px; font-size: 16px; color: var(--mdb-dark); }
+  .center-col p { margin: 0 0 18px; font-size: 13.5px; color: var(--mdb-muted); line-height: 1.6; }
+
+  .inline-code {
+    display: block;
+    text-align: left;
+    background: #06202f;
+    color: #d6e4df;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 0 0 18px;
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+
+  .inline-code .k { color: var(--mdb-green-bright); }
+  .inline-code .c { color: #6e8a80; }
+
+  /* --- Split request/response panes --- */
+  .demo-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 24px;
+    align-items: start;
+  }
+
+  .demo-pane-inner { padding: 24px; }
+
+  .pane-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--mdb-muted);
+    margin-bottom: 9px;
+  }
+
+  .demo-code {
+    background: #06202f;
+    color: #d6e4df;
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.75;
+    overflow-x: auto;
+    margin: 0;
+    white-space: pre;
+    min-height: 240px;
+  }
+
+  .demo-code .k { color: var(--mdb-green-bright); }
+  .demo-code .c { color: #6e8a80; }
+  .demo-code .s { color: #ffd479; }
+
+  .json-hidden { display: none; }
+  .json-hidden.show { display: block; animation: fadeUp 0.3s ease both; }
+
+  .demo-pane-footer { padding: 0 24px 22px; display: flex; justify-content: flex-end; }
+
+  @media (max-width: 860px) {
+    .demo { padding: 24px 18px; }
+    .demo-split { grid-template-columns: 1fr; }
+    .demo-code { min-height: 0; }
+  }
 
   /* ============================================================
      Environment switcher
@@ -985,6 +1553,18 @@
     </div>
   </section>
 
+  <!-- Architecture diagram -->
+  <section class="section">
+    <h2 class="section-title reveal">Onboarding at a glance</h2>
+    <p class="section-sub reveal">From invite-only partner onboarding to the runtime OAuth 2.0 delegated access flow — the full picture in one diagram.</p>
+    <div class="diagram-card reveal">
+      <a href="onboarding-architecture.png" target="_blank" rel="noopener">
+        <img src="onboarding-architecture.png" alt="Architecture diagram: MongoDB Atlas Admin API - V2 partner onboarding and delegated access flow" loading="lazy" />
+      </a>
+      <div class="diagram-caption">Partner onboarding &amp; delegated access — click to open full size</div>
+    </div>
+  </section>
+
   <!-- Guide cards -->
   <section class="section">
     <h2 class="section-title reveal">Start building</h2>
@@ -1077,6 +1657,431 @@
   -H "Authorization: Bearer &lt;access_token&gt;" \
   -H "Accept: application/vnd.atlas.2025-03-12+json"</code></pre>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clickable auth walkthrough demo -->
+  <section class="section">
+    <h2 class="section-title reveal">Try it: clickable auth walkthrough</h2>
+    <p class="section-sub reveal">A simulated end-to-end run with dummy values — click through each stage (or use the step pills) to see exactly what happens, where, and why.</p>
+    <div class="demo reveal">
+      <div class="demo-steps" id="demo-steps" role="tablist" aria-label="Walkthrough stages"></div>
+      <div class="demo-browser">
+        <div class="demo-urlbar">
+          <div class="demo-dots"><span></span><span></span><span></span></div>
+          <div class="demo-url" id="demo-url"></div>
+        </div>
+
+        <!-- Stage 0: Partner app (chat + connectors) -->
+        <div class="demo-pane active">
+          <div class="mock-chat">
+            <div class="mock-chat-sidebar">
+              <div class="ws"><span class="mock-logo">P</span> Partner App</div>
+              <div class="mock-channel" style="color:#6e8a80;font-size:11px;">DIRECT MESSAGES</div>
+              <div class="mock-channel active">🍃 MongoDB Atlas</div>
+              <div class="mock-channel">💬 slack-bot</div>
+              <div class="mock-channel">🐙 github-bot</div>
+            </div>
+            <div class="mock-chat-main">
+              <div class="mock-chat-header">🍃 MongoDB Atlas <span class="mock-chat-topic">Direct message · connector chat</span></div>
+              <div class="mock-msgs">
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:#7e57c2;">Y</div>
+                  <div>
+                    <div class="mock-msg-name">you <span class="time">9:41 AM</span></div>
+                    <div class="mock-msg-text">Can I spin up an Atlas cluster for the customer demo right from here?</div>
+                  </div>
+                </div>
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:var(--mdb-green);">🍃</div>
+                  <div>
+                    <div class="mock-msg-name">MongoDB Atlas <span class="mock-app-tag">APP</span> <span class="time">9:41 AM</span></div>
+                    <div class="mock-msg-text">Almost! First connect your Atlas account — hit <strong>Connect</strong> on the MongoDB Atlas connector →</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mock-chat-input">Message MongoDB Atlas</div>
+            </div>
+            <div class="mock-connectors">
+              <div class="mock-conn-title">Connectors</div>
+              <div class="mock-conn">
+                <div class="mock-conn-icon">
+                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" aria-hidden="true">
+                    <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
+                    <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="mock-conn-body">
+                  <div class="mock-conn-name">MongoDB Atlas</div>
+                  <div class="mock-conn-desc">Provision &amp; manage clusters</div>
+                  <span class="mock-badge off">Not connected</span>
+                </div>
+                <button class="btn btn-green btn-sm" data-demo-next>Connect</button>
+              </div>
+              <div class="mock-conn">
+                <div class="mock-conn-icon">💬</div>
+                <div class="mock-conn-body">
+                  <div class="mock-conn-name">Slack</div>
+                  <div class="mock-conn-desc">Team notifications</div>
+                  <span class="mock-badge on">Connected ✓</span>
+                </div>
+              </div>
+              <div class="mock-conn">
+                <div class="mock-conn-icon">🐙</div>
+                <div class="mock-conn-body">
+                  <div class="mock-conn-name">GitHub</div>
+                  <div class="mock-conn-desc">Repo activity &amp; PRs</div>
+                </div>
+                <button class="btn-outline btn-sm" title="Dummy connector — not part of this demo">Connect</button>
+              </div>
+              <div class="mock-conn">
+                <div class="mock-conn-icon">☁️</div>
+                <div class="mock-conn-body">
+                  <div class="mock-conn-name">Salesforce</div>
+                  <div class="mock-conn-desc">CRM sync</div>
+                </div>
+                <button class="btn-outline btn-sm" title="Dummy connector — not part of this demo">Connect</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 1: Atlas login -->
+        <div class="demo-pane">
+          <div class="mock-center">
+            <div class="mock-auth-card">
+              <div class="mock-auth-brand">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+                  <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
+                  <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+                Sign in to MongoDB Atlas
+              </div>
+              <div class="mock-auth-sub">to continue to <strong>Partner Application</strong></div>
+              <div class="mock-field">
+                <label>Email address</label>
+                <input type="text" value="dev@example.com" readonly />
+              </div>
+              <div class="mock-field">
+                <label>Password</label>
+                <input type="password" value="hunter2demo" readonly />
+              </div>
+              <button class="btn btn-green mock-full" data-demo-next>Sign in</button>
+              <div class="mock-footnote">Your app never sees these credentials —<br/>login happens on mongodb.com only.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 2: Consent -->
+        <div class="demo-pane">
+          <div class="mock-center">
+            <div class="mock-auth-card">
+              <div class="mock-auth-brand">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+                  <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
+                  <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+                Authorize Partner Application
+              </div>
+              <div class="mock-auth-sub"><strong>Partner Application</strong> is requesting access to your Atlas account</div>
+              <div class="mock-perm"><span class="check">✓</span>Read the organizations you belong to</div>
+              <div class="mock-perm"><span class="check">✓</span>Create and manage projects on your behalf</div>
+              <div class="mock-perm"><span class="check">✓</span>Create, view, and delete clusters on your behalf</div>
+              <div class="mock-footnote" style="margin-top:14px;">Resource: <code>https://api.mongodb.com/api/atlas</code></div>
+              <div class="mock-actions">
+                <button class="btn-outline" id="demo-deny">Deny</button>
+                <button class="btn btn-green" data-demo-next>Allow</button>
+              </div>
+              <div class="mock-error" id="demo-deny-error">
+                <strong>error=access_denied</strong> — the user declined. Your app should handle this
+                gracefully and offer to reconnect.
+                <div style="margin-top:8px;"><a href="#" id="demo-deny-retry" style="color:#a12c25;font-weight:700;">↺ Try again</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 3: Callback -->
+        <div class="demo-pane">
+          <div class="mock-center">
+            <div class="center-col">
+              <div class="spinner"></div>
+              <h4>Authorization granted ✓</h4>
+              <p>Atlas redirected the browser back to your app's <code>redirect_uri</code> with a single-use authorization code. Your backend validates <code>state</code> (CSRF check) before continuing.</p>
+              <div class="inline-code"><span class="k">code</span>=splxlOBeZQQYbYS6WxSbIA
+<span class="k">state</span>=7f3a9c1e2b4d <span class="c">✓ matches the value your app sent</span></div>
+              <button class="btn btn-green btn-sm" data-demo-next>Exchange code for tokens</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 4: Token exchange -->
+        <div class="demo-pane">
+          <div class="demo-split">
+            <div>
+              <div class="pane-label">Request — your backend (back-channel)</div>
+              <pre class="demo-code"><span class="k">POST</span> https://authorize.mongodb.com/tokens
+<span class="c">Content-Type:</span> application/x-www-form-urlencoded
+<span class="c">Authorization:</span> Basic MG9hMWIyYzNk…OkRFTU8=
+
+<span class="k">grant_type</span>=authorization_code
+<span class="k">&code</span>=splxlOBeZQQYbYS6WxSbIA
+<span class="k">&code_verifier</span>=dBjftJeZ4CVP-mB92K27uhbUJU
+  1p1r_wW1gFWFOEjXk
+<span class="k">&redirect_uri</span>=https://partner-app.example.com
+  /oauth/atlas/callback</pre>
+            </div>
+            <div>
+              <div class="pane-label">Response — 200 OK</div>
+              <pre class="demo-code">{
+  <span class="s">"access_token"</span>:  <span class="s">"eyJhbGciOiJSUzI1NiIsInR5cCI6
+    IkpXVCJ9.eyJzdWIiOiJkZXY…"</span>,
+  <span class="s">"token_type"</span>:    <span class="s">"Bearer"</span>,
+  <span class="s">"expires_in"</span>:   600,
+  <span class="s">"refresh_token"</span>: <span class="s">"def50200a1b2c3d4e5f60
+    718293a4b5c…"</span>
+}</pre>
+            </div>
+          </div>
+          <div class="demo-pane-footer">
+            <button class="btn btn-green btn-sm" data-demo-next>Call the Atlas Admin API</button>
+          </div>
+        </div>
+
+        <!-- Stage 5: API call -->
+        <div class="demo-pane">
+          <div class="demo-split">
+            <div>
+              <div class="pane-label">Request — Bearer token + versioned Accept header</div>
+              <pre class="demo-code"><span class="k">GET</span> https://api.mongodb.com/api/atlas/v2/orgs
+<span class="c">Authorization:</span> Bearer eyJhbGciOiJSUzI1NiIs…
+<span class="c">Accept:</span> application/vnd.atlas.2025-03-12+json</pre>
+              <div style="margin-top:16px;">
+                <button class="btn btn-green btn-sm" id="demo-send">Send request</button>
+              </div>
+            </div>
+            <div id="demo-api-response" class="json-hidden">
+              <div class="pane-label">Response — 200 OK</div>
+              <pre class="demo-code">{
+  <span class="s">"results"</span>: [
+    {
+      <span class="s">"id"</span>:   <span class="s">"64b2f1a9c3d4e5f6a7b8c9d0"</span>,
+      <span class="s">"name"</span>: <span class="s">"Partner Application"</span>
+    }
+  ],
+  <span class="s">"totalCount"</span>: 1
+}</pre>
+            </div>
+          </div>
+          <div class="demo-pane-footer">
+            <button class="btn btn-green btn-sm" data-demo-next>Finish setup</button>
+          </div>
+        </div>
+
+        <!-- Stage 6: Connected -->
+        <div class="demo-pane">
+          <div class="mock-chat">
+            <div class="mock-chat-sidebar">
+              <div class="ws"><span class="mock-logo">P</span> Partner App</div>
+              <div class="mock-channel" style="color:#6e8a80;font-size:11px;">DIRECT MESSAGES</div>
+              <div class="mock-channel active">🍃 MongoDB Atlas</div>
+              <div class="mock-channel">💬 slack-bot</div>
+              <div class="mock-channel">🐙 github-bot</div>
+            </div>
+            <div class="mock-chat-main">
+              <div class="mock-chat-header">🍃 MongoDB Atlas <span class="mock-chat-topic">Direct message · connector chat</span></div>
+              <div class="mock-msgs">
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:var(--mdb-green);">🍃</div>
+                  <div>
+                    <div class="mock-msg-name">MongoDB Atlas <span class="mock-app-tag">APP</span> <span class="time">9:44 AM</span></div>
+                    <div class="mock-msg-text">✅ Connected to org <strong>Partner Application</strong>. Provisioned <code>cluster0</code> (M0) in project <code>partner-prod</code> — status: <strong style="color:var(--mdb-green);">IDLE</strong>.</div>
+                  </div>
+                </div>
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:#7e57c2;">Y</div>
+                  <div>
+                    <div class="mock-msg-name">you <span class="time">9:44 AM</span></div>
+                    <div class="mock-msg-text">That was fast 🚀</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mock-chat-input">Message MongoDB Atlas</div>
+            </div>
+            <div class="mock-connectors">
+              <div class="mock-conn-title">Connectors</div>
+              <div class="mock-conn">
+                <div class="mock-conn-icon">
+                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" aria-hidden="true">
+                    <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
+                    <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="mock-conn-body">
+                  <div class="mock-conn-name">MongoDB Atlas</div>
+                  <div class="mock-conn-desc">Provision &amp; manage clusters</div>
+                  <span class="mock-badge on">Connected ✓</span>
+                </div>
+                <button class="btn-outline btn-sm" data-demo-restart>Disconnect</button>
+              </div>
+              <div class="mock-conn">
+                <div class="mock-conn-icon">💬</div>
+                <div class="mock-conn-body">
+                  <div class="mock-conn-name">Slack</div>
+                  <div class="mock-conn-desc">Team notifications</div>
+                  <span class="mock-badge on">Connected ✓</span>
+                </div>
+              </div>
+              <div class="mock-conn">
+                <div class="mock-conn-icon">🐙</div>
+                <div class="mock-conn-body">
+                  <div class="mock-conn-name">GitHub</div>
+                  <div class="mock-conn-desc">Repo activity &amp; PRs</div>
+                </div>
+                <button class="btn-outline btn-sm" title="Dummy connector — not part of this demo">Connect</button>
+              </div>
+              <div class="mock-conn">
+                <div class="mock-conn-icon">☁️</div>
+                <div class="mock-conn-body">
+                  <div class="mock-conn-name">Salesforce</div>
+                  <div class="mock-conn-desc">CRM sync</div>
+                </div>
+                <button class="btn-outline btn-sm" title="Dummy connector — not part of this demo">Connect</button>
+              </div>
+              <div class="mock-conn-restart">
+                <button class="btn btn-green btn-sm" data-demo-restart>↺ Restart walkthrough</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Stage 7: Operate MongoDB -->
+        <div class="demo-pane">
+          <div class="mock-chat">
+            <div class="mock-chat-sidebar">
+              <div class="ws"><span class="mock-logo">P</span> Partner App</div>
+              <div class="mock-channel" style="color:#6e8a80;font-size:11px;">DIRECT MESSAGES</div>
+              <div class="mock-channel active">🍃 MongoDB Atlas</div>
+              <div class="mock-channel">💬 slack-bot</div>
+              <div class="mock-channel">🐙 github-bot</div>
+            </div>
+            <div class="mock-chat-main">
+              <div class="mock-chat-header">🍃 MongoDB Atlas <span class="mock-chat-topic">Direct message · connector chat</span></div>
+              <div class="mock-msgs">
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:#7e57c2;">Y</div>
+                  <div>
+                    <div class="mock-msg-name">you <span class="time">9:46 AM</span></div>
+                    <div class="mock-msg-text">create cluster <code>demo-cluster</code> (M10, AWS us-east-1) in <code>partner-prod</code></div>
+                  </div>
+                </div>
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:var(--mdb-green);">🍃</div>
+                  <div>
+                    <div class="mock-msg-name">MongoDB Atlas <span class="mock-app-tag">APP</span> <span class="time">9:46 AM</span></div>
+                    <div class="mock-msg-text">⏳ Provisioning <code>demo-cluster</code>…
+                      <span class="mock-msg-code">POST /api/atlas/v2/groups/64b2f2bb…c9d1/clusters</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:var(--mdb-green);">🍃</div>
+                  <div>
+                    <div class="mock-msg-name">MongoDB Atlas <span class="mock-app-tag">APP</span> <span class="time">9:51 AM</span></div>
+                    <div class="mock-msg-text">✅ <code>demo-cluster</code> is <strong style="color:var(--mdb-green);">IDLE</strong> — ready for connections
+                      <span class="mock-msg-code">mongodb+srv://demo-cluster.abcde.mongodb.net</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:#7e57c2;">Y</div>
+                  <div>
+                    <div class="mock-msg-name">you <span class="time">9:52 AM</span></div>
+                    <div class="mock-msg-text">list clusters in <code>partner-prod</code></div>
+                  </div>
+                </div>
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:var(--mdb-green);">🍃</div>
+                  <div>
+                    <div class="mock-msg-name">MongoDB Atlas <span class="mock-app-tag">APP</span> <span class="time">9:52 AM</span></div>
+                    <div class="mock-msg-text">Clusters in <code>partner-prod</code>:
+                      <span class="mock-msg-code">• cluster0       M0    IDLE
+• demo-cluster   M10   IDLE</span>
+                      <span style="color:var(--mdb-muted);font-size:11.5px;">GET /api/atlas/v2/groups/64b2f2bb…c9d1/clusters</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:#7e57c2;">Y</div>
+                  <div>
+                    <div class="mock-msg-name">you <span class="time">9:54 AM</span></div>
+                    <div class="mock-msg-text">delete <code>cluster0</code> — we don't need the free tier anymore</div>
+                  </div>
+                </div>
+                <div class="mock-msg">
+                  <div class="mock-avatar" style="background:var(--mdb-green);">🍃</div>
+                  <div>
+                    <div class="mock-msg-name">MongoDB Atlas <span class="mock-app-tag">APP</span> <span class="time">9:54 AM</span></div>
+                    <div class="mock-msg-text">🗑 <code>cluster0</code> is <strong style="color:#a12c25;">DELETING</strong>
+                      <span class="mock-msg-code">DELETE /api/atlas/v2/groups/64b2f2bb…c9d1/clusters/cluster0</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mock-chat-input">scale demo-cluster to M20 …</div>
+            </div>
+            <div class="mock-connectors">
+              <div class="mock-conn-title">Connectors</div>
+              <div class="mock-conn">
+                <div class="mock-conn-icon">
+                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" aria-hidden="true">
+                    <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
+                    <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="mock-conn-body">
+                  <div class="mock-conn-name">MongoDB Atlas</div>
+                  <div class="mock-conn-desc">Provision &amp; manage clusters</div>
+                  <span class="mock-badge on">Connected ✓</span>
+                </div>
+                <button class="btn-outline btn-sm" data-demo-restart>Disconnect</button>
+              </div>
+              <div class="mock-conn">
+                <div class="mock-conn-icon">💬</div>
+                <div class="mock-conn-body">
+                  <div class="mock-conn-name">Slack</div>
+                  <div class="mock-conn-desc">Team notifications</div>
+                  <span class="mock-badge on">Connected ✓</span>
+                </div>
+              </div>
+              <div class="mock-conn">
+                <div class="mock-conn-icon">🐙</div>
+                <div class="mock-conn-body">
+                  <div class="mock-conn-name">GitHub</div>
+                  <div class="mock-conn-desc">Repo activity &amp; PRs</div>
+                </div>
+                <button class="btn-outline btn-sm" title="Dummy connector — not part of this demo">Connect</button>
+              </div>
+              <div class="mock-conn">
+                <div class="mock-conn-icon">☁️</div>
+                <div class="mock-conn-body">
+                  <div class="mock-conn-name">Salesforce</div>
+                  <div class="mock-conn-desc">CRM sync</div>
+                </div>
+                <button class="btn-outline btn-sm" title="Dummy connector — not part of this demo">Connect</button>
+              </div>
+              <div class="mock-conn-restart">
+                <button class="btn btn-green btn-sm" data-demo-restart>↺ Restart walkthrough</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="demo-desc" id="demo-desc"></p>
+      <div class="demo-controls">
+        <button class="demo-nav-btn" id="demo-prev">← Back</button>
+        <button class="demo-nav-btn primary" id="demo-next">Next stage →</button>
       </div>
     </div>
   </section>
@@ -1322,6 +2327,114 @@
       flowPanels.forEach((p, i) => p.classList.toggle('active', i === idx));
     });
   });
+
+  /* ---------------- Clickable auth walkthrough ---------------- */
+
+  const DEMO_STAGES = [
+    {
+      pill: '1 · Your app',
+      url: 'https://partner-app.example.com/dashboard',
+      desc: '<strong>Stage 1 — Start in your app.</strong> The user clicks <code>Connect MongoDB Atlas</code>. Behind the scenes your app generates a PKCE <code>code_verifier</code> + S256 <code>code_challenge</code> and a random <code>state</code> (CSRF token), then redirects the browser to Atlas. Click the green button in the mock UI above.'
+    },
+    {
+      pill: '2 · Authorize',
+      url: 'https://cloud.mongodb.com/oauth/authorize?response_type=code&client_id=0oa1b2c3d4e5f6g7h8i9&redirect_uri=https%3A%2F%2Fpartner-app.example.com%2Foauth%2Fatlas%2Fcallback&code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM&code_challenge_method=S256&state=7f3a9c1e2b4d&resource=https%3A%2F%2Fapi.mongodb.com%2Fapi%2Fatlas',
+      desc: '<strong>Stage 2 — Redirect to Atlas.</strong> The browser lands on <code>cloud.mongodb.com/oauth/authorize</code> (check the URL bar) carrying your <code>client_id</code>, <code>redirect_uri</code>, PKCE challenge, <code>state</code> and the <code>resource</code> indicator. Atlas asks the user to sign in — your app never sees the credentials.'
+    },
+    {
+      pill: '3 · Consent',
+      url: 'https://cloud.mongodb.com/oauth/authorize?…consent',
+      desc: '<strong>Stage 3 — User consent.</strong> Atlas shows a consent screen naming your app and the access it requests. <code>Allow</code> continues the flow; <code>Deny</code> returns the user with <code>error=access_denied</code> — try both. With <code>allow_saved_consent</code>, returning users skip this screen.'
+    },
+    {
+      pill: '4 · Callback',
+      url: 'https://partner-app.example.com/oauth/atlas/callback?code=splxlOBeZQQYbYS6WxSbIA&state=7f3a9c1e2b4d',
+      desc: '<strong>Stage 4 — Authorization code.</strong> Atlas redirects back to your <code>redirect_uri</code> with a single-use <code>code</code> (valid ~5 minutes). Your backend must validate <code>state</code> against the value it sent — this is your CSRF protection.'
+    },
+    {
+      pill: '5 · Token exchange',
+      url: '(back-channel — no browser involved)',
+      desc: '<strong>Stage 5 — Token exchange.</strong> Your backend POSTs the code + <code>code_verifier</code> to <code>authorize.mongodb.com/tokens</code>, authenticating with HTTP Basic (<code>client_id:client_secret</code>). Atlas returns a short-lived <code>access_token</code> (600 s) and, for confidential clients, a <code>refresh_token</code>. Store the refresh token server-side only.'
+    },
+    {
+      pill: '6 · API call',
+      url: '(server-to-server API request)',
+      desc: '<strong>Stage 6 — Call the Atlas Admin API.</strong> Every request carries <code>Authorization: Bearer &lt;token&gt;</code> and the versioned <code>Accept</code> header — missing it causes <code>406 INVALID_VERSION_DATE</code>. Click “Send request” to see the response.'
+    },
+    {
+      pill: '7 · Connected',
+      url: 'https://partner-app.example.com/dashboard',
+      desc: '<strong>Connected.</strong> Your app can now list orgs, create projects, and provision clusters on the user\'s behalf. When the token expires (600 s), use the refresh token or re-run the flow. Continue to see day-2 operations.'
+    },
+    {
+      pill: '8 · Operate',
+      url: 'https://partner-app.example.com/dashboard',
+      desc: '<strong>Stage 8 — Operate MongoDB from your app.</strong> Every chat command maps to an Atlas Admin API call with the delegated token: create → <code>POST /api/atlas/v2/groups/{projectId}/clusters</code>, list/status → <code>GET …/clusters</code>, delete → <code>DELETE …/clusters/{name}</code>. Poll <code>stateName</code> until <code>IDLE</code> before handing out the connection string.'
+    }
+  ];
+
+  const demoPanes = document.querySelectorAll('.demo-pane');
+  const demoStepsWrap = document.getElementById('demo-steps');
+  const demoUrl = document.getElementById('demo-url');
+  const demoDesc = document.getElementById('demo-desc');
+  const demoPrev = document.getElementById('demo-prev');
+  const demoNext = document.getElementById('demo-next');
+  let demoIdx = 0;
+
+  DEMO_STAGES.forEach((stage, i) => {
+    const pill = document.createElement('button');
+    pill.className = 'demo-pill';
+    pill.textContent = stage.pill;
+    pill.setAttribute('role', 'tab');
+    pill.addEventListener('click', () => goStage(i));
+    demoStepsWrap.appendChild(pill);
+  });
+  const demoPills = demoStepsWrap.querySelectorAll('.demo-pill');
+
+  function goStage(i) {
+    demoIdx = Math.max(0, Math.min(DEMO_STAGES.length - 1, i));
+    demoPanes.forEach((p, j) => p.classList.toggle('active', j === demoIdx));
+    demoPills.forEach((p, j) => {
+      p.classList.toggle('active', j === demoIdx);
+      p.classList.toggle('done', j < demoIdx);
+      p.setAttribute('aria-selected', j === demoIdx ? 'true' : 'false');
+    });
+    const stage = DEMO_STAGES[demoIdx];
+    demoUrl.textContent = stage.url;
+    demoDesc.innerHTML = stage.desc;
+    demoPrev.disabled = demoIdx === 0;
+    demoNext.textContent = demoIdx === DEMO_STAGES.length - 1 ? '↺ Restart' : 'Next stage →';
+  }
+
+  demoPrev.addEventListener('click', () => goStage(demoIdx - 1));
+  demoNext.addEventListener('click', () => {
+    goStage(demoIdx === DEMO_STAGES.length - 1 ? 0 : demoIdx + 1);
+  });
+
+  // Buttons inside the mock panes
+  document.querySelectorAll('[data-demo-next]').forEach((b) => {
+    b.addEventListener('click', () => goStage(demoIdx + 1));
+  });
+  document.querySelectorAll('[data-demo-restart]').forEach((b) => {
+    b.addEventListener('click', () => goStage(0));
+  });
+
+  // Consent: Deny path
+  document.getElementById('demo-deny').addEventListener('click', () => {
+    document.getElementById('demo-deny-error').classList.add('show');
+  });
+  document.getElementById('demo-deny-retry').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('demo-deny-error').classList.remove('show');
+    goStage(0);
+  });
+
+  // API stage: reveal the response on "Send request"
+  document.getElementById('demo-send').addEventListener('click', () => {
+    document.getElementById('demo-api-response').classList.add('show');
+  });
+
+  goStage(0);
 
   /* ---------------- Copy buttons (home + docs) ---------------- */
 
