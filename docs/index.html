@@ -1781,6 +1781,7 @@
       </a>
       <div class="nav-links">
         <a data-doc-link="README.md">Integration Guide</a>
+        <a data-doc-link="END-TO-END.md">Tutorial</a>
         <a data-doc-link="PARTNER.md">Partner Onboarding</a>
         <a href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">API Reference ↗</a>
         <a href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub ↗</a>
@@ -1840,6 +1841,30 @@
         <h3>Partner Onboarding</h3>
         <p>Register with MongoDB, receive OAuth credentials, and take your integration from dev to production.</p>
         <span class="card-link">Open checklist <span class="arrow">→</span></span>
+      </a>
+      <a class="card reveal" data-doc-link="END-TO-END.md">
+        <div class="card-icon">🚀</div>
+        <h3>End-to-End Tutorial</h3>
+        <p>From OAuth token to the first database read/write — project, M0 cluster, database user, network access, and a runnable demo script.</p>
+        <span class="card-link">Open tutorial <span class="arrow">→</span></span>
+      </a>
+      <a class="card reveal" data-doc-link="UX-GUIDE.md">
+        <div class="card-icon">🎨</div>
+        <h3>Partner UX Guide</h3>
+        <p>Design the "Connect MongoDB Atlas" experience — connect button, consent handoff, resource picker, provisioning states, and sample copy.</p>
+        <span class="card-link">Open UX guide <span class="arrow">→</span></span>
+      </a>
+      <a class="card reveal" data-doc-link="PRODUCTION.md">
+        <div class="card-icon">✅</div>
+        <h3>Production Readiness</h3>
+        <p>Demo vs. production architecture, per-tenant token storage, refresh-token rotation, revocation cleanup, and the launch checklist.</p>
+        <span class="card-link">Open checklist <span class="arrow">→</span></span>
+      </a>
+      <a class="card reveal" data-doc-link="RECOVERY.md">
+        <div class="card-icon">🛟</div>
+        <h3>Recovery Guide</h3>
+        <p>User-centered behavior for every failure mode — 401s, consent denied, revoked access, token rotation, and provisioning waits.</p>
+        <span class="card-link">Open recovery guide <span class="arrow">→</span></span>
       </a>
       <a class="card reveal" data-doc-link="partner-delegations.md">
         <div class="card-icon">🔐</div>
@@ -2525,6 +2550,10 @@
         <h4>Documentation</h4>
         <a data-doc-link="README.md">Partner Integration Guide</a>
         <a data-doc-link="PARTNER.md">Partner Onboarding</a>
+        <a data-doc-link="END-TO-END.md">End-to-End Tutorial</a>
+        <a data-doc-link="UX-GUIDE.md">Partner UX Guide</a>
+        <a data-doc-link="PRODUCTION.md">Production Readiness</a>
+        <a data-doc-link="RECOVERY.md">Recovery Guide</a>
         <a data-doc-link="partner-delegations.md">Partner Delegation</a>
       </div>
       <div class="footer-col">
@@ -2556,13 +2585,21 @@
     <a class="back-home" data-home-link>← Back to home</a>
 
     <div class="nav-group">
-      <div class="nav-group-title">Documentation</div>
+      <div class="nav-group-title">Get Started</div>
       <a class="nav-link" data-doc="README.md">Partner Integration Guide</a>
+      <a class="nav-link" data-doc="PARTNER.md">Partner Onboarding Checklist</a>
     </div>
 
     <div class="nav-group">
-      <div class="nav-group-title">Onboarding</div>
-      <a class="nav-link" data-doc="PARTNER.md">Partner Onboarding Checklist</a>
+      <div class="nav-group-title">Build</div>
+      <a class="nav-link" data-doc="END-TO-END.md">End-to-End Tutorial</a>
+      <a class="nav-link" data-doc="UX-GUIDE.md">Partner UX Guide</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Operate</div>
+      <a class="nav-link" data-doc="PRODUCTION.md">Production Readiness</a>
+      <a class="nav-link" data-doc="RECOVERY.md">Recovery Guide</a>
     </div>
 
     <div class="nav-group">
@@ -2635,7 +2672,7 @@
     loadDoc(filename);
   }
 
-  const DOCS = ['README.md', 'PARTNER.md', 'partner-delegations.md'];
+  const DOCS = ['README.md', 'PARTNER.md', 'END-TO-END.md', 'UX-GUIDE.md', 'PRODUCTION.md', 'RECOVERY.md', 'partner-delegations.md'];
 
   function route() {
     const hash = (location.hash || '').slice(1);

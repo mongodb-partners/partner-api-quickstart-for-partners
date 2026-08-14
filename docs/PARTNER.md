@@ -19,6 +19,7 @@ This guide covers the steps a partner goes through to register with MongoDB, rec
 - [Step 4: Validate end-to-end](#step-4-validate-end-to-end)
 - [Step 5: Integrate into your product](#step-5-integrate-into-your-product)
 - [Step 6: Promote to staging and production](#step-6-promote-to-staging-and-production)
+- [Who Owns What](#who-owns-what)
 - [OAuth App Registration Payload](#oauth-app-registration-payload)
 - [Security Checklist](#security-checklist)
 - [Troubleshooting](#troubleshooting)
@@ -178,19 +179,28 @@ Recommended Atlas API call sequence when onboarding a new user:
 
 2. POST /api/atlas/v2/groups
         { "name": "<project-name>", "orgId": "<selected-org-id>" }
-        → create a dedicated Atlas project
+        → create a dedicated Atlas project (or select an existing one)
 
 3. POST /api/atlas/v2/groups/{projectId}/clusters
-        → provision an M0 free-tier cluster
+        → provision an M0 free-tier cluster (or select an existing one)
 
 4. GET  /api/atlas/v2/groups/{projectId}/clusters/{clusterName}
-        → poll until stateName == "IDLE"
+        → poll until stateName == "IDLE" — the 201 response is NOT readiness
 
-5. From the same cluster response, read connectionStrings.standardSrv
+5. POST /api/atlas/v2/groups/{projectId}/databaseUsers
+        → create a SCRAM database user for data-plane access
+
+6. POST /api/atlas/v2/groups/{projectId}/accessList
+        → allow your application's egress IPs
+
+7. From the cluster response, read connectionStrings.standardSrv
         → connection string for direct database access (data plane)
+
+8. Connect with a MongoDB driver and perform the first read/write
+        → show the user "Connected to MongoDB Atlas"
 ```
 
-See [Atlas Admin API Reference](README.md#atlas-admin-api-reference) in the Partner Integration Guide for full curl examples.
+The full walkthrough — with curl examples, a runnable script (`end_to_end.py`), and the first database operation — is in the [End-to-End Tutorial](END-TO-END.md). For the screens behind each step, see the [Partner UX Guide](UX-GUIDE.md).
 
 ### Retrieve a connection string (data plane)
 
@@ -221,7 +231,7 @@ Use `standardSrv` (`mongodb+srv://`) for modern drivers. Store it in your secret
 > - **A database user** — via `POST /api/atlas/v2/groups/{projectId}/databaseUsers`
 > - **An IP Access List entry** covering your app's egress IPs — via `POST /api/atlas/v2/groups/{projectId}/accessList`
 >
-> These Atlas Admin API endpoints exist today but are **not yet covered by this quickstart** — confirm they work with your delegated token, and the current recommended approach for data-plane access, with your MongoDB partner contact before building on them.
+> Both calls work with a delegated token when the authenticated user holds a project role that permits user and network management (e.g. `Project Owner`). Full examples: [End-to-End Tutorial](END-TO-END.md) (steps 5–8) and the [Atlas Admin API Reference](README.md#create-a-database-user). Confirm the recommended data-plane approach for your use case with your MongoDB partner contact.
 
 ---
 
@@ -233,6 +243,22 @@ To promote your integration to staging and production:
 1. Use separate `CLIENT_ID` / `CLIENT_SECRET` per environment — stored in the appropriate secrets manager.
 1. Update `redirect_uris` to production HTTPS URLs.
 1. Confirm `published: true` so the app appears in the Atlas governance UX.
+
+---
+
+## Who Owns What
+
+Integration responsibilities split three ways — MongoDB, you (the partner), and the end user:
+
+| Area | MongoDB | Partner | End user |
+|---|---|---|---|
+| OAuth client registration | Provision/configure (invite-only today) | Supply redirect URIs and metadata | — |
+| OAuth flow | Authorization server and consent screen | Redirect, callback, `state`/PKCE validation, token exchange | Authenticate and consent |
+| Atlas resource selection | Provide the Admin API | Build the picker and provisioning states | Select the resource |
+| Database credentials | Define lifecycle expectations | Securely generate, store, and use credentials | Approve the access grant |
+| Revocation | Invalidate delegated access | Delete cached credentials and disconnect UI | Revoke access from Atlas |
+
+The full matrix, including provisioning, org-level controls, and audit, is in the [Production Readiness Guide](PRODUCTION.md#responsibility-matrix).
 
 ---
 
@@ -302,4 +328,8 @@ Submit this to MongoDB when initiating onboarding ([Step 1](#step-1-initiate-onb
 ## Next steps
 
 - [Partner Integration Guide](README.md) — token flows, curl examples, and testing setup
+- [End-to-End Tutorial](END-TO-END.md) — provision through to the first database read/write
+- [Partner UX Guide](UX-GUIDE.md) — design the connect experience
+- [Production Readiness](PRODUCTION.md) — launch checklist and token lifecycle
+- [Recovery Guide](RECOVERY.md) — user-centered error handling
 - [Atlas Administration API reference](https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2) — full endpoint documentation

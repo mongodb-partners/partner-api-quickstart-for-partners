@@ -4,11 +4,7 @@ Atlas OAuth Demo — FastAPI proxy server
 Reads the access token from .token_store.json (written by get_token.py) and
 proxies requests to the Atlas Admin API.
 
-Start:
-    source oauthdemo/.venv/bin/activate
-    uvicorn oauthdemo.api:app --reload --port 8080
-
-Or from inside the oauthdemo/ directory:
+Start (from the repository root — the directory containing this file):
     source .venv/bin/activate
     uvicorn api:app --reload --port 8080
 """

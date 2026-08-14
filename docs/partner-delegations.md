@@ -179,3 +179,5 @@ Admins are also expected to pre-approve particular organizations, projects, clus
 
 - [Partner Integration Guide](README.md) — token flows, curl examples, and testing setup
 - [Partner Onboarding](PARTNER.md) — register with MongoDB and integrate the flow into your product
+- [End-to-End Tutorial](END-TO-END.md) — from OAuth token to the first database read/write
+- [Production Readiness](PRODUCTION.md) — launch checklist, token lifecycle, responsibility matrix

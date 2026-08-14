@@ -2,6 +2,20 @@
 
 This guide explains what the MongoDB Atlas Admin API - V2 is, how partners get onboarded, how to obtain and use OAuth tokens, and how to call the Atlas Admin API on behalf of your users.
 
+It is the developer track of the **Connect MongoDB Atlas integration kit** — the building blocks behind the end-to-end journey described on the [landing page](../index.md):
+
+```
+Connect button → Atlas OAuth → delegated tokens → select/create
+project + cluster → database user + network access → first read/write
+```
+
+- Want the complete journey with a runnable script? → [End-to-End Tutorial](END-TO-END.md)
+- Designing the user experience? → [Partner UX Guide](UX-GUIDE.md)
+- Hardening for launch? → [Production Readiness](PRODUCTION.md) · [Recovery Guide](RECOVERY.md)
+
+> [!IMPORTANT]
+> The runnable code in this repository (`get_token.py`, `api.py`, `end_to_end.py`) is a **development demo**: plaintext local token storage, a localhost callback, and one shared token. See [Demo vs. production](PRODUCTION.md#demo-vs-production) before building your real integration.
+
 ---
 
 ## On this page
@@ -35,6 +49,10 @@ A partner application can use these APIs to:
 | Create a Cluster | `/api/atlas/v2/groups/{projectId}/clusters` | `POST` |
 | Get Cluster status | `/api/atlas/v2/groups/{projectId}/clusters/{name}` | `GET` |
 | Delete a Cluster | `/api/atlas/v2/groups/{projectId}/clusters/{name}` | `DELETE` |
+| Create a Database User | `/api/atlas/v2/groups/{projectId}/databaseUsers` | `POST` |
+| Add an IP Access List entry | `/api/atlas/v2/groups/{projectId}/accessList` | `POST` |
+
+The last two operations bridge from control plane to **data plane** — they are what let your application actually connect and read/write. The full journey is in the [End-to-End Tutorial](END-TO-END.md).
 
 > [!NOTE]
 > For detailed information on all available APIs, refer to the official [Atlas Administration API documentation](https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2).
@@ -90,7 +108,7 @@ Your app calls the Atlas Admin API with:
 
 ### Example
 
-Configure your environment in `oauthdemo/.env`:
+Configure your environment in `.env`:
 
 ```ini
 CLIENT_ID=<client-id-provided-by-mongodb>
@@ -163,7 +181,7 @@ This section covers the two grant flows. **Flow A — Authorization Code + PKCE*
 #### Method 1: Python script (recommended)
 
 ```bash
-python3 oauthdemo/get_token.py
+python3 get_token.py
 ```
 
 The script:
@@ -171,7 +189,7 @@ The script:
 1. Opens the Atlas login page in your browser.
 1. Listens on `localhost:3000/oauth/callback` for the redirect.
 1. Exchanges the authorization code for a token.
-1. Saves the token to `oauthdemo/.token_store.json`.
+1. Saves the token to `.token_store.json`.
 
 #### Method 2: curl (manual steps)
 
@@ -235,10 +253,10 @@ Only available if `refresh_token` is in your client's `grant_types`.
 
 ```bash
 # Using the Python script (loads stored refresh token automatically)
-python3 oauthdemo/get_token.py --refresh-token
+python3 get_token.py --refresh-token
 
 # Pass an explicit refresh token
-python3 oauthdemo/get_token.py --refresh-token <token>
+python3 get_token.py --refresh-token <token>
 
 # Using curl
 curl -s -X POST "https://authorize-dev.mongodb.com/tokens" \
@@ -274,7 +292,7 @@ To verify your token works:
 
    ```bash
    ACCESS_TOKEN=$(python3 -c \
-     "import json; print(json.load(open('oauthdemo/.token_store.json'))['access_token'])")
+     "import json; print(json.load(open('.token_store.json'))['access_token'])")
    ```
 
 1. **Call an Atlas Admin API endpoint:**
@@ -296,7 +314,7 @@ A successful response lists the Atlas Organizations the authenticated user belon
 Access tokens are **short-lived** (typically 600 seconds / 10 minutes). When expired:
 
 - Atlas returns `401 Unauthorized`.
-- Re-run `python3 oauthdemo/get_token.py` for a new token (browser flow).
+- Re-run `python3 get_token.py` for a new token (browser flow).
 - Or use the refresh token flow if your client supports it.
 
 ### Example: inspect a token (debug)
@@ -306,7 +324,7 @@ Decode the JWT payload without a library (base64 only, no verification):
 ```bash
 python3 -c "
 import json, base64
-token = open('oauthdemo/.token_store.json').read()
+token = open('.token_store.json').read()
 payload = json.loads(token)['access_token'].split('.')[1]
 padding = 4 - len(payload) % 4
 print(json.dumps(json.loads(base64.urlsafe_b64decode(payload + '='*padding)), indent=2))
@@ -328,7 +346,7 @@ PROJECT_ID=<your-project-id>
 CLUSTER_NAME=<your-cluster-name>
 
 ACCESS_TOKEN=$(python3 -c \
-  "import json; print(json.load(open('oauthdemo/.token_store.json'))['access_token'])")
+  "import json; print(json.load(open('.token_store.json'))['access_token'])")
 ```
 
 ### List Organizations
@@ -434,6 +452,45 @@ curl -s -X DELETE \
   -H "Accept: application/vnd.atlas.2025-03-12+json" | jq .
 ```
 
+### Create a Database User
+
+Creates a SCRAM user your application authenticates with for data-plane access. The connection string identifies the cluster — this user is what authenticates the connection.
+
+```bash
+DB_PASSWORD=$(python3 -c "import secrets; print(secrets.token_urlsafe(24))")
+
+curl -s -X POST "${API_BASE}/api/atlas/v2/groups/${PROJECT_ID}/databaseUsers" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Accept: application/vnd.atlas.2025-03-12+json" \
+  -H "Content-Type: application/vnd.atlas.2025-03-12+json" \
+  -d '{
+    "databaseName": "admin",
+    "username": "app_user",
+    "password": "'"${DB_PASSWORD}"'",
+    "roles": [{ "roleName": "readWrite", "databaseName": "app_data" }]
+  }' | jq .
+```
+
+> [!WARNING]
+> Generate the password server-side, store it in a secrets manager, and scope roles to the specific database. Requires the authenticated user to hold a project role that permits database-user management — a `403` here means insufficient role or delegation scope.
+
+### Add an IP Access List Entry
+
+Atlas rejects connections from IPs not on the project's IP Access List. Add your application's egress IPs:
+
+```bash
+curl -s -X POST "${API_BASE}/api/atlas/v2/groups/${PROJECT_ID}/accessList" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Accept: application/vnd.atlas.2025-03-12+json" \
+  -H "Content-Type: application/vnd.atlas.2025-03-12+json" \
+  -d '[{ "cidrBlock": "<your-egress-ip>/32", "comment": "partner app egress" }]' | jq .
+```
+
+> [!WARNING]
+> Never use `0.0.0.0/0` outside of throwaway local testing — it opens the database to the entire internet.
+
+Once the cluster is `IDLE`, the database user exists, and the access list allows your egress IP, read `connectionStrings.standardSrv` from the cluster response and connect with any MongoDB driver. The complete flow — including polling, propagation retries, and the first insert — is in the [End-to-End Tutorial](END-TO-END.md).
+
 ---
 
 ## Token Lifecycle
@@ -449,14 +506,16 @@ When a token expires, Atlas returns `401 Unauthorized`. Re-authenticate via the 
 
 ## Run the FastAPI Demo Server
 
-`api.py` is a local FastAPI proxy that wraps the Atlas Admin API and reads the access token automatically from `oauthdemo/.token_store.json`.
+`api.py` is a local FastAPI proxy that wraps the Atlas Admin API and reads the access token automatically from `.token_store.json`.
+
+> [!NOTE]
+> All commands below are run from the **repository root** (the directory containing `get_token.py` and `api.py`).
 
 ### Before you begin
 
 Install the dependencies:
 
 ```bash
-cd oauthdemo
 python3 -m venv .venv
 source .venv/bin/activate     # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
@@ -464,16 +523,15 @@ pip install -r requirements.txt
 
 ### Procedure
 
-1. **Get an access token** (from repo root):
+1. **Get an access token:**
 
    ```bash
-   python3 oauthdemo/get_token.py
+   python3 get_token.py
    ```
 
-1. **Start the server** (from `oauthdemo/`):
+1. **Start the server:**
 
    ```bash
-   cd oauthdemo
    source .venv/bin/activate
    uvicorn api:app --reload --port 8080
    ```
@@ -603,7 +661,7 @@ echo "Service account token: ${SA_TOKEN}"
 Or using the Python script:
 
 ```bash
-python3 oauthdemo/get_token.py \
+python3 get_token.py \
   --client-id     mdb_sa_id_... \
   --client-secret mdb_sa_sk_...
 ```
@@ -644,12 +702,14 @@ Once enabled, any delegated user token obtained via the partner OAuth flow (see 
 
 ## Troubleshooting
 
+Development-time symptom/cause/fix table. For **production behavior** — what your product should do and what the user should see for each condition — see the [Recovery Guide](RECOVERY.md).
+
 | Symptom | Cause | Fix |
 |---|---|---|
 | `Invalid request to preauthorize` | `client_id` or `redirect_uri` mismatch | `CLIENT_ID` in `.env` must exactly match the value MongoDB provisioned for that `redirect_uri` |
 | `406 INVALID_VERSION_DATE` | Missing `Accept` header | Add `-H "Accept: application/vnd.atlas.2025-03-12+json"` to every Atlas API request |
-| `401 Unauthorized` from Atlas API | Access token expired | Re-run `python3 oauthdemo/get_token.py` or use the refresh token flow |
-| `401` from FastAPI server | Token expired or not yet obtained | Re-run `python3 oauthdemo/get_token.py` |
+| `401 Unauthorized` from Atlas API | Access token expired | Re-run `python3 get_token.py` or use the refresh token flow |
+| `401` from FastAPI server | Token expired or not yet obtained | Re-run `python3 get_token.py` |
 | `403 Forbidden` on Atlas API | Delegated Partner Access not enabled on the user's org | Complete [Step 4: Enable Delegated Partner Access](#step-4-enable-delegated-partner-access), or ask the user to enable it in their org settings |
 | `405 Method Not Allowed` on `/authorize` | Wrong base URL | Use `CLOUD_BASE` for `/oauth/authorize`, not `OAUTH_BASE` |
 | `400 invalid_grant` | Authorization code already used or expired | Codes are single-use — restart the auth flow |
@@ -657,12 +717,16 @@ Once enabled, any delegated user token obtained via the partner OAuth flow (see 
 | `Authentication failed (E0000004)` | Dev login with base email instead of tagged email | Use `you+mongodb.com@gmail.com` format for dev accounts |
 | `OSError: [Errno 48] Address already in use` | Port 3000 in use from a previous run | Script auto-frees the port; or run `lsof -ti:3000 \| xargs kill -9` |
 | `PermissionError: [Errno 13]` | Port below 1024 requires root | Use `--redirect-port 3000` or above |
-| `Could not import module "api"` | uvicorn started from wrong directory | `cd oauthdemo` first, then run `uvicorn api:app` |
+| `Could not import module "api"` | uvicorn started from wrong directory | Run `uvicorn api:app` from the repository root (the directory containing `api.py`) |
 | Token not received after 5 minutes | Browser did not redirect to localhost | Re-run the script — PKCE state expired |
 
 ---
 
 ## Next steps
 
+- [End-to-End Tutorial](END-TO-END.md) — from OAuth token to the first database read/write
 - [Partner Onboarding Guide](PARTNER.md) — register with MongoDB and integrate the flow into your product
+- [Partner UX Guide](UX-GUIDE.md) — design the connect experience
+- [Production Readiness](PRODUCTION.md) — security checklist and launch requirements
+- [Recovery Guide](RECOVERY.md) — user-centered error and lifecycle handling
 - [Atlas Administration API reference](https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2) — full endpoint documentation

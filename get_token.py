@@ -381,7 +381,7 @@ def main():
     # If a refresh token was returned, show how to use it
     if token_data.get("refresh_token"):
         print("\nTo refresh without the browser, run:")
-        print(f"  python3 oauthdemo/get_token.py --refresh-token {token_data['refresh_token']}\n")
+        print(f"  python3 get_token.py --refresh-token {token_data['refresh_token']}\n")
 
 
 if __name__ == "__main__":
