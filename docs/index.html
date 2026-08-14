@@ -13,37 +13,27 @@
 <script src="vendor/highlight.min.js"></script>
 
 <style>
-  /* MongoDB brand typefaces (same CDN the mongodb.com/company/partners page uses).
+  /* MongoDB brand typefaces (same CDN mongodb.com/docs uses).
      If unreachable, the stacks below fall back to system fonts. */
   @font-face {
-    font-family: "Sohne";
-    src: url("https://static.mongodb.com/com/fonts/Sohne-Regular.woff2") format("woff2");
+    font-family: "Euclid Circular A";
+    src: url("https://static.mongodb.com/com/fonts/EuclidCircularA-Regular-WebXL.woff2") format("woff2");
     font-weight: 400; font-style: normal; font-display: swap;
   }
   @font-face {
-    font-family: "Sohne";
-    src: url("https://static.mongodb.com/com/fonts/Sohne-Medium.woff2") format("woff2");
+    font-family: "Euclid Circular A";
+    src: url("https://static.mongodb.com/com/fonts/EuclidCircularA-Medium-WebXL.woff2") format("woff2");
     font-weight: 500; font-style: normal; font-display: swap;
   }
   @font-face {
-    font-family: "Sohne";
-    src: url("https://static.mongodb.com/com/fonts/Sohne-Bold.woff2") format("woff2");
-    font-weight: 700; font-style: normal; font-display: swap;
-  }
-  @font-face {
-    font-family: "Sohne Condensed";
-    src: url("https://static.mongodb.com/com/fonts/Sohne-Condensed-Medium.woff2") format("woff2");
-    font-weight: 500; font-style: normal; font-display: swap;
-  }
-  @font-face {
-    font-family: "Sohne Condensed";
-    src: url("https://static.mongodb.com/com/fonts/Sohne-Condensed-Bold.woff2") format("woff2");
-    font-weight: 700; font-style: normal; font-display: swap;
-  }
-  @font-face {
-    font-family: "Sohne Mono";
-    src: url("https://static.mongodb.com/com/fonts/SohneMono-Regular.woff2") format("woff2");
+    font-family: "Source Code Pro";
+    src: url("https://static.mongodb.com/com/fonts/SourceCodePro-Regular.ttf") format("truetype");
     font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Source Code Pro";
+    src: url("https://static.mongodb.com/com/fonts/SourceCodePro-Medium.ttf") format("truetype");
+    font-weight: 500; font-style: normal; font-display: swap;
   }
 
   :root {
@@ -64,19 +54,32 @@
     --shadow-lift: 0 2px 6px rgba(0, 30, 43, 0.08), 0 18px 44px rgba(0, 30, 43, 0.14);
     --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
 
-    /* mongodb.com/company/partners theme — docs reader view only */
-    --ptr-bg: #fdfeec;
-    --ptr-bg-subtle: #f3f5e6;
-    --ptr-text: #061621;
-    --ptr-text-secondary: #404f54;
-    --ptr-inverse: #001e2b;
-    --ptr-inverse-text: #fdfeec;
-    --ptr-border: #d1d4cc;
-    --ptr-accent: #00ed64;
-    --ptr-highlight: #e9ff99;
-    --ptr-font-body: "Sohne", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --ptr-font-heading: "Sohne Condensed", "Arial Narrow", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --ptr-font-mono: "Sohne Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    /* mongodb.com/docs theme (leafygreen palette) — docs reader view only */
+    --dc-bg: #ffffff;
+    --dc-bg-subtle: #f9fbfa;
+    --dc-text: #1c2d38;
+    --dc-text-secondary: #3d4f58;
+    --dc-gray: #5c6c75;
+    --dc-gray-light: #889397;
+    --dc-border: #e8edeb;
+    --dc-border-dark: #c1c7c6;
+    --dc-green: #00a35c;
+    --dc-green-dark: #00684a;
+    --dc-green-darker: #023430;
+    --dc-green-bright: #00ed64;
+    --dc-green-light: #e3fcf7;
+    --dc-blue: #006cfa;
+    --dc-blue-dark: #083c90;
+    --dc-blue-light: #e1f7ff;
+    --dc-yellow: #e2a500;
+    --dc-yellow-light: #fef7e0;
+    --dc-yellow-dark: #944f01;
+    --dc-red: #d04537;
+    --dc-red-light: #fdecea;
+    --dc-red-dark: #97051e;
+    --dc-font-body: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --dc-font-heading: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --dc-font-mono: "Source Code Pro", Menlo, ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", monospace;
   }
 
   * { box-sizing: border-box; }
@@ -1519,18 +1522,19 @@
   }
 
   /* ============================================================
-     Docs reader view — mongodb.com/company/partners theme
-     (cream canvas, Sohne type, dark-pill active states)
+     Docs reader view — mongodb.com/docs theme
+     (Euclid Circular A type, white canvas, dark unified header,
+      leafygreen sidenav, blue content links, "On this page" rail)
      ============================================================ */
   #view-docs { display: none; }
-  #view-docs.active { display: flex; min-height: 100vh; }
+  #view-docs.active { display: flex; flex-direction: column; min-height: 100vh; }
   #view-home.hidden { display: none; }
-  body.reader .site-header, body.reader .announce { display: none; }
+  body.reader .site-header, body.reader .announce, body.reader .top-accent { display: none; }
 
   body.reader {
-    background: var(--ptr-bg);
-    color: var(--ptr-text);
-    font-family: var(--ptr-font-body);
+    background: var(--dc-bg);
+    color: var(--dc-text);
+    font-family: var(--dc-font-body);
   }
 
   .top-accent {
@@ -1541,39 +1545,119 @@
     z-index: 60;
   }
 
+  /* ---------- Unified dark header (like mongodb.com/docs) ---------- */
+  .docs-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    height: 64px;
+    padding: 0 24px;
+    background: var(--mdb-dark);
+    color: #ffffff;
+  }
+
+  .docs-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .docs-brand .name { font-size: 16px; font-weight: 500; letter-spacing: 0.01em; }
+  .docs-brand .divider { width: 1px; height: 22px; background: rgba(255, 255, 255, 0.22); }
+  .docs-brand .product { font-size: 14px; color: var(--dc-border-dark); }
+
+  .docs-search {
+    position: relative;
+    flex: 1;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  .docs-search svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--dc-gray-light);
+    pointer-events: none;
+  }
+
+  .docs-search input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 8px;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 13.5px;
+    padding: 9px 14px 9px 38px;
+    outline: none;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .docs-search input::placeholder { color: var(--dc-gray-light); }
+  .docs-search input:hover { border-color: rgba(255, 255, 255, 0.3); }
+
+  .docs-search input:focus {
+    border-color: var(--dc-green-bright);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0 3px rgba(0, 237, 100, 0.18);
+  }
+
+  .docs-header-links { display: flex; align-items: center; gap: 20px; }
+
+  .docs-header-links a {
+    color: var(--dc-border);
+    font-size: 13.5px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+  }
+
+  .docs-header-links a:hover { color: var(--dc-green-bright); }
+
+  /* ---------- Body: sidenav + article + "On this page" rail ---------- */
+  .docs-body { display: flex; flex: 1; align-items: stretch; }
+
   .sidebar {
     width: var(--mdb-sidebar-width);
     flex-shrink: 0;
-    background: var(--ptr-bg-subtle);
-    color: var(--ptr-text);
-    border-right: 1px solid var(--ptr-border);
-    padding: 28px 0 0;
+    align-self: flex-start;
+    background: var(--dc-bg);
+    color: var(--dc-text);
+    border-right: 1px solid var(--dc-border);
+    padding: 8px 0 24px;
     position: sticky;
-    top: 0;
-    height: 100vh;
+    top: 64px;
+    height: calc(100vh - 64px);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
   }
 
   .sidebar::-webkit-scrollbar { width: 8px; }
-  .sidebar::-webkit-scrollbar-thumb { background: rgba(6, 22, 33, 0.14); border-radius: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: rgba(28, 45, 56, 0.14); border-radius: 4px; }
 
   .sidebar-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 0 24px 22px;
-    border-bottom: 1px solid var(--ptr-border);
-    margin-bottom: 18px;
+    padding: 16px 24px 14px;
+    border-bottom: 1px solid var(--dc-border);
+    margin-bottom: 10px;
     cursor: pointer;
   }
 
   .sidebar-header span {
-    font-weight: 700;
-    font-size: 15px;
+    font-weight: 500;
+    font-size: 14.5px;
     letter-spacing: 0.01em;
-    color: var(--ptr-text);
+    color: #001e2b;
     line-height: 1.35;
   }
 
@@ -1581,8 +1665,8 @@
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    margin: 0 24px 14px;
-    color: var(--mdb-green);
+    margin: 2px 24px 12px;
+    color: var(--dc-gray);
     font-size: 13px;
     font-weight: 500;
     text-decoration: none;
@@ -1590,64 +1674,80 @@
     transition: color 0.15s ease;
   }
 
-  .back-home:hover { color: var(--mdb-green-dark); }
+  .back-home:hover { color: var(--dc-green-dark); }
 
-  .nav-group { margin-bottom: 10px; }
+  .nav-group { margin-bottom: 8px; }
 
   .nav-group-title {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--ptr-text-secondary);
-    padding: 10px 26px 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #001e2b;
+    padding: 12px 26px 4px;
   }
 
   .nav-link {
+    position: relative;
     display: block;
-    margin: 2px 14px;
-    padding: 9px 14px;
-    color: var(--ptr-text-secondary);
+    margin: 1px 12px;
+    padding: 7px 14px 7px 26px;
+    color: var(--dc-text-secondary);
     text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 400;
+    border-radius: 6px;
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease;
   }
 
-  .nav-link:hover { background: rgba(6, 22, 33, 0.06); color: var(--ptr-text); }
+  .nav-link:hover { background: var(--dc-bg-subtle); color: #001e2b; }
 
   .nav-link.active {
-    background: var(--ptr-inverse);
-    color: var(--ptr-inverse-text);
-    font-weight: 600;
+    background: var(--dc-green-light);
+    color: var(--dc-green-dark);
+    font-weight: 500;
+  }
+
+  .nav-link.active::before {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 7px;
+    bottom: 7px;
+    width: 3px;
+    border-radius: 2px;
+    background: var(--dc-green);
   }
 
   .sidebar-footer {
     margin-top: auto;
-    padding: 18px 26px;
-    border-top: 1px solid var(--ptr-border);
+    padding: 16px 26px;
+    border-top: 1px solid var(--dc-border);
     font-size: 12px;
-    color: var(--ptr-text-secondary);
+    color: var(--dc-gray-light);
     letter-spacing: 0.02em;
   }
 
   .main {
     flex: 1;
     min-width: 0;
-    padding: 48px 56px 40px;
-    max-width: 980px;
+    padding: 40px 48px 48px;
+  }
+
+  .article-wrap {
+    display: flex;
+    gap: 56px;
+    max-width: 1160px;
+    margin: 0 auto;
+    align-items: flex-start;
   }
 
   #content {
-    background: #ffffff;
-    border: 1px solid var(--ptr-border);
-    border-radius: 16px;
-    box-shadow: 0 1px 2px rgba(6, 22, 33, 0.04), 0 12px 32px rgba(6, 22, 33, 0.05);
-    padding: 48px 56px;
-    font-size: 15.5px;
-    line-height: 1.75;
+    flex: 1;
+    min-width: 0;
+    max-width: 780px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--dc-text);
   }
 
   #content.loaded > * { animation: fadeUp 0.35s ease both; }
@@ -1658,84 +1758,74 @@
   }
 
   #content h1 {
-    font-family: var(--ptr-font-heading);
-    font-size: 38px;
-    font-weight: 700;
-    line-height: 1.15;
+    font-family: var(--dc-font-heading);
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.25;
     letter-spacing: 0.01em;
-    color: var(--ptr-text);
+    color: #001e2b;
     margin-top: 0;
+    margin-bottom: 20px;
     padding-bottom: 0;
     border-bottom: none;
   }
 
-  #content h1::after {
-    content: "";
-    display: block;
-    width: 48px;
-    height: 4px;
-    border-radius: 2px;
-    margin-top: 18px;
-    background: var(--ptr-accent);
-  }
-
   #content h2 {
-    font-family: var(--ptr-font-heading);
-    font-size: 27px;
-    font-weight: 700;
+    font-family: var(--dc-font-heading);
+    font-size: 23px;
+    font-weight: 500;
     letter-spacing: 0.01em;
-    color: var(--ptr-text);
-    margin-top: 2.2em;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--ptr-border);
-    scroll-margin-top: 24px;
+    color: #001e2b;
+    margin-top: 2em;
+    margin-bottom: 0.6em;
+    scroll-margin-top: 88px;
   }
 
-  #content h3 { font-size: 17px; font-weight: 700; color: var(--ptr-text); margin-top: 1.9em; }
-  #content h4 { font-size: 15px; font-weight: 700; color: var(--ptr-text); margin-top: 1.6em; }
+  #content h3 { font-size: 18px; font-weight: 500; color: #001e2b; margin-top: 1.8em; margin-bottom: 0.5em; scroll-margin-top: 88px; }
+  #content h4 { font-size: 16px; font-weight: 600; color: #001e2b; margin-top: 1.6em; }
   #content p { margin: 1em 0; }
 
   #content a {
-    color: var(--mdb-green);
+    color: var(--dc-blue);
     text-decoration: none;
-    border-bottom: 1px solid rgba(0, 104, 74, 0.3);
-    transition: color 0.15s ease, border-color 0.15s ease;
+    transition: color 0.15s ease;
   }
 
-  #content a:hover { color: var(--mdb-green-dark); border-bottom-color: var(--mdb-green-dark); }
+  #content a:hover { color: var(--dc-blue-dark); text-decoration: underline; }
 
   #content code {
-    background: rgba(0, 104, 74, 0.09);
-    color: var(--mdb-green-dark);
-    padding: 2px 7px;
-    border-radius: 5px;
-    font-size: 0.87em;
-    font-family: var(--ptr-font-mono);
+    background: var(--dc-bg-subtle);
+    border: 1px solid var(--dc-border);
+    color: #001e2b;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-family: var(--dc-font-mono);
   }
 
   #content pre {
-    background: #f7f8ec;
-    border: 1px solid var(--ptr-border);
-    border-radius: 10px;
+    background: var(--dc-bg-subtle);
+    border: 1px solid var(--dc-border);
+    border-radius: 12px;
     padding: 18px 20px;
     overflow-x: auto;
     line-height: 1.6;
     position: relative;
   }
 
-  #content pre code { background: none; padding: 0; color: var(--ptr-text); font-size: 13.5px; }
+  #content pre code { background: none; border: none; padding: 0; color: #001e2b; font-size: 13.5px; }
 
   .doc-copy {
     position: absolute;
     top: 10px;
     right: 10px;
     background: #fff;
-    border: 1px solid var(--ptr-border);
-    color: var(--ptr-text-secondary);
+    border: 1px solid var(--dc-border-dark);
+    color: var(--dc-text-secondary);
     font-family: inherit;
-    font-size: 11.5px;
-    font-weight: 600;
-    padding: 4px 11px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
     border-radius: 6px;
     cursor: pointer;
     opacity: 0;
@@ -1743,49 +1833,45 @@
   }
 
   #content pre:hover .doc-copy { opacity: 1; }
-  .doc-copy:hover { background: var(--ptr-inverse); border-color: var(--ptr-inverse); color: var(--ptr-inverse-text); }
-  .doc-copy.copied { background: var(--ptr-accent); border-color: var(--ptr-accent); color: var(--ptr-inverse); opacity: 1; }
+  .doc-copy:hover { background: var(--dc-bg-subtle); border-color: var(--dc-gray-light); color: #001e2b; }
+  .doc-copy.copied { background: var(--dc-green-light); border-color: var(--dc-green); color: var(--dc-green-dark); opacity: 1; }
 
   .table-wrap {
     overflow-x: auto;
-    border-radius: 10px;
+    border-radius: 8px;
     margin: 1.6em 0;
-    border: 1px solid var(--ptr-border);
+    border: 1px solid var(--dc-border);
   }
 
   #content table { border-collapse: collapse; width: 100%; margin: 0; font-size: 14px; }
 
   #content th, #content td {
     border: none;
-    border-bottom: 1px solid var(--ptr-border);
+    border-bottom: 1px solid var(--dc-border);
     padding: 10px 14px;
     text-align: left;
   }
 
   #content tr:last-child td { border-bottom: none; }
-  #content th { background: var(--ptr-bg-subtle); color: var(--ptr-text); font-weight: 600; }
-  #content tbody tr:nth-child(even) { background: #fbfcf3; }
-  #content tbody tr:hover { background: var(--ptr-bg-subtle); }
+  #content th { background: var(--dc-bg-subtle); color: #001e2b; font-weight: 600; }
+  #content tbody tr:hover { background: var(--dc-bg-subtle); }
 
   #content blockquote {
-    border-left: 4px solid var(--ptr-accent);
-    background: #f4f8e6;
+    border-left: 3px solid var(--dc-border-dark);
+    background: none;
     margin: 1.6em 0;
-    padding: 14px 22px;
-    border-radius: 0 10px 10px 0;
-    color: #21392f;
+    padding: 6px 18px;
+    color: var(--dc-text-secondary);
   }
 
-  #content blockquote code { background: rgba(255, 255, 255, 0.85); }
-
   /* GitHub-style alerts (> [!NOTE] / [!TIP] / [!IMPORTANT] / [!WARNING] / [!CAUTION])
-     rendered as branded callout cards */
+     rendered as mongodb.com/docs admonition cards */
   #content blockquote.alert {
-    border: 1px solid var(--ptr-border);
+    border: 1px solid var(--dc-border);
     border-left-width: 4px;
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 14px 20px;
-    color: var(--ptr-text);
+    color: var(--dc-text);
   }
 
   #content blockquote.alert > p:first-of-type { margin-top: 0; }
@@ -1795,47 +1881,81 @@
     display: flex;
     align-items: center;
     gap: 7px;
-    font-size: 11.5px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    font-size: 14px;
+    font-weight: 600;
     margin-bottom: 4px;
   }
 
-  #content blockquote.alert-note,
-  #content blockquote.alert-tip { border-left-color: var(--mdb-green); background: #eef7f1; }
-  #content blockquote.alert-note .alert-title,
-  #content blockquote.alert-tip .alert-title { color: var(--mdb-green-dark); }
+  #content blockquote.alert-note { border-left-color: var(--dc-blue); background: var(--dc-blue-light); }
+  #content blockquote.alert-note .alert-title { color: var(--dc-blue-dark); }
 
-  #content blockquote.alert-important { border-left-color: var(--mdb-green-bright); background: #f4f8e6; }
-  #content blockquote.alert-important .alert-title { color: var(--mdb-green-dark); }
+  #content blockquote.alert-tip { border-left-color: var(--dc-green); background: var(--dc-green-light); }
+  #content blockquote.alert-tip .alert-title { color: var(--dc-green-dark); }
 
-  #content blockquote.alert-warning { border-left-color: #e2a500; background: #fdf6e2; }
-  #content blockquote.alert-warning .alert-title { color: #8a6100; }
+  #content blockquote.alert-important { border-left-color: var(--dc-green-dark); background: var(--dc-green-light); }
+  #content blockquote.alert-important .alert-title { color: var(--dc-green-darker); }
 
-  #content blockquote.alert-caution { border-left-color: #d04537; background: #fdeee9; }
-  #content blockquote.alert-caution .alert-title { color: #a12c25; }
+  #content blockquote.alert-warning { border-left-color: var(--dc-yellow); background: var(--dc-yellow-light); }
+  #content blockquote.alert-warning .alert-title { color: var(--dc-yellow-dark); }
 
-  #content hr { border: none; height: 1px; background: var(--ptr-border); margin: 2.4em 0; }
+  #content blockquote.alert-caution { border-left-color: var(--dc-red); background: var(--dc-red-light); }
+  #content blockquote.alert-caution .alert-title { color: var(--dc-red-dark); }
+
+  #content hr { border: none; height: 1px; background: var(--dc-border); margin: 2.4em 0; }
   #content img { max-width: 100%; }
   #content ul, #content ol { padding-left: 1.5em; }
   #content li { margin: 0.35em 0; }
 
-  .loading { color: var(--ptr-text-secondary); font-style: italic; animation: pulse 1.4s ease-in-out infinite; }
+  .loading { color: var(--dc-gray); font-style: italic; animation: pulse 1.4s ease-in-out infinite; }
 
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 
-  .reader-footer {
-    margin-top: 28px;
-    padding-top: 18px;
+  /* ---------- "On this page" rail ---------- */
+  .toc {
+    width: 216px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 104px;
+    align-self: flex-start;
+    max-height: calc(100vh - 128px);
+    overflow-y: auto;
+    border-left: 1px solid var(--dc-border);
+    padding-left: 18px;
     font-size: 13px;
-    color: var(--ptr-text-secondary);
+    line-height: 1.5;
+  }
+
+  .toc-title { font-weight: 500; color: #001e2b; margin-bottom: 8px; }
+
+  .toc a {
+    display: block;
+    color: var(--dc-gray);
+    text-decoration: none;
+    padding: 4px 0;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .toc a:hover { color: #001e2b; }
+  .toc a.lvl3 { padding-left: 16px; }
+  .toc a.active { color: var(--dc-green-dark); font-weight: 500; }
+
+  .reader-footer {
+    margin-top: 48px;
+    padding-top: 18px;
+    border-top: 1px solid var(--dc-border);
+    font-size: 13px;
+    color: var(--dc-gray-light);
     text-align: center;
   }
 
   /* ============================================================
      Responsive
      ============================================================ */
+  @media (max-width: 1200px) {
+    .toc { display: none; }
+  }
+
   @media (max-width: 960px) {
     .footer-inner { grid-template-columns: 1fr 1fr; }
     .hero-leaf { display: none; }
@@ -1844,16 +1964,23 @@
   @media (max-width: 860px) {
     .nav-links { display: none; }
     .flow { padding: 28px 20px; }
+    .docs-header-links { display: none; }
   }
 
   @media (max-width: 768px) {
-    #view-docs.active { flex-direction: column; }
-    .sidebar { width: 100%; height: auto; position: static; }
+    .docs-header { gap: 16px; padding: 0 16px; }
+    .docs-body { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--dc-border); }
     .sidebar-footer { display: none; }
-    .main { padding: 22px 16px; }
-    #content { padding: 28px 22px; }
+    .main { padding: 24px 18px 40px; }
+    .article-wrap { display: block; }
+    #content { max-width: none; }
     .hero-inner { padding: 64px 20px 60px; }
     .footer-inner { grid-template-columns: 1fr; gap: 26px; }
+  }
+
+  @media (max-width: 560px) {
+    .docs-search { display: none; }
   }
 </style>
 </head>
@@ -2672,57 +2799,84 @@
 
 <!-- ======================= DOCS READER VIEW ======================= -->
 <div id="view-docs">
-  <nav class="sidebar">
-    <div class="sidebar-header" data-home-link>
-      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+  <header class="docs-header">
+    <div class="docs-brand" data-home-link>
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
         <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
         <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
       </svg>
-      <span>MongoDB Atlas<br/>Admin API - V2</span>
+      <span class="name">MongoDB Atlas</span>
+      <span class="divider"></span>
+      <span class="product">Admin API Documentation</span>
     </div>
-
-    <a class="back-home" data-home-link>← Back to home</a>
-
-    <div class="nav-group">
-      <div class="nav-group-title">Get Started</div>
-      <a class="nav-link" data-doc="README.md">Partner Integration Guide</a>
-      <a class="nav-link" data-doc="PARTNER.md">Partner Onboarding Checklist</a>
+    <div class="docs-search">
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" aria-hidden="true">
+        <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/>
+        <path d="m11 11 3.2 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <input id="docs-search" type="search" placeholder="Search documentation" aria-label="Search guides" autocomplete="off" />
     </div>
-
-    <div class="nav-group">
-      <div class="nav-group-title">Build</div>
-      <a class="nav-link" data-doc="END-TO-END.md">End-to-End Tutorial</a>
-      <a class="nav-link" data-doc="UX-GUIDE.md">Partner UX Guide</a>
+    <div class="docs-header-links">
+      <a href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">API Reference ↗</a>
+      <a href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub ↗</a>
     </div>
+  </header>
 
-    <div class="nav-group">
-      <div class="nav-group-title">Operate</div>
-      <a class="nav-link" data-doc="PRODUCTION.md">Production Readiness</a>
-      <a class="nav-link" data-doc="RECOVERY.md">Recovery Guide</a>
-    </div>
+  <div class="docs-body">
+    <nav class="sidebar">
+      <div class="sidebar-header" data-home-link>
+        <span>Atlas Admin API - V2</span>
+      </div>
 
-    <div class="nav-group">
-      <div class="nav-group-title">Delegation Model</div>
-      <a class="nav-link" data-doc="partner-delegations.md">Current &amp; Future State</a>
-    </div>
+      <a class="back-home" data-home-link>← Back to home</a>
 
-    <div class="nav-group">
-      <div class="nav-group-title">Resources</div>
-      <a class="nav-link" href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">Atlas Admin API Reference ↗</a>
-      <a class="nav-link" href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub Repository ↗</a>
-    </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Get Started</div>
+        <a class="nav-link" data-doc="README.md">Partner Integration Guide</a>
+        <a class="nav-link" data-doc="PARTNER.md">Partner Onboarding Checklist</a>
+      </div>
 
-    <div class="sidebar-footer">OAuth 2.1 · Delegated Access</div>
-  </nav>
+      <div class="nav-group">
+        <div class="nav-group-title">Build</div>
+        <a class="nav-link" data-doc="END-TO-END.md">End-to-End Tutorial</a>
+        <a class="nav-link" data-doc="UX-GUIDE.md">Partner UX Guide</a>
+      </div>
 
-  <main class="main">
-    <div id="content">
-      <p class="loading">Loading…</p>
-    </div>
-    <div class="reader-footer">
-      Copyright © MongoDB, Inc. — Atlas Admin API - V2 Documentation
-    </div>
-  </main>
+      <div class="nav-group">
+        <div class="nav-group-title">Operate</div>
+        <a class="nav-link" data-doc="PRODUCTION.md">Production Readiness</a>
+        <a class="nav-link" data-doc="RECOVERY.md">Recovery Guide</a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Delegation Model</div>
+        <a class="nav-link" data-doc="partner-delegations.md">Current &amp; Future State</a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Resources</div>
+        <a class="nav-link" href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">Atlas Admin API Reference ↗</a>
+        <a class="nav-link" href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub Repository ↗</a>
+      </div>
+
+      <div class="sidebar-footer">OAuth 2.1 · Delegated Access</div>
+    </nav>
+
+    <main class="main">
+      <div class="article-wrap">
+        <div id="content">
+          <p class="loading">Loading…</p>
+        </div>
+        <aside class="toc" id="toc" aria-label="On this page">
+          <div class="toc-title">On this page</div>
+          <nav id="toc-links"></nav>
+        </aside>
+      </div>
+      <div class="reader-footer">
+        Copyright © MongoDB, Inc. — Atlas Admin API - V2 Documentation
+      </div>
+    </main>
+  </div>
 </div>
 
 <script>
@@ -2791,6 +2945,21 @@
   });
   window.addEventListener('hashchange', route);
 
+  /* ---------------- Sidenav search filter ---------------- */
+  const docsSearch = document.getElementById('docs-search');
+  docsSearch.addEventListener('input', () => {
+    const q = docsSearch.value.trim().toLowerCase();
+    document.querySelectorAll('.sidebar .nav-group').forEach((group) => {
+      let visible = 0;
+      group.querySelectorAll('.nav-link').forEach((link) => {
+        const show = !q || link.textContent.toLowerCase().includes(q);
+        link.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      group.style.display = visible ? '' : 'none';
+    });
+  });
+
   /* ---------------- Docs reader ---------------- */
 
   function wrapTables() {
@@ -2837,6 +3006,54 @@
     });
   }
 
+  /* ---------------- "On this page" rail ---------------- */
+  const tocEl = document.getElementById('toc');
+  const tocLinksEl = document.getElementById('toc-links');
+  let tocObserver = null;
+
+  function slugifyHeading(text, seen) {
+    const base = text.toLowerCase().trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-') || 'section';
+    let slug = base;
+    let i = 2;
+    while (seen.has(slug)) slug = base + '-' + (i++);
+    seen.add(slug);
+    return slug;
+  }
+
+  function buildToc() {
+    if (tocObserver) { tocObserver.disconnect(); tocObserver = null; }
+    tocLinksEl.innerHTML = '';
+    const seen = new Set();
+    const headings = contentEl.querySelectorAll('h2, h3');
+    tocEl.style.display = headings.length ? '' : 'none';
+
+    headings.forEach((h) => {
+      h.id = slugifyHeading(h.textContent, seen);
+      const a = document.createElement('a');
+      a.textContent = h.textContent;
+      a.setAttribute('data-target', h.id);
+      if (h.tagName === 'H3') a.classList.add('lvl3');
+      // Note: location.hash drives doc routing, so TOC clicks only scroll.
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      tocLinksEl.appendChild(a);
+    });
+
+    // Scrollspy — highlight the section currently in view.
+    const links = Array.from(tocLinksEl.querySelectorAll('a'));
+    tocObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        links.forEach((l) => l.classList.toggle('active', l.getAttribute('data-target') === entry.target.id));
+      });
+    }, { rootMargin: '-80px 0px -75% 0px' });
+    headings.forEach((h) => tocObserver.observe(h));
+  }
+
   function animateContent() {
     contentEl.classList.remove('loaded');
     void contentEl.offsetHeight; // force reflow
@@ -2858,11 +3075,13 @@
       wrapTables();
       addCopyButtons();
       styleAlerts(contentEl);
+      buildToc();
       animateContent();
       window.scrollTo(0, 0);
     } catch (err) {
       contentEl.innerHTML =
         '<p style="color:#b3261e;">Failed to load <code>' + filename + '</code>: ' + err.message + '</p>';
+      buildToc();
     }
   }
 
