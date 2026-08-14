@@ -12,17 +12,15 @@ This guide covers the steps a partner goes through to register with MongoDB, rec
 ## On this page
 
 - [How Credentials Are Issued](#how-credentials-are-issued)
-- [Supported Operations](#supported-operations)
+- [What Your App Can Do](#what-your-app-can-do)
 - [Step 1: Initiate onboarding](#step-1-initiate-onboarding)
 - [Step 2: Agree on OAuth app configuration](#step-2-agree-on-oauth-app-configuration)
 - [Step 3: Receive and store credentials](#step-3-receive-and-store-credentials)
 - [Step 4: Validate end-to-end](#step-4-validate-end-to-end)
 - [Step 5: Integrate into your product](#step-5-integrate-into-your-product)
 - [Step 6: Promote to staging and production](#step-6-promote-to-staging-and-production)
-- [Who Owns What](#who-owns-what)
 - [OAuth App Registration Payload](#oauth-app-registration-payload)
 - [Security Checklist](#security-checklist)
-- [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -42,19 +40,9 @@ MongoDB Atlas OAuth is currently **invite-only**. You do not create your OAuth a
 
 ---
 
-## Supported Operations
+## What Your App Can Do
 
-Once a user's delegated access token is obtained, your app can perform the following MongoDB Atlas operations on that user's behalf:
-
-| Operation | Endpoint | Method |
-|---|---|---|
-| List the user's Organizations | `/api/atlas/v2/orgs` | `GET` |
-| List Projects in an Organization | `/api/atlas/v2/groups?orgId={orgId}` | `GET` |
-| Create a Project | `/api/atlas/v2/groups` | `POST` |
-| List Clusters in a Project | `/api/atlas/v2/groups/{projectId}/clusters` | `GET` |
-| Create a Cluster | `/api/atlas/v2/groups/{projectId}/clusters` | `POST` |
-| Get Cluster status | `/api/atlas/v2/groups/{projectId}/clusters/{clusterName}` | `GET` |
-| Delete a Cluster | `/api/atlas/v2/groups/{projectId}/clusters/{clusterName}` | `DELETE` |
+Once a user's delegated access token is obtained, your app can list orgs, manage projects and clusters, create database users, and manage IP access lists on that user's behalf. The full operations table and curl examples are in the [Partner Integration Guide](README.md#overview).
 
 > [!IMPORTANT]
 > Every request requires these headers:
@@ -63,8 +51,6 @@ Once a user's delegated access token is obtained, your app can perform the follo
 > Authorization: Bearer <access_token>
 > Accept: application/vnd.atlas.2025-03-12+json
 > ```
->
-> For full curl examples of each operation, see [Atlas Admin API Reference](README.md#atlas-admin-api-reference) in the Partner Integration Guide.
 
 ---
 
@@ -109,17 +95,7 @@ MongoDB will share:
 > [!WARNING]
 > Store `client_secret` in a secrets manager — never in source control or browser-accessible config.
 
-### Example
-
-```ini
-# .env
-CLIENT_ID=<client-id-provided-by-mongodb>
-CLIENT_SECRET=<client-secret-provided-by-mongodb>   # leave blank for public clients
-OAUTH_BASE=https://authorize-dev.mongodb.com
-CLOUD_BASE=https://cloud-dev.mongodb.com
-RESOURCE=https://api-dev.mongodb.com/api/atlas
-REDIRECT_URI=https://<partner-app-domain>/oauth/atlas/callback
-```
+Configure them in your `.env` alongside the environment endpoints — see [Environments](README.md#environments) in the Partner Integration Guide.
 
 ---
 
@@ -204,26 +180,7 @@ The full walkthrough — with curl examples, a runnable script (`end_to_end.py`)
 
 ### Retrieve a connection string (data plane)
 
-The MongoDB Atlas Admin API - V2 covered in this guide is **control-plane only**, but the connection string your app needs for **direct database access** (CRUD operations, creating collections, building indexes) is already included in the cluster response — no separate API call is required.
-
-Once the cluster reports `stateName == "IDLE"`, read the `connectionStrings` field:
-
-```bash
-curl -s "https://api.mongodb.com/api/atlas/v2/groups/<project-id>/clusters/<cluster-name>" \
-  -H "Authorization: Bearer <access-token>" \
-  -H "Accept: application/vnd.atlas.2025-03-12+json" | jq .connectionStrings
-```
-
-### Example
-
-```json
-{
-  "standard":    "mongodb://mycluster-shard-00-00.abcde.mongodb.net:27017,...",
-  "standardSrv": "mongodb+srv://mycluster.abcde.mongodb.net"
-}
-```
-
-Use `standardSrv` (`mongodb+srv://`) for modern drivers. Store it in your secrets manager alongside the refresh token — never in the browser or logs.
+The MongoDB Atlas Admin API - V2 covered in this guide is **control-plane only**, but the connection string your app needs for **direct database access** (CRUD operations, creating collections, building indexes) is already included in the cluster response — no separate API call is required. Once the cluster reports `stateName == "IDLE"`, read `connectionStrings.standardSrv` (`mongodb+srv://…`) and store it in your secrets manager alongside the refresh token — never in the browser or logs.
 
 > [!WARNING]
 > **The connection string alone does not authenticate.** To actually connect, the project also needs:
@@ -244,21 +201,8 @@ To promote your integration to staging and production:
 1. Update `redirect_uris` to production HTTPS URLs.
 1. Confirm `published: true` so the app appears in the Atlas governance UX.
 
----
-
-## Who Owns What
-
-Integration responsibilities split three ways — MongoDB, you (the partner), and the end user:
-
-| Area | MongoDB | Partner | End user |
-|---|---|---|---|
-| OAuth client registration | Provision/configure (invite-only today) | Supply redirect URIs and metadata | — |
-| OAuth flow | Authorization server and consent screen | Redirect, callback, `state`/PKCE validation, token exchange | Authenticate and consent |
-| Atlas resource selection | Provide the Admin API | Build the picker and provisioning states | Select the resource |
-| Database credentials | Define lifecycle expectations | Securely generate, store, and use credentials | Approve the access grant |
-| Revocation | Invalidate delegated access | Delete cached credentials and disconnect UI | Revoke access from Atlas |
-
-The full matrix, including provisioning, org-level controls, and audit, is in the [Production Readiness Guide](PRODUCTION.md#responsibility-matrix).
+> [!NOTE]
+> Integration responsibilities split three ways — MongoDB, you (the partner), and the end user. The full ownership matrix is in the [Production Readiness Guide](PRODUCTION.md#responsibility-matrix).
 
 ---
 
@@ -311,17 +255,7 @@ Submit this to MongoDB when initiating onboarding ([Step 1](#step-1-initiate-onb
 
 ---
 
-## Troubleshooting
-
-| Symptom | Cause | Fix |
-|---|---|---|
-| `Invalid request to preauthorize` | `client_id` / `redirect_uri` mismatch | Confirm values exactly match what MongoDB provisioned |
-| `401` from Atlas API | Access token expired | Refresh token or re-run browser login flow |
-| `403 Forbidden` | Delegated Partner Access not enabled on user's org | User must enable it — see [Set Up a Test Atlas Environment](README.md#set-up-a-test-atlas-environment) in the Partner Integration Guide |
-| `400 invalid_grant` | Code already used or expired | Restart the auth flow |
-| `400 grant_type not supported` | Refresh token used on a public client | Public clients do not support refresh tokens |
-| `406 INVALID_VERSION_DATE` | Missing `Accept` header | Add `Accept: application/vnd.atlas.2025-03-12+json` to every request |
-| `Authentication failed (E0000004)` | Dev login with base email | Use `you+mongodb.com@domain.com` format for dev accounts |
+Run into an error during onboarding? See the [Troubleshooting table](README.md#troubleshooting) in the Partner Integration Guide.
 
 ---
 

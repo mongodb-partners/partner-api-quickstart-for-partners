@@ -17,7 +17,6 @@ For the API calls behind each screen, see the [End-to-End Tutorial](END-TO-END.m
 - [Screen 6: Connected confirmation](#screen-6-connected-confirmation)
 - [Screen 7: Reconnect after token expiry](#screen-7-reconnect-after-token-expiry)
 - [Screen 8: Disconnect and revoke](#screen-8-disconnect-and-revoke)
-- [Error copy](#error-copy)
 - [Copy deck](#copy-deck)
 
 ---
@@ -220,21 +219,6 @@ Users must be able to disconnect from **both** sides — your product and Atlas.
 On disconnect, your backend must delete cached tokens and database credentials — see [Revocation cleanup](PRODUCTION.md#revocation-cleanup).
 
 **In Atlas:** users can revoke your app from their authorized applications at any time. When that happens, your next API call returns `401` — clear cached credentials and show the reconnect screen rather than retrying in a loop.
-
----
-
-## Error copy
-
-| Condition | What the user sees | Recovery action offered |
-|---|---|---|
-| Consent denied | "Authorization was cancelled — nothing was connected." | Connect button, unchanged |
-| No organizations | "Your Atlas organization hasn't enabled partner access yet." | Link to admin instructions |
-| Cluster provisioning | "Creating your cluster…" with progress | Background wait + notify |
-| Token expired | Silent refresh; "Reconnect" only if refresh fails | One-click reauthorization |
-| Access revoked | "`<product>` no longer has access to Atlas." | Reconnect button |
-| 403 on an operation | "You don't have permission for this on the selected project." | Pick another resource / contact admin |
-
-Full behavioral table for your engineering team: [Recovery Guide](RECOVERY.md).
 
 ---
 

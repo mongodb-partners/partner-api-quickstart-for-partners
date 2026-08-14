@@ -27,7 +27,6 @@ project + cluster → database user + network access → first read/write
 - [Obtain an Access Token](#obtain-an-access-token)
 - [Use the Access Token](#use-the-access-token)
 - [Atlas Admin API Reference](#atlas-admin-api-reference)
-- [Token Lifecycle](#token-lifecycle)
 - [Run the FastAPI Demo Server](#run-the-fastapi-demo-server)
 - [Set Up a Test Atlas Environment](#set-up-a-test-atlas-environment)
 - [Troubleshooting](#troubleshooting)
@@ -126,40 +125,9 @@ REDIRECT_URI=http://localhost:3000/oauth/callback
 
 ## Get Your OAuth Credentials
 
-MongoDB Atlas OAuth is currently **invite-only**. Client credentials are **not self-provisioned** — MongoDB provisions them manually on your behalf.
+MongoDB Atlas OAuth is currently **invite-only**. Client credentials are **not self-provisioned** — MongoDB registers your OAuth app and shares a `client_id` (plus a `client_secret` for confidential clients). You do not create or configure anything in the Atlas UI.
 
-### Procedure
-
-To get onboarded and receive credentials:
-
-1. **Register as a partner.** Contact your MongoDB partner manager or solutions engineer to initiate onboarding.
-
-1. **Agree on app configuration.** You and the MongoDB team align on `redirect_uris`, `client_type`, `grant_types`, and `resources`.
-
-1. **MongoDB provisions your OAuth app.** The MongoDB team registers the app in the Atlas OAuth platform for your target environment (dev → staging → production).
-
-1. **MongoDB shares your credentials**:
-
-   | Client type | What you receive |
-   |---|---|
-   | **Public client** (SPA / native app) | `client_id` only — uses `token_endpoint_auth_method: none`, no secret |
-   | **Confidential client** (web app with backend) | `client_id` **and** `client_secret` |
-
-> [!NOTE]
-> If you are integrating now, your MongoDB contact will provide your `client_id` and, if applicable, `client_secret`. You do not need to create or configure anything in the Atlas UI — MongoDB handles this during the onboarding process.
-
-> [!WARNING]
-> Store `client_secret` in a secrets manager (AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault). Never commit it to source control or expose it to the browser.
-
-### Future model — self-serve via Atlas UI
-
-The planned self-serve experience will let partners register their own OAuth apps directly in Atlas without MongoDB team involvement:
-
-```
-Atlas UI → Organization → Integrations → OAuth Apps → Create App
-```
-
-Credentials will be shown immediately after creation. This guide will be updated when self-serve is generally available.
+For the full onboarding process — what to provide, app configuration fields, and promotion from dev to production — see [Partner Onboarding](PARTNER.md). Self-serve registration via Atlas UI (Organization → Integrations → OAuth Apps) is planned; see [Partner Delegation](partner-delegations.md).
 
 ### Public vs. confidential clients
 
@@ -169,6 +137,9 @@ Credentials will be shown immediately after creation. This guide will be updated
 | Supports refresh tokens | No | Yes (if configured) |
 | Token exchange | PKCE only | PKCE + HTTP Basic auth |
 | Best for | Browser SPAs, native/mobile apps | Apps with a secure backend server |
+
+> [!WARNING]
+> Store `client_secret` in a secrets manager (AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault). Never commit it to source control or expose it to the browser.
 
 ---
 
@@ -311,11 +282,13 @@ A successful response lists the Atlas Organizations the authenticated user belon
 
 ### Token expiry
 
-Access tokens are **short-lived** (typically 600 seconds / 10 minutes). When expired:
+Access tokens are **short-lived** (600 seconds / 10 minutes). Refresh tokens live longer (configured per client, e.g. 30 days) and are available to confidential clients only — always store the latest rotated value. When an access token expires:
 
 - Atlas returns `401 Unauthorized`.
 - Re-run `python3 get_token.py` for a new token (browser flow).
 - Or use the refresh token flow if your client supports it.
+
+For rotation, concurrency, and revocation handling in a real deployment, see [Token lifecycle in production](PRODUCTION.md#token-lifecycle-in-production).
 
 ### Example: inspect a token (debug)
 
@@ -490,17 +463,6 @@ curl -s -X POST "${API_BASE}/api/atlas/v2/groups/${PROJECT_ID}/accessList" \
 > Never use `0.0.0.0/0` outside of throwaway local testing — it opens the database to the entire internet.
 
 Once the cluster is `IDLE`, the database user exists, and the access list allows your egress IP, read `connectionStrings.standardSrv` from the cluster response and connect with any MongoDB driver. The complete flow — including polling, propagation retries, and the first insert — is in the [End-to-End Tutorial](END-TO-END.md).
-
----
-
-## Token Lifecycle
-
-| Token | Lifetime | Notes |
-|---|---|---|
-| **Delegated user access token** | 600 s (10 min) | Use for all Atlas Admin API calls |
-| **Refresh token** | Configured per client (e.g. 30 days) | Confidential clients only; always store the latest rotated value |
-
-When a token expires, Atlas returns `401 Unauthorized`. Re-authenticate via the browser flow or use the refresh token if your client supports it.
 
 ---
 

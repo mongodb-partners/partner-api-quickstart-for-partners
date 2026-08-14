@@ -78,6 +78,6 @@ MongoDB may return a **new** refresh token on every refresh call. The old one ma
 
 ## Related guides
 
-- [Partner UX Guide](UX-GUIDE.md#error-copy) — user-facing copy for each state
+- [Partner UX Guide](UX-GUIDE.md#copy-deck) — user-facing copy for each state
 - [Production Readiness](PRODUCTION.md) — token storage, rotation, and revocation cleanup
 - [Troubleshooting](README.md#troubleshooting) — development-time symptom/cause/fix table
