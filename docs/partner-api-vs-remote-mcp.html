@@ -479,6 +479,105 @@
   .path-note strong { color: var(--mdb-green-bright); }
 
   /* ============================================================
+     Phase 1 onboarding strip
+     ============================================================ */
+  .phase-strip {
+    background: var(--mdb-green-soft);
+    border: 1px solid rgba(0, 104, 74, 0.28);
+    border-radius: 16px;
+    padding: 22px 26px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin: 0 0 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .phase-label { flex-shrink: 0; min-width: 150px; }
+
+  .phase-label strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mdb-green-dark);
+  }
+
+  .phase-label span {
+    display: block;
+    font-size: 12px;
+    color: var(--mdb-muted);
+    margin-top: 4px;
+    line-height: 1.45;
+  }
+
+  .phase-flow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .phase-step {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 12px;
+    padding: 11px 14px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 12.5px;
+    color: var(--mdb-text);
+    line-height: 1.45;
+    flex: 1;
+  }
+
+  .phase-step .n {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--mdb-green-bright);
+    color: var(--mdb-dark);
+    font-weight: 800;
+    font-size: 13px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .phase-step code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    background: var(--mdb-green-soft);
+    border-radius: 4px;
+    padding: 0 4px;
+    color: var(--mdb-green-dark);
+  }
+
+  .phase-arrow {
+    color: var(--mdb-green);
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .phase-done {
+    background: var(--mdb-green-dark);
+    border: 1px solid var(--mdb-green-dark);
+    border-radius: 12px;
+    padding: 11px 16px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--mdb-green-bright);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ============================================================
      Comparison table
      ============================================================ */
   .compare-wrap {
@@ -1006,6 +1105,10 @@
     .hero-leaf { display: none; }
     .path-grid, .overlap-grid, .access-grid { grid-template-columns: 1fr; }
     .venn { height: 300px; }
+    .phase-strip { flex-direction: column; align-items: stretch; }
+    .phase-flow { flex-direction: column; align-items: stretch; }
+    .phase-arrow { transform: rotate(90deg); align-self: center; }
+    .phase-done { justify-content: center; }
   }
 
   @media (max-width: 860px) {
@@ -1113,6 +1216,33 @@
 <section class="section">
   <h2 class="section-title reveal">Two paths into Atlas</h2>
   <p class="section-sub reveal">The Partner API path is a direct call from the partner's product. The Remote MCP path goes through MongoDB's hosted MCP server, which exposes MongoDB tools to AI clients.</p>
+
+  <!-- Phase 1: one-time partner onboarding -->
+  <div class="phase-strip reveal">
+    <div class="phase-label">
+      <strong>Phase 1</strong>
+      <span>One-time onboarding (invite-only)</span>
+    </div>
+    <div class="phase-flow">
+      <div class="phase-step">
+        <span class="n">1</span>
+        <div>Partner contacts MongoDB partner team to initiate onboarding</div>
+      </div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-step">
+        <span class="n">2</span>
+        <div>MongoDB provisions OAuth app — <code>client_id</code> + <code>client_secret</code> + <code>redirect_uris</code></div>
+      </div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-step">
+        <span class="n">3</span>
+        <div>Partner stores credentials in secrets manager, configures app</div>
+      </div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-done">✓ Partner Onboarded</div>
+    </div>
+  </div>
+
   <div class="path-grid">
     <!-- Partner API path -->
     <div class="path-panel reveal">
@@ -1131,7 +1261,7 @@
         <div class="path-arrow">↓ <span>delegated, user-scoped access</span></div>
         <div class="path-node highlight">
           <span class="node-icon">⚡</span>
-          <div>Atlas Administration API<small>Called directly by the partner app — no MCP server in between</small></div>
+          <div>Atlas Partner API<small>Called directly by the partner app — no MCP server in between</small></div>
         </div>
         <div class="path-arrow">↓ <span>user's Atlas role applies</span></div>
         <div class="path-node">
