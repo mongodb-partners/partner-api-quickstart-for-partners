@@ -13,27 +13,27 @@
 <script src="vendor/highlight.min.js"></script>
 
 <style>
-  /* MongoDB brand typefaces (same CDN mongodb.com/docs uses).
-     If unreachable, the stacks below fall back to system fonts. */
+  /* MongoDB brand typefaces from mongodb.com (Sohne family), vendored locally
+     in docs/fonts/. If missing, the stacks below fall back to system fonts. */
   @font-face {
-    font-family: "Euclid Circular A";
-    src: url("https://static.mongodb.com/com/fonts/EuclidCircularA-Regular-WebXL.woff2") format("woff2");
+    font-family: "Sohne";
+    src: url("fonts/Sohne-Regular.woff2") format("woff2");
     font-weight: 400; font-style: normal; font-display: swap;
   }
   @font-face {
-    font-family: "Euclid Circular A";
-    src: url("https://static.mongodb.com/com/fonts/EuclidCircularA-Medium-WebXL.woff2") format("woff2");
+    font-family: "Sohne";
+    src: url("fonts/Sohne-Medium.woff2") format("woff2");
     font-weight: 500; font-style: normal; font-display: swap;
   }
   @font-face {
-    font-family: "Source Code Pro";
-    src: url("https://static.mongodb.com/com/fonts/SourceCodePro-Regular.ttf") format("truetype");
+    font-family: "Sohne";
+    src: url("fonts/Sohne-Bold.woff2") format("woff2");
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Sohne Mono";
+    src: url("fonts/SohneMono-Regular.woff2") format("woff2");
     font-weight: 400; font-style: normal; font-display: swap;
-  }
-  @font-face {
-    font-family: "Source Code Pro";
-    src: url("https://static.mongodb.com/com/fonts/SourceCodePro-Medium.ttf") format("truetype");
-    font-weight: 500; font-style: normal; font-display: swap;
   }
 
   :root {
@@ -44,10 +44,10 @@
     --mdb-green-dark: #004732;
     --mdb-green-bright: #00ed64;
     --mdb-green-soft: #e3f4ee;
-    --mdb-bg: #f3f6f5;
-    --mdb-text: #1c2d38;
+    --mdb-bg: #fdfff5;
+    --mdb-text: #061621;
     --mdb-muted: #5f6f76;
-    --mdb-border: #e2e8ea;
+    --mdb-border: #d0d4cf;
     --mdb-sidebar-width: 288px;
     --radius: 12px;
     --shadow: 0 1px 2px rgba(0, 30, 43, 0.05), 0 10px 30px rgba(0, 30, 43, 0.07);
@@ -77,9 +77,9 @@
     --dc-red: #d04537;
     --dc-red-light: #fdecea;
     --dc-red-dark: #97051e;
-    --dc-font-body: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --dc-font-heading: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --dc-font-mono: "Source Code Pro", Menlo, ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", monospace;
+    --dc-font-body: "Sohne", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --dc-font-heading: "Sohne", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --dc-font-mono: "Sohne Mono", Menlo, ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", monospace;
   }
 
   * { box-sizing: border-box; }
@@ -88,7 +88,7 @@
 
   body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Sohne", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--mdb-text);
     background: var(--mdb-bg);
     -webkit-font-smoothing: antialiased;
@@ -542,7 +542,7 @@
   }
 
   .code-shell pre code {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     background: transparent;
     color: #d6e4df;
   }
@@ -650,7 +650,7 @@
 
   .demo-url {
     flex: 1;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 12px;
     color: #43565e;
     background: #fff;
@@ -679,7 +679,7 @@
     padding: 1px 7px;
     border-radius: 5px;
     font-size: 0.88em;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
   .demo-controls { display: flex; gap: 10px; margin-top: 16px; }
@@ -796,7 +796,7 @@
     padding: 2px 8px;
     border-radius: 6px;
     font-size: 12px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
   /* --- Mock chat application --- */
@@ -881,7 +881,7 @@
     padding: 1px 6px;
     border-radius: 5px;
     font-size: 11.5px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
   .mock-chat-input {
@@ -901,7 +901,7 @@
     color: #d6e4df;
     border-radius: 8px;
     padding: 9px 13px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 11.5px;
     line-height: 1.7;
     white-space: pre;
@@ -1034,7 +1034,7 @@
   }
 
   .mock-error.show { display: block; animation: fadeUp 0.25s ease both; }
-  .mock-error code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; }
+  .mock-error code { font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; }
 
   /* --- Callback spinner --- */
   .spinner {
@@ -1059,7 +1059,7 @@
     color: #d6e4df;
     border-radius: 10px;
     padding: 14px 18px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 12px;
     line-height: 1.7;
     overflow-x: auto;
@@ -1096,7 +1096,7 @@
     color: #d6e4df;
     border-radius: 10px;
     padding: 16px 18px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 12px;
     line-height: 1.75;
     overflow-x: auto;
@@ -1161,7 +1161,7 @@
 
   .pg-org-head .pg-id {
     margin-left: auto;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 10.5px;
     color: #6e8a80;
     font-weight: 400;
@@ -1330,7 +1330,7 @@
     border-radius: 10px;
     padding: 10px 14px;
     margin-bottom: 9px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 11.5px;
     color: #d6e4df;
     line-height: 1.7;
@@ -1356,7 +1356,7 @@
     padding: 1px 7px;
     border-radius: 5px;
     font-size: 11px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
   @media (max-width: 860px) {
@@ -1427,7 +1427,7 @@
     padding: 3px 9px;
     border-radius: 6px;
     font-size: 13px;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   }
 
   /* ============================================================
@@ -1458,7 +1458,7 @@
   }
 
   .op-method {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 11.5px;
     font-weight: 700;
     padding: 5px 10px;
@@ -1471,7 +1471,7 @@
   .op-method.post { background: #fff3d6; color: #8a6100; }
   .op-method.delete { background: #fde8e7; color: #a12c25; }
 
-  .op-path { color: var(--mdb-text); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; word-break: break-all; }
+  .op-path { color: var(--mdb-text); font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; word-break: break-all; }
 
   /* ============================================================
      Footer (dark, mongodb.com style)
@@ -1523,7 +1523,7 @@
 
   /* ============================================================
      Docs reader view — mongodb.com/docs theme
-     (Euclid Circular A type, white canvas, dark unified header,
+     (Sohne type, white canvas, dark unified header,
       leafygreen sidenav, blue content links, "On this page" rail)
      ============================================================ */
   #view-docs { display: none; }
@@ -1999,9 +1999,8 @@
   <header class="site-header">
     <nav class="nav">
       <a class="brand" data-home-link>
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
-          <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-          <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+        <svg viewBox="0 0 133 284" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
         </svg>
         Atlas Admin API - V2
       </a>
@@ -2018,9 +2017,8 @@
 
   <!-- Hero -->
   <section class="hero">
-    <svg class="hero-leaf" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-      <path d="M12 7v13" stroke="#00ed64" stroke-width="0.7" stroke-linecap="round"/>
+    <svg class="hero-leaf" viewBox="0 0 133 284" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
     </svg>
     <div class="hero-inner">
       <span class="eyebrow">MongoDB Atlas · OAuth 2.1 for Partners</span>
@@ -2223,9 +2221,8 @@
               <div class="mock-conn-title">Connectors</div>
               <div class="mock-conn">
                 <div class="mock-conn-icon">
-                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" aria-hidden="true">
-                    <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-                    <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                  <svg viewBox="0 0 133 284" height="17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
                   </svg>
                 </div>
                 <div class="mock-conn-body">
@@ -2268,9 +2265,8 @@
           <div class="mock-center">
             <div class="mock-auth-card">
               <div class="mock-auth-brand">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
-                  <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-                  <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                <svg viewBox="0 0 133 284" height="20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
                 </svg>
                 Sign in to MongoDB Atlas
               </div>
@@ -2294,9 +2290,8 @@
           <div class="mock-center">
             <div class="mock-auth-card">
               <div class="mock-auth-brand">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
-                  <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-                  <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                <svg viewBox="0 0 133 284" height="20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
                 </svg>
                 Authorize Partner Application
               </div>
@@ -2429,9 +2424,8 @@
               <div class="mock-conn-title">Connectors</div>
               <div class="mock-conn">
                 <div class="mock-conn-icon">
-                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" aria-hidden="true">
-                    <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-                    <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                  <svg viewBox="0 0 133 284" height="17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
                   </svg>
                 </div>
                 <div class="mock-conn-body">
@@ -2550,9 +2544,8 @@
               <div class="mock-conn-title">Connectors</div>
               <div class="mock-conn">
                 <div class="mock-conn-icon">
-                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" aria-hidden="true">
-                    <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-                    <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                  <svg viewBox="0 0 133 284" height="17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
                   </svg>
                 </div>
                 <div class="mock-conn-body">
@@ -2778,9 +2771,8 @@
     <div class="footer-inner">
       <div>
         <div class="footer-brand">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
-            <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-            <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+          <svg viewBox="0 0 133 284" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
           </svg>
           Atlas Admin API - V2
         </div>
@@ -2815,9 +2807,8 @@
 <div id="view-docs">
   <header class="docs-header">
     <div class="docs-brand" data-home-link>
-      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
-        <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-        <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+      <svg viewBox="0 0 133 284" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
       </svg>
       <span class="name">MongoDB Atlas</span>
       <span class="divider"></span>
