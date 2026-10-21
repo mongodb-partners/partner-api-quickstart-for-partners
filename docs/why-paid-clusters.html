@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Why Paid Atlas Tiers Over M0 — MongoDB Atlas Partner Guidance</title>
+<meta name="description" content="Why customers of AI partners should run paid MongoDB Atlas clusters instead of M0 — even in dev and stage — and exactly how to upgrade an existing M0 or create a paid cluster via the Atlas UI, Partner API, or Remote MCP." />
+
+<style>
+  /* MongoDB brand typefaces from mongodb.com (Sohne family), vendored locally
+     in docs/fonts/. If missing, the stacks below fall back to system fonts. */
+  @font-face {
+    font-family: "Sohne";
+    src: url("fonts/Sohne-Regular.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Sohne";
+    src: url("fonts/Sohne-Medium.woff2") format("woff2");
+    font-weight: 500; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Sohne";
+    src: url("fonts/Sohne-Bold.woff2") format("woff2");
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Sohne Mono";
+    src: url("fonts/SohneMono-Regular.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+
+  :root {
+    --mdb-dark: #001e2b;
+    --mdb-dark-soft: #0b2b3a;
+    --mdb-dark-softer: #11384a;
+    --mdb-green: #00684a;
+    --mdb-green-dark: #004732;
+    --mdb-green-bright: #00ed64;
+    --mdb-green-soft: #e3f4ee;
+    --mdb-bg: #fdfff5;
+    --mdb-text: #061621;
+    --mdb-muted: #5f6f76;
+    --mdb-border: #d0d4cf;
+    --mdb-blue-soft: #e1f7ff;
+    --mdb-blue: #006cfa;
+    --mdb-yellow-soft: #fef7e0;
+    --mdb-yellow: #e2a500;
+    --mdb-yellow-dark: #944f01;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(0, 30, 43, 0.05), 0 10px 30px rgba(0, 30, 43, 0.07);
+    --shadow-lift: 0 2px 6px rgba(0, 30, 43, 0.08), 0 18px 44px rgba(0, 30, 43, 0.14);
+    --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: "Sohne", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--mdb-text);
+    background: var(--mdb-bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: rgba(0, 237, 100, 0.28);
+    color: var(--mdb-dark);
+  }
+
+  .top-accent {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--mdb-green) 0%, var(--mdb-green-bright) 50%, var(--mdb-green) 100%);
+    z-index: 60;
+  }
+
+  /* ============================================================
+     Announcement bar
+     ============================================================ */
+  .announce {
+    background: linear-gradient(90deg, var(--mdb-green-dark), var(--mdb-green) 60%, #0a7a56);
+    color: #eafaf2;
+    font-size: 13.5px;
+    text-align: center;
+    padding: 9px 16px;
+    letter-spacing: 0.01em;
+  }
+
+  .announce a {
+    color: var(--mdb-green-bright);
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+
+  .announce a:hover { text-decoration: underline; }
+
+  /* ============================================================
+     Top navigation
+     ============================================================ */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(0, 30, 43, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 1.25;
+    flex-shrink: 0;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .nav-links a {
+    color: #c4d4cf;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .nav-links a:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 10px 18px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.18s var(--ease-spring), box-shadow 0.18s ease, background 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .btn-green {
+    background: var(--mdb-green-bright);
+    color: var(--mdb-dark);
+    box-shadow: 0 2px 10px rgba(0, 237, 100, 0.35);
+  }
+
+  .btn-green:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0, 237, 100, 0.45); }
+
+  /* ============================================================
+     Hero
+     ============================================================ */
+  .hero {
+    position: relative;
+    background:
+      radial-gradient(900px 480px at 85% -10%, rgba(0, 237, 100, 0.16), transparent 60%),
+      radial-gradient(700px 420px at 10% 110%, rgba(0, 104, 74, 0.5), transparent 65%),
+      var(--mdb-dark);
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 96px 24px 88px;
+    position: relative;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mdb-green-bright);
+    margin-bottom: 22px;
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 5.4vw, 62px);
+    line-height: 1.06;
+    letter-spacing: -0.025em;
+    margin: 0 0 22px;
+    max-width: 15em;
+  }
+
+  .hero h1 .accent { color: var(--mdb-green-bright); }
+
+  .hero p.lede {
+    font-size: clamp(16px, 1.6vw, 19px);
+    line-height: 1.6;
+    color: #b9cdc7;
+    max-width: 720px;
+    margin: 0 0 36px;
+  }
+
+  .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 54px;
+  }
+
+  .stat-chip {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #d6e4df;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+  }
+
+  .stat-chip strong { color: var(--mdb-green-bright); font-weight: 700; }
+
+  .hero-leaf {
+    position: absolute;
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 420px;
+    opacity: 0.13;
+    pointer-events: none;
+    animation: float 7s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(-52%); }
+    50% { transform: translateY(-48%); }
+  }
+
+  /* ============================================================
+     Sections
+     ============================================================ */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 84px 24px 20px;
+  }
+
+  .section-title {
+    font-size: clamp(26px, 3vw, 36px);
+    letter-spacing: -0.02em;
+    color: var(--mdb-dark);
+    margin: 0 0 12px;
+  }
+
+  .section-sub {
+    color: var(--mdb-muted);
+    font-size: 16px;
+    max-width: 720px;
+    margin: 0 0 40px;
+    line-height: 1.6;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.6s ease, transform 0.6s var(--ease-spring);
+  }
+
+  .reveal.revealed { opacity: 1; transform: none; }
+
+  /* ============================================================
+     Definition cards
+     ============================================================ */
+  .def-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .def-card {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    padding: 30px 28px 26px;
+    box-shadow: var(--shadow);
+    transition: transform 0.22s var(--ease-spring), box-shadow 0.22s ease, border-color 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .def-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+
+  .def-card.partner::before { background: linear-gradient(90deg, var(--mdb-green), var(--mdb-green-bright)); }
+  .def-card.mcp::before { background: linear-gradient(90deg, var(--mdb-green-dark), var(--mdb-green)); }
+
+  .def-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lift);
+    border-color: rgba(0, 104, 74, 0.35);
+  }
+
+  .def-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: var(--mdb-green-soft);
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+  }
+
+  .def-card h3 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--mdb-dark);
+    letter-spacing: -0.01em;
+  }
+
+  .def-tag {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mdb-green-dark);
+    background: var(--mdb-green-soft);
+    border-radius: 999px;
+    padding: 4px 12px;
+  }
+
+  .def-card p {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--mdb-muted);
+  }
+
+  .def-card p strong { color: var(--mdb-dark); }
+
+  /* ============================================================
+     Comparison tables
+     ============================================================ */
+  .compare-wrap {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .compare-table th,
+  .compare-table td {
+    text-align: left;
+    padding: 15px 22px;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  .compare-table thead th {
+    background: var(--mdb-dark);
+    color: #fff;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .compare-table thead th:first-child { width: 210px; color: #8aa79e; }
+
+  .compare-table thead th .th-icon { margin-right: 8px; }
+
+  .compare-table tbody tr + tr td,
+  .compare-table tbody tr + tr th { border-top: 1px solid var(--mdb-border); }
+
+  .compare-table tbody td + td { border-left: 1px solid var(--mdb-border); }
+
+  .compare-table tbody th {
+    color: var(--mdb-dark);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: #fafcfb;
+  }
+
+  .compare-table td { color: var(--mdb-muted); }
+  .compare-table td strong { color: var(--mdb-dark); }
+
+  .yes { color: var(--mdb-green); font-weight: 700; }
+  .no { color: #b3bcbe; font-weight: 700; }
+
+  .table-note {
+    margin: 14px 4px 0;
+    font-size: 12.5px;
+    color: var(--mdb-muted);
+    line-height: 1.55;
+  }
+
+  /* ============================================================
+     Feature cards (full potential)
+     ============================================================ */
+  .decision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .decision {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    padding: 26px 24px 22px;
+    box-shadow: var(--shadow);
+    transition: transform 0.22s var(--ease-spring), box-shadow 0.22s ease, border-color 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .decision:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lift);
+    border-color: rgba(0, 104, 74, 0.35);
+  }
+
+  .decision .card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--mdb-green-soft);
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+  }
+
+  .decision h3 {
+    margin: 0;
+    font-size: 16.5px;
+    color: var(--mdb-dark);
+    letter-spacing: -0.01em;
+  }
+
+  .decision p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--mdb-muted);
+    flex: 1;
+  }
+
+  /* ============================================================
+     Callouts
+     ============================================================ */
+  .example-callout {
+    margin-top: 22px;
+    background: var(--mdb-green-soft);
+    border: 1px solid rgba(0, 104, 74, 0.25);
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--mdb-text);
+  }
+
+  .example-callout .example-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--mdb-green-dark);
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .warn-callout {
+    margin: 0 0 24px;
+    background: var(--mdb-yellow-soft);
+    border: 1px solid rgba(226, 165, 0, 0.45);
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--mdb-text);
+  }
+
+  .warn-callout .warn-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--mdb-yellow-dark);
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  /* ============================================================
+     Step cards (flows)
+     ============================================================ */
+  .access-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .access-card {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 28px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .access-card h3 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--mdb-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .access-card .card-sub {
+    margin: -8px 0 0;
+    font-size: 13.5px;
+    color: var(--mdb-muted);
+    line-height: 1.55;
+  }
+
+  .access-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    counter-reset: step;
+  }
+
+  .access-step {
+    position: relative;
+    padding: 10px 0 10px 38px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--mdb-muted);
+  }
+
+  .access-step strong { color: var(--mdb-dark); }
+
+  .access-step::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--mdb-green-soft);
+    color: var(--mdb-green-dark);
+    font-size: 12px;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+
+  .access-step + .access-step { border-top: 1px dashed var(--mdb-border); }
+
+  .access-card code,
+  .decision code,
+  .compare-table code,
+  .example-callout code,
+  .warn-callout code,
+  .path-note code {
+    font-family: "Sohne Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--mdb-green-soft);
+    border-radius: 4px;
+    padding: 0 5px;
+    color: var(--mdb-green-dark);
+    word-break: break-word;
+  }
+
+  .mode-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .mode-chip {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mdb-green-dark);
+    background: var(--mdb-green-soft);
+    border: 1px solid rgba(0, 104, 74, 0.25);
+    padding: 6px 13px;
+    border-radius: 999px;
+  }
+
+  .mode-chip.blue {
+    color: var(--mdb-blue);
+    background: var(--mdb-blue-soft);
+    border-color: rgba(0, 108, 250, 0.25);
+  }
+
+  /* ============================================================
+     Screenshot card
+     ============================================================ */
+  .shot-card {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 18px;
+    margin-top: 4px;
+  }
+
+  .shot-card img {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--mdb-border);
+    display: block;
+  }
+
+  .shot-caption {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--mdb-muted);
+  }
+
+  /* ============================================================
+     Sub-block headings inside a section
+     ============================================================ */
+  .subhead {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 54px 0 18px;
+  }
+
+  .subhead:first-of-type { margin-top: 0; }
+
+  .subhead .subhead-badge {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--mdb-dark);
+    color: var(--mdb-green-bright);
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .subhead h3 {
+    margin: 0;
+    font-size: 21px;
+    color: var(--mdb-dark);
+    letter-spacing: -0.01em;
+  }
+
+  .subhead p {
+    margin: 2px 0 0;
+    font-size: 13.5px;
+    color: var(--mdb-muted);
+  }
+
+  /* ============================================================
+     Dark guardrail band
+     ============================================================ */
+  .guardrail {
+    margin-top: 22px;
+    background: var(--mdb-dark);
+    color: #d6e4df;
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    box-shadow: var(--shadow-lift);
+  }
+
+  .guardrail .lock {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(0, 237, 100, 0.14);
+    border: 1px solid rgba(0, 237, 100, 0.45);
+    display: grid;
+    place-items: center;
+    font-size: 19px;
+    flex-shrink: 0;
+  }
+
+  .guardrail strong { color: var(--mdb-green-bright); }
+
+  /* ============================================================
+     Related links
+     ============================================================ */
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    padding: 26px 24px 22px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.22s var(--ease-spring), box-shadow 0.22s ease, border-color 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lift);
+    border-color: rgba(0, 104, 74, 0.35);
+  }
+
+  .card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--mdb-green-soft);
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+  }
+
+  .card h3 {
+    margin: 0;
+    font-size: 17px;
+    color: var(--mdb-dark);
+    letter-spacing: -0.01em;
+  }
+
+  .card p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--mdb-muted);
+    flex: 1;
+  }
+
+  .card .card-link {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--mdb-green);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .card:hover .card-link { color: var(--mdb-green-dark); }
+  .card .card-link .arrow { transition: transform 0.18s var(--ease-spring); }
+  .card:hover .card-link .arrow { transform: translateX(4px); }
+
+  /* ============================================================
+     Footer
+     ============================================================ */
+  .site-footer {
+    background: var(--mdb-dark);
+    color: #8aa79e;
+    margin-top: 100px;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 24px 40px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 36px;
+  }
+
+  .footer-brand { color: #fff; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px; }
+  .footer-tag { font-size: 13.5px; line-height: 1.6; margin-top: 14px; max-width: 280px; }
+
+  .footer-col h4 {
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 14px;
+  }
+
+  .footer-col a {
+    display: block;
+    color: #8aa79e;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 5px 0;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .footer-col a:hover { color: var(--mdb-green-bright); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 20px 24px;
+    text-align: center;
+    font-size: 12.5px;
+  }
+
+  /* ============================================================
+     Responsive
+     ============================================================ */
+  @media (max-width: 960px) {
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    .hero-leaf { display: none; }
+    .access-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 860px) {
+    .nav-links { display: none; }
+  }
+
+  @media (max-width: 768px) {
+    .hero-inner { padding: 64px 20px 60px; }
+    .footer-inner { grid-template-columns: 1fr; gap: 26px; }
+  }
+
+  @media (max-width: 640px) {
+    .compare-table thead th:first-child { width: auto; }
+    .compare-table th, .compare-table td { padding: 13px 14px; }
+    .guardrail { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-accent"></div>
+
+<div class="announce">
+  M0 free clusters are for learning — customer-facing workloads belong on paid Atlas tiers.
+  <a href="index.html#PARTNER.md">Read the onboarding guide →</a>
+</div>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 133 284" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
+      </svg>
+      Atlas Admin API - V2
+    </a>
+    <div class="nav-links">
+      <a href="index.html#README.md">Integration Guide</a>
+      <a href="index.html#END-TO-END.md">Tutorial</a>
+      <a href="index.html#PARTNER.md">Partner Onboarding</a>
+      <a href="partner-api-vs-remote-mcp.html">Partner API vs Remote MCP</a>
+      <a href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+    <a class="btn btn-green" href="index.html">← Back to home</a>
+  </nav>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <svg class="hero-leaf" viewBox="0 0 133 284" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
+  </svg>
+  <div class="hero-inner">
+    <span class="eyebrow">MongoDB Atlas · Partner Guidance</span>
+    <h1>M0 is for learning. <span class="accent">Your customers are building real products.</span></h1>
+    <p class="lede">
+      If your product — like Monk, Retool, or Vercel — provisions MongoDB Atlas for customers,
+      every workload that serves real users or real business data belongs on a <strong style="color:#fff;">paid tier</strong>
+      (M10+ dedicated, or Flex for lightweight dev/test). This guide shows what M0 blocks,
+      why paid tiers belong in dev and stage too, and exactly how to get each customer there.
+    </p>
+    <div class="hero-stats">
+      <span class="stat-chip"><strong>512 MB</strong> storage cap on M0</span>
+      <span class="stat-chip"><strong>500</strong> max connections on M0</span>
+      <span class="stat-chip"><strong>0</strong> backups · uptime SLA on M0</span>
+      <span class="stat-chip"><strong>M10+</strong> unlocks the full platform</span>
+    </div>
+  </div>
+</section>
+
+<!-- Why M0 stops short -->
+<section class="section">
+  <h2 class="section-title reveal">M0 vs paid clusters — the real difference</h2>
+  <p class="section-sub reveal">M0 is a sandbox: shared resources, hard caps, and no safety net. Paid tiers are the same database engine with the controls real applications need.</p>
+
+  <div class="compare-wrap reveal">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Capability</th>
+          <th><span class="th-icon">🆓</span>M0 — Free</th>
+          <th><span class="th-icon">〰️</span>Flex</th>
+          <th><span class="th-icon">⚡</span>M10+ — Dedicated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Storage</th>
+          <td>512 MB</td>
+          <td>5 GB</td>
+          <td><strong>10 GB and up</strong>, with storage auto-scaling</td>
+        </tr>
+        <tr>
+          <th>Compute</th>
+          <td>Shared RAM &amp; vCPU</td>
+          <td>Shared, burstable</td>
+          <td><strong>Dedicated RAM &amp; vCPUs</strong> — predictable performance</td>
+        </tr>
+        <tr>
+          <th>Max connections</th>
+          <td>500</td>
+          <td>500</td>
+          <td><strong>1,500+</strong>, scaling with tier</td>
+        </tr>
+        <tr>
+          <th>Auto-scaling</th>
+          <td><span class="no">✗</span> None</td>
+          <td><span class="no">✗</span> Manual only</td>
+          <td><span class="yes">✓</span> Compute and storage auto-scaling</td>
+        </tr>
+        <tr>
+          <th>Backups</th>
+          <td><span class="no">✗</span> No backups</td>
+          <td><span class="yes">✓</span> Daily backups</td>
+          <td><span class="yes">✓</span> Customizable backups &amp; restore options</td>
+        </tr>
+        <tr>
+          <th>Uptime SLA</th>
+          <td><span class="no">✗</span> None</td>
+          <td><span class="no">✗</span> None</td>
+          <td><span class="yes">✓</span> Production uptime SLA</td>
+        </tr>
+        <tr>
+          <th>Performance tooling</th>
+          <td>Basic monitoring only</td>
+          <td>Basic monitoring only</td>
+          <td><span class="yes">✓</span> Performance Advisor, profiler, real-time metrics</td>
+        </tr>
+        <tr>
+          <th>Private networking</th>
+          <td><span class="no">✗</span></td>
+          <td><span class="no">✗</span></td>
+          <td><span class="yes">✓</span> VPC peering / private endpoints</td>
+        </tr>
+        <tr>
+          <th>Auditing &amp; customer-managed keys</th>
+          <td><span class="no">✗</span></td>
+          <td><span class="no">✗</span></td>
+          <td><span class="yes">✓</span> On eligible dedicated tiers</td>
+        </tr>
+        <tr>
+          <th>Search indexes</th>
+          <td>3</td>
+          <td>10</td>
+          <td><strong>Unlimited</strong> — room for AI/vector workloads</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="table-note reveal">Specs as shown in the Atlas tier picker (see the upgrade screenshot below). Dedicated tiers scale well beyond M10 — storage, RAM, vCPUs, and connection limits all grow with tier size.</p>
+</section>
+
+<!-- Why paid even for dev/stage -->
+<section class="section">
+  <h2 class="section-title reveal">Why paid tiers — even for dev and stage</h2>
+  <p class="section-sub reveal">An M0 dev environment hides problems until production. Paid tiers in every environment let your customers use the full potential of MongoDB from day one — and promote to production without a migration.</p>
+
+  <div class="decision-grid">
+    <div class="decision reveal">
+      <div class="card-icon">🚦</div>
+      <h3>Representative load testing</h3>
+      <p>Dedicated RAM/vCPUs and 1,500+ connections mean performance numbers that actually mean something. M0's shared compute and 500-connection ceiling throttle any serious test — so "fast enough on M0" proves nothing.</p>
+    </div>
+    <div class="decision reveal">
+      <div class="card-icon">🛟</div>
+      <h3>Backups in every environment</h3>
+      <p>Practice restores in dev and stage <em>before</em> production depends on them. M0 has no backups at all — one bad migration or accidental delete and the data is gone.</p>
+    </div>
+    <div class="decision reveal">
+      <div class="card-icon">📊</div>
+      <h3>Full observability while building</h3>
+      <p>Performance Advisor, the query profiler, and granular real-time metrics let your customers tune indexes and queries as they build — not as an emergency after launch.</p>
+    </div>
+    <div class="decision reveal">
+      <div class="card-icon">🔐</div>
+      <h3>Security parity with production</h3>
+      <p>Private networking, auditing, and customer-managed keys can only be exercised on paid tiers. If stage can't mirror prod's security posture, the go-live review is where surprises surface.</p>
+    </div>
+    <div class="decision reveal">
+      <div class="card-icon">🧠</div>
+      <h3>AI-ready capacity</h3>
+      <p>M0 allows just 3 search indexes — AI features built on Atlas Search and Vector Search quickly outgrow that. Paid tiers offer unlimited indexes and the memory headroom embedding and retrieval workloads need.</p>
+    </div>
+    <div class="decision reveal">
+      <div class="card-icon">🪜</div>
+      <h3>A clean promotion path</h3>
+      <p>Dev → stage → prod on the same tier family means resizing in place, not migrating off M0 in the middle of a launch. The cluster your customer tests is the cluster they ship.</p>
+    </div>
+  </div>
+
+  <div class="example-callout reveal">
+    <div class="example-title">💡 Rule of thumb for your customers</div>
+    M0 for a weekend prototype or a first look at MongoDB. The moment a partner demo, a customer, or an employee depends on the application — in any environment — it belongs on a paid tier.
+  </div>
+</section>
+
+<!-- Make the recommendation specific -->
+<section class="section">
+  <h2 class="section-title reveal">Make the recommendation specific</h2>
+  <p class="section-sub reveal">To recommend the right tier, align on a few things together with the customer:</p>
+
+  <div class="access-grid">
+    <div class="access-card reveal">
+      <h3>🧭 Align on these together</h3>
+      <div class="access-steps">
+        <div class="access-step">Is this still a <strong>prototype</strong>, or will customers and employees <strong>rely on it</strong>?</div>
+        <div class="access-step">What <strong>traffic, connection levels, data growth, and peak periods</strong> do you expect?</div>
+        <div class="access-step">Will the application store <strong>sensitive or business-critical information</strong>?</div>
+        <div class="access-step">Do you require <strong>private networking, auditing, customer-managed keys</strong>, or <strong>dedicated workload isolation</strong>?</div>
+        <div class="access-step">What <strong>recovery expectations</strong> do you have — and have you <strong>tested the application with representative traffic</strong>?</div>
+      </div>
+    </div>
+    <div class="access-card reveal">
+      <h3>🗣️ The ask</h3>
+      <p class="card-sub">Once the answers are on the table, the recommendation writes itself:</p>
+      <div class="guardrail" style="margin-top: 0;">
+        <div class="lock">🎯</div>
+        <div><strong>If this application is moving toward real users or real business data,</strong> let's review its workload and requirements now, then choose the right paid Atlas tier <strong>before M0's limits become a production constraint.</strong></div>
+      </div>
+      <div class="mode-chips">
+        <span class="mode-chip">M10+ for production &amp; business data</span>
+        <span class="mode-chip">Flex for lightweight dev/test</span>
+        <span class="mode-chip blue">M0 for prototypes only</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How to move -->
+<section class="section">
+  <h2 class="section-title reveal">Getting your customer to a paid tier</h2>
+  <p class="section-sub reveal">Two situations, three routes each — pick whichever fits the experience: inside your product with the Partner API, through an AI client with Remote MCP, or directly in the Atlas UI.</p>
+
+  <!-- A: already has M0 -->
+  <div class="subhead reveal">
+    <span class="subhead-badge">A</span>
+    <div>
+      <h3>The customer already has an M0 cluster</h3>
+      <p>Upgrade it in place to M10 — data carries over, no migration needed.</p>
+    </div>
+  </div>
+
+  <div class="warn-callout reveal">
+    <div class="warn-title">⚠️ Before any upgrade</div>
+    Confirm the paid billing with the customer, plan for roughly <strong>~10 minutes of downtime</strong> while the tier scales, preserve any existing snapshots they need beforehand, and restart application clients afterwards to validate connectivity.
+  </div>
+
+  <div class="access-grid" style="margin-bottom: 20px;">
+    <div class="access-card reveal">
+      <h3>🖥️ Route 1 · Atlas UI — fastest</h3>
+      <p class="card-sub">The customer upgrades their own cluster in a few clicks.</p>
+      <div class="access-steps">
+        <div class="access-step">Open the cluster in the Atlas project and choose <strong>Edit Configuration / Upgrade</strong>.</div>
+        <div class="access-step">Select <strong>M10 (recommended)</strong> — or Flex for lightweight dev/test.</div>
+        <div class="access-step">Review the configuration, then <strong>Apply changes</strong>. Atlas performs a tenant upgrade (~10 minutes of downtime).</div>
+        <div class="access-step">Restart application clients and <strong>validate connectivity</strong>. Paid billing starts when the change is applied.</div>
+      </div>
+      <div class="shot-card">
+        <a href="images/upgrade-cluster.png" target="_blank" rel="noopener">
+          <img src="images/upgrade-cluster.png" alt="Atlas UI Upgrade Cluster screen showing the M10 tier recommended at $0.08/hour alongside Flex and the current Free tier" loading="lazy" />
+        </a>
+        <div class="shot-caption">Atlas UI → Upgrade Cluster: M10 is the recommended target — click to open full size</div>
+      </div>
+    </div>
+    <div class="access-card reveal">
+      <h3>🤝 Route 2 · Partner API — inside your product</h3>
+      <p class="card-sub">For approved design partners: trigger the upgrade from your own "upgrade to production" flow with the customer's delegated authorization.</p>
+      <div class="access-steps">
+        <div class="access-step">Complete the <strong>Partner API OAuth flow</strong> (OAuth 2.1 Authorization Code + PKCE) so the customer authorizes your app to act with their Atlas permissions.</div>
+        <div class="access-step">Confirm the user has <strong>Project Cluster Manager</strong> access and the organization permits third-party app connections.</div>
+        <div class="access-step">With the customer's explicit confirmation, send <code>POST /api/atlas/v2/groups/{groupId}/clusters/tenantUpgrade</code> with the delegated bearer token — using <code>Accept: application/vnd.atlas.2023-01-01+json</code> and the M10 target configuration from the tenant-upgrade schema.</div>
+        <div class="access-step">Track the upgrade via the cluster status until <code>stateName</code> is <code>IDLE</code>, then restart app clients and validate.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="access-card reveal" style="margin-bottom: 0;">
+    <h3>🤖 Route 3 · Remote MCP — from an AI client</h3>
+    <p class="card-sub">For an operator or AI agent administering Atlas through MCP tools.</p>
+    <div class="access-steps">
+      <div class="access-step">Configure the AI client with <strong>MongoDB MCP</strong> and Atlas credentials authorized for the target project.</div>
+      <div class="access-step">After confirming the project and the customer's approval, call <code>atlas-upgrade-cluster</code> with target tier <strong>M10</strong> — the tool supports Free-to-M10 upgrades.</div>
+      <div class="access-step">Poll with <code>atlas-inspect-cluster</code> until the status is <code>IDLE</code>, then restart app clients and verify.</div>
+    </div>
+    <div class="example-callout" style="margin-top: 4px;">
+      <div class="example-title">🔎 Availability note</div>
+      Confirm that <code>atlas-upgrade-cluster</code> is available in your specific MCP deployment before relying on it — see the MongoDB MCP Server tool reference.
+    </div>
+  </div>
+
+  <!-- B: starting fresh -->
+  <div class="subhead reveal">
+    <span class="subhead-badge">B</span>
+    <div>
+      <h3>The customer is starting fresh — no cluster yet</h3>
+      <p>Create the paid cluster directly, so they never hit M0's ceiling.</p>
+    </div>
+  </div>
+
+  <div class="access-grid">
+    <div class="access-card reveal">
+      <h3>🤝 Partner API — embedded "Create cluster" flow</h3>
+      <p class="card-sub">The customer authorizes your product to provision Atlas on their behalf.</p>
+      <div class="access-steps">
+        <div class="access-step"><strong>Authorize:</strong> redirect the customer to <code>https://cloud.mongodb.com/oauth/authorize</code> using OAuth 2.1 Authorization Code + PKCE (<code>response_type=code</code>, <code>client_id</code>, registered <code>redirect_uri</code>, <code>code_challenge</code>, <code>code_challenge_method=S256</code>, <code>state</code>).</div>
+        <div class="access-step"><strong>Get a token:</strong> exchange the callback code at <code>POST https://authorize.mongodb.com/tokens</code> (<code>grant_type=authorization_code</code>, <code>code</code>, <code>code_verifier</code>, <code>redirect_uri</code>, <code>client_id</code>; plus <code>client_secret</code> for confidential clients). Use the returned access token as <code>Authorization: Bearer …</code>.</div>
+        <div class="access-step"><strong>Select the project:</strong> call <code>GET /api/atlas/v2/orgs</code>, then <code>GET /api/atlas/v2/orgs/{orgId}/groups</code>. The customer needs a role that permits cluster creation, and the organization must allow third-party app connections.</div>
+        <div class="access-step"><strong>Create the paid cluster:</strong> after the customer confirms tier, region, configuration, and charges, call <code>POST /api/atlas/v2/groups/{groupId}/clusters</code> with the cluster name, type, and replication specification for the selected paid tier. Poll <code>GET …/clusters/{clusterName}</code> until <code>stateName</code> is <code>IDLE</code>.</div>
+        <div class="access-step"><strong>Connect securely:</strong> create a least-privilege DB user via <code>POST …/databaseUsers</code>, restrict network access via <code>POST …/accessList</code>, then read the connection string from the cluster resource and pass it to the app over a secure channel.</div>
+      </div>
+    </div>
+    <div class="access-card reveal">
+      <h3>🤖 Remote MCP — natural-language provisioning</h3>
+      <p class="card-sub">An authorized AI client or operator provisions through MCP tools.</p>
+      <div class="access-steps">
+        <div class="access-step">Configure the AI client with <strong>MongoDB MCP</strong> and an Atlas API credential/service account authorized for the target project.</div>
+        <div class="access-step">Use <code>atlas-list-orgs</code> and <code>atlas-list-projects</code> to select the target project, and <code>atlas-get-regions</code> to resolve the region.</div>
+        <div class="access-step">After the customer confirms tier, region, and billing, call <code>atlas-create-cluster</code> with the project, cluster name, <strong>M10</strong> tier (or supported M10–M80), provider, region, and topology.</div>
+        <div class="access-step">Poll with <code>atlas-inspect-cluster</code> until the status is <code>IDLE</code>.</div>
+        <div class="access-step">Configure a <strong>least-privilege DB user</strong> and <strong>restricted network access</strong>, then retrieve and securely use the connection string.</div>
+      </div>
+      <div class="example-callout" style="margin-top: 4px;">
+        <div class="example-title">🔎 Availability note</div>
+        Confirm the desired tool is available in your specific MCP deployment before relying on it — see the MongoDB MCP Server tool reference.
+      </div>
+    </div>
+  </div>
+
+  <div class="example-callout reveal">
+    <div class="example-title">🖥️ Third option: Atlas UI</div>
+    If your team is not yet onboarded as an approved Partner API design partner — or the customer simply wants direct control — the customer creates the paid cluster in the Atlas UI using the standard workflow, choosing M10 (or Flex for dev/test) at creation time.
+  </div>
+</section>
+
+<!-- Which route -->
+<section class="section">
+  <h2 class="section-title reveal">Which route should you recommend?</h2>
+  <p class="section-sub reveal">Match the route to the experience your customer is in.</p>
+
+  <div class="compare-wrap reveal">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Situation</th>
+          <th>Recommended route</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Customer wants a <strong>"Create MongoDB cluster" flow inside a partner product</strong> (e.g. Monk, Retool, Vercel)</td>
+          <td><strong>Partner API</strong> with delegated user authorization</td>
+        </tr>
+        <tr>
+          <td>Customer/operator wants <strong>natural-language Atlas administration</strong> from an MCP-connected AI client</td>
+          <td><strong>Remote MCP</strong>, if the required Atlas tools and credentials are configured</td>
+        </tr>
+        <tr>
+          <td>Partner does not have approved Partner API onboarding, or the customer wants <strong>direct control in Atlas</strong></td>
+          <td><strong>Atlas UI</strong> using the standard create/upgrade workflow</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="guardrail reveal">
+    <div class="lock">🤝</div>
+    <div><strong>In all cases:</strong> the customer owns the Atlas account and project, understands the paid-resource charges, approves the configuration before creation, and retains control over credentials and network access. M0 is where ideas start — <strong>paid tiers are where products run.</strong></div>
+  </div>
+</section>
+
+<!-- Keep exploring -->
+<section class="section">
+  <h2 class="section-title reveal">Keep exploring</h2>
+  <p class="section-sub reveal">Wire the provisioning flow into your product, or compare the two integration paths.</p>
+  <div class="related-grid">
+    <a class="card reveal" href="partner-api-vs-remote-mcp.html">
+      <div class="card-icon">🧭</div>
+      <h3>Partner API vs Remote MCP</h3>
+      <p>Definitions, access paths, and a side-by-side pictorial comparison — plus when to choose each path, or combine them in one journey.</p>
+      <span class="card-link">Open the comparison <span class="arrow">→</span></span>
+    </a>
+    <a class="card reveal" href="index.html#README.md">
+      <div class="card-icon">📘</div>
+      <h3>Partner Integration Guide</h3>
+      <p>OAuth 2.1 + PKCE details, token handling, and the exact Atlas Admin API calls used in the flows above.</p>
+      <span class="card-link">Open guide <span class="arrow">→</span></span>
+    </a>
+    <a class="card reveal" href="index.html#END-TO-END.md">
+      <div class="card-icon">🚀</div>
+      <h3>End-to-End Tutorial</h3>
+      <p>From OAuth token to the first database read/write — project, cluster, database user, network access, and a runnable script.</p>
+      <span class="card-link">Open tutorial <span class="arrow">→</span></span>
+    </a>
+    <a class="card reveal" href="https://www.mongodb.com/pricing" target="_blank" rel="noopener">
+      <div class="card-icon">💲</div>
+      <h3>Atlas Pricing</h3>
+      <p>Current per-tier pricing for M10+ dedicated clusters and Flex — the numbers behind the recommendation.</p>
+      <span class="card-link">mongodb.com/pricing <span class="arrow">↗</span></span>
+    </a>
+    <a class="card reveal" href="https://www.mongodb.com/docs/mcp-server/" target="_blank" rel="noopener">
+      <div class="card-icon">🤖</div>
+      <h3>MongoDB MCP Server</h3>
+      <p>Hosted MCP server, available Atlas tools, and how to manage AI client access to Atlas.</p>
+      <span class="card-link">MongoDB Docs <span class="arrow">↗</span></span>
+    </a>
+    <a class="card reveal" href="index.html">
+      <div class="card-icon">🏠</div>
+      <h3>Back to the docs home</h3>
+      <p>Return to the interactive landing page — flow explorer, walkthrough, and environment picker.</p>
+      <span class="card-link">Go home <span class="arrow">→</span></span>
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <svg viewBox="0 0 133 284" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
+        </svg>
+        Atlas Admin API - V2
+      </div>
+      <p class="footer-tag">OAuth 2.1 delegated access for ISV and Technology Partners — call Atlas Admin API endpoints on behalf of your users.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Documentation</h4>
+      <a href="index.html#README.md">Partner Integration Guide</a>
+      <a href="index.html#PARTNER.md">Partner Onboarding</a>
+      <a href="index.html#END-TO-END.md">End-to-End Tutorial</a>
+      <a href="index.html#UX-GUIDE.md">Partner UX Guide</a>
+      <a href="index.html#PRODUCTION.md">Production Readiness</a>
+      <a href="index.html#RECOVERY.md">Recovery Guide</a>
+      <a href="index.html#partner-delegations.md">Partner Delegation</a>
+    </div>
+    <div class="footer-col">
+      <h4>Guides</h4>
+      <a href="partner-api-vs-remote-mcp.html">Partner API vs Remote MCP</a>
+      <a href="why-paid-clusters.html">Why Paid Tiers Over M0</a>
+      <a href="https://www.mongodb.com/pricing" target="_blank" rel="noopener">Atlas Pricing ↗</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">Atlas Admin API Reference ↗</a>
+      <a href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub Repository ↗</a>
+      <a href="https://www.mongodb.com/docs/mcp-server/" target="_blank" rel="noopener">MongoDB MCP Server ↗</a>
+    </div>
+  </div>
+  <div class="footer-bottom">Copyright © MongoDB, Inc. — Atlas Admin API - V2 Documentation</div>
+</footer>
+
+<script>
+  /* ---------------- Scroll reveal ---------------- */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+</script>
+
+</body>
+</html>
