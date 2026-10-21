@@ -648,6 +648,87 @@
   }
 
   /* ============================================================
+     Collapsible route tiles
+     ============================================================ */
+  .route-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .route-tile {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: border-color 0.18s ease, box-shadow 0.22s ease;
+  }
+
+  .route-tile:hover { border-color: rgba(0, 104, 74, 0.35); }
+
+  .route-tile[open] {
+    box-shadow: var(--shadow-lift);
+    border-color: rgba(0, 104, 74, 0.35);
+  }
+
+  .route-tile summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 22px 26px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .route-tile summary::-webkit-details-marker { display: none; }
+
+  .route-tile summary h3 {
+    margin: 0;
+    font-size: 17px;
+    color: var(--mdb-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .route-tile summary h3 small {
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--mdb-muted);
+  }
+
+  .route-chev {
+    color: var(--mdb-green);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    transition: transform 0.2s var(--ease-spring);
+    flex-shrink: 0;
+  }
+
+  .route-tile[open] .route-chev { transform: rotate(90deg); }
+
+  .route-body {
+    padding: 0 26px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .req-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mdb-green-dark);
+    margin: 0;
+  }
+
+  /* ============================================================
      Screenshot card
      ============================================================ */
   .shot-card {
@@ -920,7 +1001,7 @@
     <span class="eyebrow">MongoDB Atlas · Partner Guidance</span>
     <h1>M0 is for learning. <span class="accent">Your customers are building real products.</span></h1>
     <p class="lede">
-      If your product — like Monk, Retool, or Vercel — provisions MongoDB Atlas for customers,
+      If your product provisions MongoDB Atlas for customers,
       every workload that serves real users or real business data belongs on a <strong style="color:#fff;">paid tier</strong>
       (M10+ dedicated, or Flex for lightweight dev/test). This guide shows what M0 blocks,
       why paid tiers belong in dev and stage too, and exactly how to get each customer there.
@@ -1097,61 +1178,100 @@
   <h2 class="section-title reveal">Getting your customer to a paid tier</h2>
   <p class="section-sub reveal">Two situations, three routes each — pick whichever fits the experience: inside your product with the Partner API, through an AI client with Remote MCP, or directly in the Atlas UI.</p>
 
+  <div class="guardrail reveal" style="margin: 0 0 24px;">
+    <div class="lock">💳</div>
+    <div><strong>Billing, said plainly:</strong> paid clusters are billed to the customer's own Atlas organization from the moment a cluster is created or an upgrade is applied. Whatever the route, confirm the tier, region, and expected charges with the customer first — they approve the spend, and the spend is theirs.</div>
+  </div>
+
   <!-- A: already has M0 -->
   <div class="subhead reveal">
     <span class="subhead-badge">A</span>
     <div>
       <h3>The customer already has an M0 cluster</h3>
-      <p>Upgrade it in place to M10 — data carries over, no migration needed.</p>
+      <p>Upgrade it in place to M10 — data carries over, no migration needed. Expand a route to see its requirements and steps.</p>
     </div>
   </div>
 
   <div class="warn-callout reveal">
     <div class="warn-title">⚠️ Before any upgrade</div>
-    Confirm the paid billing with the customer, plan for roughly <strong>~10 minutes of downtime</strong> while the tier scales, preserve any existing snapshots they need beforehand, and restart application clients afterwards to validate connectivity.
+    Plan for roughly <strong>~10 minutes of downtime</strong> while the tier scales, preserve any existing snapshots the customer needs beforehand, and restart application clients afterwards to validate connectivity.
   </div>
 
-  <div class="access-grid" style="margin-bottom: 20px;">
-    <div class="access-card reveal">
-      <h3>🖥️ Route 1 · Atlas UI — fastest</h3>
-      <p class="card-sub">The customer upgrades their own cluster in a few clicks.</p>
-      <div class="access-steps">
-        <div class="access-step">Open the cluster in the Atlas project and choose <strong>Edit Configuration / Upgrade</strong>.</div>
-        <div class="access-step">Select <strong>M10 (recommended)</strong> — or Flex for lightweight dev/test.</div>
-        <div class="access-step">Review the configuration, then <strong>Apply changes</strong>. Atlas performs a tenant upgrade (~10 minutes of downtime).</div>
-        <div class="access-step">Restart application clients and <strong>validate connectivity</strong>. Paid billing starts when the change is applied.</div>
+  <div class="route-stack reveal">
+    <details class="route-tile" open>
+      <summary><h3>🖥️ Route 1 · Atlas UI <small>— fastest; the customer upgrades their own cluster</small></h3><span class="route-chev">›</span></summary>
+      <div class="route-body">
+        <div>
+          <p class="req-label">Requirements</p>
+          <div class="mode-chips" style="margin-top: 8px;">
+            <span class="mode-chip">Customer's own Atlas login</span>
+            <span class="mode-chip">Project Owner or Cluster Manager role</span>
+          </div>
+        </div>
+        <div class="access-steps">
+          <div class="access-step">Open the cluster in the Atlas project and choose <strong>Edit Configuration / Upgrade</strong>.</div>
+          <div class="access-step">Select <strong>M10 (recommended)</strong> — or Flex for lightweight dev/test.</div>
+          <div class="access-step">Review the configuration, then <strong>Apply changes</strong>. Atlas performs a tenant upgrade (~10 minutes of downtime).</div>
+          <div class="access-step">Restart application clients and <strong>validate connectivity</strong>.</div>
+        </div>
+        <div class="example-callout" style="margin-top: 0;">
+          <div class="example-title">💳 Billing</div>
+          Paid billing to the customer's Atlas organization starts when <strong>Apply changes</strong> is clicked — the picker shows the tier's hourly price before they confirm.
+        </div>
+        <div class="shot-card">
+          <a href="images/upgrade-cluster.png" target="_blank" rel="noopener">
+            <img src="images/upgrade-cluster.png" alt="Atlas UI Upgrade Cluster screen showing the M10 tier recommended at $0.08/hour alongside Flex and the current Free tier" loading="lazy" />
+          </a>
+          <div class="shot-caption">Atlas UI → Upgrade Cluster: M10 is the recommended target — click to open full size</div>
+        </div>
       </div>
-      <div class="shot-card">
-        <a href="images/upgrade-cluster.png" target="_blank" rel="noopener">
-          <img src="images/upgrade-cluster.png" alt="Atlas UI Upgrade Cluster screen showing the M10 tier recommended at $0.08/hour alongside Flex and the current Free tier" loading="lazy" />
-        </a>
-        <div class="shot-caption">Atlas UI → Upgrade Cluster: M10 is the recommended target — click to open full size</div>
-      </div>
-    </div>
-    <div class="access-card reveal">
-      <h3>🤝 Route 2 · Partner API — inside your product</h3>
-      <p class="card-sub">For approved design partners: trigger the upgrade from your own "upgrade to production" flow with the customer's delegated authorization.</p>
-      <div class="access-steps">
-        <div class="access-step">Complete the <strong>Partner API OAuth flow</strong> (OAuth 2.1 Authorization Code + PKCE) so the customer authorizes your app to act with their Atlas permissions.</div>
-        <div class="access-step">Confirm the user has <strong>Project Cluster Manager</strong> access and the organization permits third-party app connections.</div>
-        <div class="access-step">With the customer's explicit confirmation, send <code>POST /api/atlas/v2/groups/{groupId}/clusters/tenantUpgrade</code> with the delegated bearer token — using <code>Accept: application/vnd.atlas.2023-01-01+json</code> and the M10 target configuration from the tenant-upgrade schema.</div>
-        <div class="access-step">Track the upgrade via the cluster status until <code>stateName</code> is <code>IDLE</code>, then restart app clients and validate.</div>
-      </div>
-    </div>
-  </div>
+    </details>
 
-  <div class="access-card reveal" style="margin-bottom: 0;">
-    <h3>🤖 Route 3 · Remote MCP — from an AI client</h3>
-    <p class="card-sub">For an operator or AI agent administering Atlas through MCP tools.</p>
-    <div class="access-steps">
-      <div class="access-step">Configure the AI client with <strong>MongoDB MCP</strong> and Atlas credentials authorized for the target project.</div>
-      <div class="access-step">After confirming the project and the customer's approval, call <code>atlas-upgrade-cluster</code> with target tier <strong>M10</strong> — the tool supports Free-to-M10 upgrades.</div>
-      <div class="access-step">Poll with <code>atlas-inspect-cluster</code> until the status is <code>IDLE</code>, then restart app clients and verify.</div>
-    </div>
-    <div class="example-callout" style="margin-top: 4px;">
-      <div class="example-title">🔎 Availability note</div>
-      Confirm that <code>atlas-upgrade-cluster</code> is available in your specific MCP deployment before relying on it — see the MongoDB MCP Server tool reference.
-    </div>
+    <details class="route-tile">
+      <summary><h3>🤝 Route 2 · Partner API <small>— trigger the upgrade inside your product</small></h3><span class="route-chev">›</span></summary>
+      <div class="route-body">
+        <div>
+          <p class="req-label">Requirements</p>
+          <div class="mode-chips" style="margin-top: 8px;">
+            <span class="mode-chip">Approved partner onboarding + registered OAuth client</span>
+            <span class="mode-chip">User with Project Cluster Manager</span>
+            <span class="mode-chip">Org allows third-party app connections</span>
+          </div>
+        </div>
+        <div class="access-steps">
+          <div class="access-step">Complete the <strong>Partner API OAuth flow</strong> (OAuth 2.1 Authorization Code + PKCE) so the customer authorizes your app to act with their Atlas permissions.</div>
+          <div class="access-step">With the customer's explicit confirmation, send <code>POST /api/atlas/v2/groups/{groupId}/clusters/tenantUpgrade</code> with the delegated bearer token — using <code>Accept: application/vnd.atlas.2023-01-01+json</code> and the M10 target configuration from the tenant-upgrade schema.</div>
+          <div class="access-step">Track the upgrade via the cluster status until <code>stateName</code> is <code>IDLE</code>, then restart app clients and validate.</div>
+        </div>
+        <div class="example-callout" style="margin-top: 0;">
+          <div class="example-title">💳 Billing</div>
+          The upgrade starts paid billing immediately — surface the tier, region, and expected charges in your UI and get explicit customer confirmation before calling <code>tenantUpgrade</code>.
+        </div>
+      </div>
+    </details>
+
+    <details class="route-tile">
+      <summary><h3>🤖 Route 3 · Remote MCP <small>— from an AI client or operator workflow</small></h3><span class="route-chev">›</span></summary>
+      <div class="route-body">
+        <div>
+          <p class="req-label">Requirements</p>
+          <div class="mode-chips" style="margin-top: 8px;">
+            <span class="mode-chip">MCP deployment with <code>atlas-upgrade-cluster</code> available</span>
+            <span class="mode-chip">Atlas credentials authorized for the project</span>
+            <span class="mode-chip">Customer approval</span>
+          </div>
+        </div>
+        <div class="access-steps">
+          <div class="access-step">Configure the AI client with <strong>MongoDB MCP</strong> and Atlas credentials authorized for the target project.</div>
+          <div class="access-step">After confirming the project and the customer's approval, call <code>atlas-upgrade-cluster</code> with target tier <strong>M10</strong> — the tool supports Free-to-M10 upgrades.</div>
+          <div class="access-step">Poll with <code>atlas-inspect-cluster</code> until the status is <code>IDLE</code>, then restart app clients and verify.</div>
+        </div>
+        <div class="example-callout" style="margin-top: 0;">
+          <div class="example-title">💳 Billing</div>
+          Paid billing starts when the upgrade is applied — confirm tier and charges with the customer first. Confirm <code>atlas-upgrade-cluster</code> exists in your MCP deployment before relying on it (see the MCP Server tool reference).
+        </div>
+      </div>
+    </details>
   </div>
 
   <!-- B: starting fresh -->
@@ -1167,6 +1287,14 @@
     <div class="access-card reveal">
       <h3>🤝 Partner API — embedded "Create cluster" flow</h3>
       <p class="card-sub">The customer authorizes your product to provision Atlas on their behalf.</p>
+      <div>
+        <p class="req-label">Requirements</p>
+        <div class="mode-chips" style="margin-top: 8px;">
+          <span class="mode-chip">Approved partner onboarding + registered OAuth client</span>
+          <span class="mode-chip">Role that permits cluster creation</span>
+          <span class="mode-chip">Org allows third-party app connections</span>
+        </div>
+      </div>
       <div class="access-steps">
         <div class="access-step"><strong>Authorize:</strong> redirect the customer to <code>https://cloud.mongodb.com/oauth/authorize</code> using OAuth 2.1 Authorization Code + PKCE (<code>response_type=code</code>, <code>client_id</code>, registered <code>redirect_uri</code>, <code>code_challenge</code>, <code>code_challenge_method=S256</code>, <code>state</code>).</div>
         <div class="access-step"><strong>Get a token:</strong> exchange the callback code at <code>POST https://authorize.mongodb.com/tokens</code> (<code>grant_type=authorization_code</code>, <code>code</code>, <code>code_verifier</code>, <code>redirect_uri</code>, <code>client_id</code>; plus <code>client_secret</code> for confidential clients). Use the returned access token as <code>Authorization: Bearer …</code>.</div>
@@ -1174,10 +1302,22 @@
         <div class="access-step"><strong>Create the paid cluster:</strong> after the customer confirms tier, region, configuration, and charges, call <code>POST /api/atlas/v2/groups/{groupId}/clusters</code> with the cluster name, type, and replication specification for the selected paid tier. Poll <code>GET …/clusters/{clusterName}</code> until <code>stateName</code> is <code>IDLE</code>.</div>
         <div class="access-step"><strong>Connect securely:</strong> create a least-privilege DB user via <code>POST …/databaseUsers</code>, restrict network access via <code>POST …/accessList</code>, then read the connection string from the cluster resource and pass it to the app over a secure channel.</div>
       </div>
+      <div class="example-callout" style="margin-top: 4px;">
+        <div class="example-title">💳 Billing</div>
+        Charges accrue to the customer's Atlas organization from the moment the cluster is created — always confirm tier, region, and expected charges in your UI before calling the create API.
+      </div>
     </div>
     <div class="access-card reveal">
       <h3>🤖 Remote MCP — natural-language provisioning</h3>
       <p class="card-sub">An authorized AI client or operator provisions through MCP tools.</p>
+      <div>
+        <p class="req-label">Requirements</p>
+        <div class="mode-chips" style="margin-top: 8px;">
+          <span class="mode-chip">MCP deployment with <code>atlas-create-cluster</code> available</span>
+          <span class="mode-chip">Atlas API credentials / service account for the project</span>
+          <span class="mode-chip">Customer approval of tier, region &amp; charges</span>
+        </div>
+      </div>
       <div class="access-steps">
         <div class="access-step">Configure the AI client with <strong>MongoDB MCP</strong> and an Atlas API credential/service account authorized for the target project.</div>
         <div class="access-step">Use <code>atlas-list-orgs</code> and <code>atlas-list-projects</code> to select the target project, and <code>atlas-get-regions</code> to resolve the region.</div>
@@ -1186,15 +1326,15 @@
         <div class="access-step">Configure a <strong>least-privilege DB user</strong> and <strong>restricted network access</strong>, then retrieve and securely use the connection string.</div>
       </div>
       <div class="example-callout" style="margin-top: 4px;">
-        <div class="example-title">🔎 Availability note</div>
-        Confirm the desired tool is available in your specific MCP deployment before relying on it — see the MongoDB MCP Server tool reference.
+        <div class="example-title">💳 Billing</div>
+        Charges accrue to the customer's Atlas organization from creation — confirm tier, region, and charges before running the tool. Confirm the desired tool exists in your MCP deployment before relying on it (see the MCP Server tool reference).
       </div>
     </div>
   </div>
 
   <div class="example-callout reveal">
     <div class="example-title">🖥️ Third option: Atlas UI</div>
-    If your team is not yet onboarded as an approved Partner API design partner — or the customer simply wants direct control — the customer creates the paid cluster in the Atlas UI using the standard workflow, choosing M10 (or Flex for dev/test) at creation time.
+    If your team is not yet onboarded as an approved Partner API design partner — or the customer simply wants direct control — the customer creates the paid cluster in the Atlas UI using the standard workflow, choosing M10 (or Flex for dev/test) at creation time. The Atlas picker shows the hourly price before they confirm, and billing goes to their own Atlas organization.
   </div>
 </section>
 
@@ -1213,7 +1353,7 @@
       </thead>
       <tbody>
         <tr>
-          <td>Customer wants a <strong>"Create MongoDB cluster" flow inside a partner product</strong> (e.g. Monk, Retool, Vercel)</td>
+          <td>Customer wants a <strong>"Create MongoDB cluster" flow inside a partner product</strong></td>
           <td><strong>Partner API</strong> with delegated user authorization</td>
         </tr>
         <tr>
