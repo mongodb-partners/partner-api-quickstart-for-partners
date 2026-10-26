@@ -234,25 +234,6 @@
     margin: 0 0 36px;
   }
 
-  .hero-stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 54px;
-  }
-
-  .stat-chip {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #d6e4df;
-    font-size: 13px;
-    padding: 8px 16px;
-    border-radius: 999px;
-    backdrop-filter: blur(4px);
-  }
-
-  .stat-chip strong { color: var(--mdb-green-bright); font-weight: 700; }
-
   /* Floating leaf accent */
   .hero-leaf {
     position: absolute;
@@ -583,67 +564,15 @@
   }
 
   /* ============================================================
-     Comparison table
-     ============================================================ */
-  .compare-wrap {
-    margin-top: 20px;
-    background: #fff;
-    border: 1px solid var(--mdb-border);
-    border-radius: 14px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
-
-  .compare-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-
-  .compare-table th,
-  .compare-table td {
-    text-align: left;
-    padding: 16px 22px;
-    vertical-align: top;
-    line-height: 1.6;
-  }
-
-  .compare-table thead th {
-    background: var(--mdb-dark);
-    color: #fff;
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .compare-table thead th:first-child { width: 170px; color: #8aa79e; }
-
-  .compare-table thead th .th-icon { margin-right: 8px; }
-
-  .compare-table tbody tr + tr td { border-top: 1px solid var(--mdb-border); }
-
-  .compare-table tbody td + td { border-left: 1px solid var(--mdb-border); }
-
-  .compare-table tbody th {
-    color: var(--mdb-dark);
-    font-size: 13px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    background: #fafcfb;
-    border-top: 1px solid var(--mdb-border);
-  }
-
-  .compare-table td { color: var(--mdb-muted); }
-  .compare-table td strong { color: var(--mdb-dark); }
-
-  /* ============================================================
-     Overlap (Venn) + combined journey
+     Overlap (Venn)
      ============================================================ */
   .overlap-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 20px;
     align-items: stretch;
+    max-width: 760px;
+    margin: 0 auto;
   }
 
   .venn-card {
@@ -727,80 +656,6 @@
   }
 
   .venn-caption strong { color: var(--mdb-dark); }
-
-  /* Combined journey stepper */
-  .journey-card {
-    background: var(--mdb-dark);
-    border-radius: 20px;
-    box-shadow: var(--shadow-lift);
-    padding: 30px 26px;
-    color: #d6e4df;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .journey-card h3 {
-    margin: 0 0 4px;
-    color: #fff;
-    font-size: 17px;
-  }
-
-  .journey-card .journey-sub {
-    margin: 0 0 18px;
-    font-size: 13.5px;
-    color: #8aa79e;
-    line-height: 1.55;
-  }
-
-  .journey-step {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-    padding: 14px 0;
-  }
-
-  .journey-step + .journey-step { border-top: 1px solid rgba(255, 255, 255, 0.08); }
-
-  .journey-n {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: rgba(0, 237, 100, 0.14);
-    border: 1px solid rgba(0, 237, 100, 0.5);
-    color: var(--mdb-green-bright);
-    font-size: 13px;
-    font-weight: 700;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-  }
-
-  .journey-step h4 {
-    margin: 2px 0 4px;
-    color: #fff;
-    font-size: 14px;
-  }
-
-  .journey-step h4 .tag {
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--mdb-dark);
-    background: var(--mdb-green-bright);
-    border-radius: 999px;
-    padding: 2px 9px;
-    margin-left: 8px;
-    vertical-align: 2px;
-  }
-
-  .journey-step p {
-    margin: 0;
-    font-size: 13px;
-    color: #b9cdc7;
-    line-height: 1.55;
-  }
 
   /* ============================================================
      Access & examples
@@ -1137,8 +992,6 @@
       justify-content: center;
     }
     .venn-mid { position: static; transform: none; width: 100%; border-radius: 12px; }
-    .compare-table thead th:first-child { width: auto; }
-    .compare-table th, .compare-table td { padding: 13px 14px; }
   }
 </style>
 </head>
@@ -1177,11 +1030,11 @@
   </svg>
   <div class="hero-inner">
     <span class="eyebrow">MongoDB Atlas · Integration Paths</span>
-    <h1>MongoDB Atlas Integration Paths: <span class="accent">How Partner Applications and AI Agents Work with Customer Atlas Environments</span></h1>
+    <h1>Integration paths for partners: <span class="accent">Two ways to bring Atlas into partner platform.</span></h1>
     <p class="lede">
       <strong style="color:#fff;">Partner API</strong> is the scripted integration path: after MongoDB
       onboards the partner and provisions OAuth credentials, a customer authorizes the app, which then
-      calls Atlas Administration APIs directly to manage Atlas resources.
+      calls Partner APIs directly to manage Atlas resources.
     </p>
     <p class="lede" style="margin-top:12px;">
       <strong style="color:#fff;">Remote MCP</strong> is the AI-driven path: when the customer's Atlas
@@ -1189,12 +1042,6 @@
       natural-language requests, to explore data or manage Atlas resources, within the organization's
       settings and user permissions.
     </p>
-    <div class="hero-stats">
-      <span class="stat-chip"><strong>2</strong> integration paths into Atlas</span>
-      <span class="stat-chip"><strong>1</strong> shared permissions model — user role + org controls</span>
-      <span class="stat-chip"><strong>0</strong> shortcuts around authorization</span>
-      <span class="stat-chip"><strong>∞</strong> ways to combine them</span>
-    </div>
   </div>
 </section>
 
@@ -1207,7 +1054,7 @@
       <div class="def-icon">🤝</div>
       <span class="def-tag">Definition</span>
       <h3>Partner API</h3>
-      <p>An <strong>approved partner application</strong> uses <strong>Atlas App Connections</strong> to obtain an Atlas user's authorization, then calls the <strong>Atlas Administration API directly</strong> with that user's permissions.</p>
+      <p>An <strong>approved partner application</strong> uses <strong>Atlas App Connections</strong> to obtain an Atlas user's authorization, then calls the <strong>Partner API directly</strong> with that user's permissions.</p>
       <p>It is a way to connect and manage Atlas through the partner's product — it does <strong>not itself query documents</strong> inside a database.</p>
     </div>
     <div class="def-card mcp reveal">
@@ -1277,7 +1124,7 @@
           <div>Atlas resources<small>Organizations, projects, clusters — control plane</small></div>
         </div>
       </div>
-      <div class="path-note"><strong>Direct integration:</strong> the authorized partner app calls the Atlas Administration API itself, as part of its own product experience.</div>
+      <div class="path-note"><strong>Direct integration:</strong> the authorized partner app calls the Partner API itself, as part of its own product experience.</div>
     </div>
     <!-- Remote MCP path -->
     <div class="path-panel reveal">
@@ -1303,35 +1150,6 @@
     </div>
   </div>
 
-  <!-- Comparison table -->
-  <div class="compare-wrap reveal">
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th></th>
-          <th><span class="th-icon">🤝</span>Partner API</th>
-          <th><span class="th-icon">🤖</span>Remote MCP</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>Starting point</th>
-          <td>A partner application's <strong>own product flow</strong>, such as connecting a database during app setup.</td>
-          <td>An <strong>AI client or agent</strong> using natural-language requests and MongoDB tools.</td>
-        </tr>
-        <tr>
-          <th>Access path</th>
-          <td>The authorized partner app calls the <strong>Atlas Administration API directly</strong>, without the MCP server in between.</td>
-          <td>The AI client or agent calls <strong>tools exposed through MongoDB's hosted MCP server</strong>.</td>
-        </tr>
-        <tr>
-          <th>Typical fit</th>
-          <td>A <strong>repeatable, partner-owned</strong> Atlas connection and setup experience.</td>
-          <td><strong>Interactive AI exploration</strong> or an <strong>automated agent workflow</strong>, using the appropriate MCP access model.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 </section>
 
 <!-- How do they complement each other? -->
@@ -1351,31 +1169,6 @@
       </div>
       <p class="venn-caption"><strong>Overlap, not substitution.</strong> Both paths can be used to manage Atlas resources when authorized — but each exists for a different initiator and journey.</p>
     </div>
-    <div class="journey-card reveal">
-      <h3>✨ Better together: a combined journey</h3>
-      <p class="journey-sub">A product can use both paths in one experience — each where it fits best.</p>
-      <div class="journey-step">
-        <div class="journey-n">1</div>
-        <div>
-          <h4>Create or select the Atlas environment <span class="tag">Partner API</span></h4>
-          <p>The partner product provisions or selects the Atlas project and cluster inside its own setup flow.</p>
-        </div>
-      </div>
-      <div class="journey-step">
-        <div class="journey-n">2</div>
-        <div>
-          <h4>Let an assistant explore the data <span class="tag">Remote MCP</span></h4>
-          <p>An AI assistant uses permitted MongoDB tools to help the user explore and query the data.</p>
-        </div>
-      </div>
-      <div class="journey-step">
-        <div class="journey-n">3</div>
-        <div>
-          <h4>One continuous user journey</h4>
-          <p>Setup happens in the partner product; exploration happens in the AI experience — permissions and org controls apply throughout.</p>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -1390,7 +1183,7 @@
       <div class="access-steps">
         <div class="access-step"><span><strong>Start with MongoDB's partner process.</strong> The public integration guide is intended for approved design partners — apply via the <strong>Become a Partner</strong> form with “Partner API” in the request.</span></div>
         <div class="access-step"><span><strong>User begins in the partner's application</strong>, signs in to Atlas, and authorizes that application.</span></div>
-        <div class="access-step"><span><strong>The partner app calls permitted Atlas Administration API operations</strong> on the user's behalf.</span></div>
+        <div class="access-step"><span><strong>The partner app calls permitted Partner API operations</strong> on the user's behalf.</span></div>
         <div class="access-step"><span><strong>Access is gated twice:</strong> by the user's Atlas role <em>and</em> by whether the Atlas organization allows third-party app connections.</span></div>
       </div>
       <div class="example-callout">
@@ -1427,7 +1220,7 @@
     <div class="decision reveal">
       <div class="card-icon">🤝</div>
       <h3>Choose the Partner API</h3>
-      <p>For a partner product's <strong>direct Atlas integration</strong> — a repeatable, partner-owned connection and setup experience that calls the Atlas Administration API on the user's behalf.</p>
+      <p>For a partner product's <strong>direct Atlas integration</strong> — a repeatable, partner-owned connection and setup experience that calls the Partner API on the user's behalf.</p>
     </div>
     <div class="decision reveal">
       <div class="card-icon">🤖</div>
