@@ -345,19 +345,6 @@
     letter-spacing: -0.01em;
   }
 
-  .def-tag {
-    display: inline-block;
-    align-self: flex-start;
-    font-size: 11.5px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--mdb-green-dark);
-    background: var(--mdb-green-soft);
-    border-radius: 999px;
-    padding: 4px 12px;
-  }
-
   .def-card p {
     margin: 0;
     font-size: 14.5px;
@@ -767,57 +754,8 @@
   }
 
   /* ============================================================
-     Bottom-line decision cards
+     Governance guardrail
      ============================================================ */
-  .decision-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-  }
-
-  .decision {
-    background: #fff;
-    border: 1px solid var(--mdb-border);
-    border-radius: 14px;
-    padding: 26px 24px 22px;
-    box-shadow: var(--shadow);
-    transition: transform 0.22s var(--ease-spring), box-shadow 0.22s ease, border-color 0.18s ease;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .decision:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lift);
-    border-color: rgba(0, 104, 74, 0.35);
-  }
-
-  .decision .card-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
-    background: var(--mdb-green-soft);
-    display: grid;
-    place-items: center;
-    font-size: 20px;
-  }
-
-  .decision h3 {
-    margin: 0;
-    font-size: 16.5px;
-    color: var(--mdb-dark);
-    letter-spacing: -0.01em;
-  }
-
-  .decision p {
-    margin: 0;
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--mdb-muted);
-    flex: 1;
-  }
-
   .guardrail {
     margin-top: 22px;
     background: var(--mdb-dark);
@@ -1039,15 +977,15 @@
     <div class="def-grid">
       <div class="def-card partner reveal">
         <div class="def-icon">🤝</div>
-        <span class="def-tag">Definition</span>
         <h3>Partner API</h3>
+        <p>Partner API is the <strong>scripted integration path</strong>: after MongoDB onboards the partner and provisions OAuth credentials, a customer authorizes the app, which then calls Atlas Administration APIs directly to manage Atlas resources.</p>
         <p>An <strong>approved partner application</strong> uses <strong>Atlas App Connections</strong> to obtain an Atlas user's authorization, then calls the <strong>Partner API directly</strong> with that user's permissions.</p>
         <p>It is a way to connect and manage Atlas through the partner's product — it does <strong>not itself query documents</strong> inside a database.</p>
       </div>
       <div class="def-card mcp reveal">
         <div class="def-icon">🤖</div>
-        <span class="def-tag">Definition</span>
         <h3>Remote MCP</h3>
+        <p>Remote MCP is the <strong>AI-driven path</strong>: when the customer's Atlas organization allows access, AI clients or agents use MongoDB-hosted tools in response to natural-language requests, to explore data or manage Atlas resources, within the organization's settings and user permissions.</p>
         <p>MongoDB's <strong>hosted Model Context Protocol (MCP) server</strong> lets supported <strong>AI clients and agents</strong> use MongoDB tools.</p>
         <p>Depending on permissions, an assistant can <strong>explore and query data</strong> or <strong>manage Atlas resources</strong> through those tools.</p>
       </div>
@@ -1200,27 +1138,8 @@
   </div>
 </section>
 
-<!-- Bottom line -->
+<!-- Governance -->
 <section class="section">
-  <h2 class="section-title reveal">Bottom line</h2>
-  <p class="section-sub reveal">Choose by user journey, not just by operation.</p>
-  <div class="decision-grid">
-    <div class="decision reveal">
-      <div class="card-icon">🤝</div>
-      <h3>Choose the Partner API</h3>
-      <p>For a partner product's <strong>direct Atlas integration</strong> — a repeatable, partner-owned connection and setup experience that calls the Partner API on the user's behalf.</p>
-    </div>
-    <div class="decision reveal">
-      <div class="card-icon">🤖</div>
-      <h3>Choose Remote MCP</h3>
-      <p>For an <strong>AI client or agent</strong> that uses MongoDB tools — interactive AI exploration or an automated agent workflow through MongoDB's hosted MCP server.</p>
-    </div>
-    <div class="decision reveal">
-      <div class="card-icon">✨</div>
-      <h3>Or combine them</h3>
-      <p>Use the Partner API to create or select an Atlas environment, then use Remote MCP to let an assistant help the user explore its data.</p>
-    </div>
-  </div>
   <div class="guardrail reveal">
     <div class="lock">🔒</div>
     <div><strong>Neither route bypasses governance.</strong> Both paths are bound by the same permissions and organization controls that govern them — the user's Atlas role, org-level app-connection settings, and org-owner MCP modes.</div>
