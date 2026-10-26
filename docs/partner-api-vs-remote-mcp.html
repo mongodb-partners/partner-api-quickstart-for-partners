@@ -617,7 +617,7 @@
     grid-template-columns: 1fr;
     gap: 20px;
     align-items: stretch;
-    max-width: 760px;
+    max-width: 820px;
     margin: 0 auto;
   }
 
@@ -634,44 +634,44 @@
 
   .venn {
     position: relative;
-    height: 280px;
+    height: 360px;
   }
 
   .venn-circle {
     position: absolute;
     top: 50%;
-    width: 320px;
-    height: 320px;
+    width: 380px;
+    height: 380px;
     border-radius: 50%;
     transform: translateY(-50%);
     display: flex;
     align-items: center;
-    padding: 36px;
+    padding: 40px;
     text-align: center;
-    font-size: 13px;
+    font-size: 13.5px;
     font-weight: 700;
     line-height: 1.4;
     transition: transform 0.3s var(--ease-spring);
   }
 
-  .venn-circle small { display: block; font-weight: 400; font-size: 11.5px; margin-top: 6px; line-height: 1.45; }
+  .venn-circle small { display: block; font-weight: 400; font-size: 12px; margin-top: 8px; line-height: 1.5; }
 
   .venn-left {
-    left: calc(50% - 260px);
+    left: calc(50% - 310px);
     background: rgba(0, 104, 74, 0.14);
     border: 2px solid rgba(0, 104, 74, 0.5);
     color: var(--mdb-green-dark);
     justify-content: flex-start;
-    padding-right: 160px;
+    padding-right: 190px;
   }
 
   .venn-right {
-    right: calc(50% - 260px);
+    right: calc(50% - 310px);
     background: rgba(0, 108, 250, 0.10);
     border: 2px solid rgba(0, 108, 250, 0.4);
     color: var(--mdb-blue);
     justify-content: flex-end;
-    padding-left: 160px;
+    padding-left: 190px;
   }
 
   .venn-mid {
@@ -961,7 +961,10 @@
     .footer-inner { grid-template-columns: 1fr 1fr; }
     .hero-leaf { display: none; }
     .path-grid, .overlap-grid, .access-grid { grid-template-columns: 1fr; }
-    .venn { height: 300px; }
+    .venn { height: 340px; }
+    .venn-circle { width: 320px; height: 320px; padding: 30px; }
+    .venn-left { left: calc(50% - 260px); padding-right: 160px; }
+    .venn-right { right: calc(50% - 260px); padding-left: 160px; }
     .phase-strip { flex-direction: column; align-items: stretch; }
     .phase-flow { flex-direction: column; align-items: stretch; }
     .phase-arrow { transform: rotate(90deg); align-self: center; }
@@ -1158,10 +1161,10 @@
     <div class="venn-card reveal">
       <div class="venn" role="img" aria-label="Venn diagram: Partner API (direct integration path for a partner product's workflow) overlaps with Remote MCP (tool interface for an AI experience) on managing Atlas resources when authorized.">
         <div class="venn-circle venn-left">
-          <div>Partner API<small>Direct integration path for a partner application's product workflow</small></div>
+          <div>Partner API<small>Direct integration path for a partner application's product workflow — more controlled way of orchestration</small></div>
         </div>
         <div class="venn-circle venn-right">
-          <div>Remote MCP<small>Tool interface for an AI experience</small></div>
+          <div>Remote MCP<small>Tool interface for an AI experience — limited capability of resource management, meant for data management with natural-language processing</small></div>
         </div>
         <div class="venn-mid">Manage Atlas resources<small>both paths — when authorized</small></div>
       </div>
