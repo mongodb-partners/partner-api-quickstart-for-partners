@@ -443,6 +443,60 @@
     color: #8aa79e;
   }
 
+  /* Branching: split into control/data plane */
+  .path-branch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 4px 0;
+  }
+
+  .branch-arrow {
+    color: var(--mdb-green-bright);
+    font-size: 18px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .branch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .branch-node {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .branch-node .node-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(0, 237, 100, 0.14);
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .branch-node small {
+    display: block;
+    font-weight: 400;
+    color: #8aa79e;
+    margin-top: 3px;
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+
   .path-note {
     margin-top: 18px;
     font-size: 12.5px;
@@ -580,19 +634,19 @@
 
   .venn {
     position: relative;
-    height: 260px;
+    height: 280px;
   }
 
   .venn-circle {
     position: absolute;
     top: 50%;
-    width: 250px;
-    height: 250px;
+    width: 320px;
+    height: 320px;
     border-radius: 50%;
     transform: translateY(-50%);
     display: flex;
     align-items: center;
-    padding: 30px;
+    padding: 36px;
     text-align: center;
     font-size: 13px;
     font-weight: 700;
@@ -603,21 +657,21 @@
   .venn-circle small { display: block; font-weight: 400; font-size: 11.5px; margin-top: 6px; line-height: 1.45; }
 
   .venn-left {
-    left: 4%;
+    left: calc(50% - 260px);
     background: rgba(0, 104, 74, 0.14);
     border: 2px solid rgba(0, 104, 74, 0.5);
     color: var(--mdb-green-dark);
     justify-content: flex-start;
-    padding-right: 110px;
+    padding-right: 160px;
   }
 
   .venn-right {
-    right: 4%;
+    right: calc(50% - 260px);
     background: rgba(0, 108, 250, 0.10);
     border: 2px solid rgba(0, 108, 250, 0.4);
     color: var(--mdb-blue);
     justify-content: flex-end;
-    padding-left: 110px;
+    padding-left: 160px;
   }
 
   .venn-mid {
@@ -633,7 +687,7 @@
     font-size: 11.5px;
     font-weight: 700;
     text-align: center;
-    width: 128px;
+    width: 150px;
     line-height: 1.45;
     box-shadow: var(--shadow-lift);
   }
@@ -928,6 +982,8 @@
     .venn-circle {
       position: static;
       transform: none;
+      left: auto;
+      right: auto;
       width: 100%;
       height: auto;
       border-radius: 14px;
@@ -935,6 +991,8 @@
       justify-content: center;
     }
     .venn-mid { position: static; transform: none; width: 100%; border-radius: 12px; }
+    .path-branch, .branch-grid { grid-template-columns: 1fr; }
+    .path-branch .branch-arrow:last-child { display: none; }
   }
 </style>
 </head>
@@ -1070,6 +1128,20 @@
         <div class="path-node">
           <span class="node-icon">🌿</span>
           <div>Atlas resources &amp; data<small>Manage Atlas resources or explore and query data</small></div>
+        </div>
+        <div class="path-branch">
+          <div class="branch-arrow">↓</div>
+          <div class="branch-arrow">↓</div>
+        </div>
+        <div class="branch-grid">
+          <div class="branch-node">
+            <span class="node-icon">🎛️</span>
+            <div>Control Plane<small>Projects, clusters, users, network — Atlas resource management</small></div>
+          </div>
+          <div class="branch-node">
+            <span class="node-icon">🗄️</span>
+            <div>Data Plane<small>Collections, documents, indexes — explore &amp; query data</small></div>
+          </div>
         </div>
       </div>
       <div class="path-note"><strong>Tool interface:</strong> the AI client never calls Atlas directly — it invokes tools exposed through MongoDB's hosted MCP server.</div>
