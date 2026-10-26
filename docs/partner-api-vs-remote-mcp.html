@@ -202,7 +202,7 @@
   .hero-inner {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 96px 24px 88px;
+    padding: 64px 24px 56px;
     position: relative;
   }
 
@@ -257,7 +257,11 @@
   .section {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 84px 24px 20px;
+    padding: 32px 24px 8px;
+  }
+
+  .section:last-of-type {
+    padding-bottom: 48px;
   }
 
   .section-title {
@@ -291,6 +295,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 20px;
+    margin-top: 32px;
   }
 
   .def-card {
@@ -915,7 +920,7 @@
   .site-footer {
     background: var(--mdb-dark);
     color: #8aa79e;
-    margin-top: 100px;
+    margin-top: 48px;
   }
 
   .footer-inner {
@@ -1031,38 +1036,21 @@
   <div class="hero-inner">
     <span class="eyebrow">MongoDB Atlas · Integration Paths</span>
     <h1>Integration paths for partners: <span class="accent">Two ways to bring Atlas into partner platform.</span></h1>
-    <p class="lede">
-      <strong style="color:#fff;">Partner API</strong> is the scripted integration path: after MongoDB
-      onboards the partner and provisions OAuth credentials, a customer authorizes the app, which then
-      calls Partner APIs directly to manage Atlas resources.
-    </p>
-    <p class="lede" style="margin-top:12px;">
-      <strong style="color:#fff;">Remote MCP</strong> is the AI-driven path: when the customer's Atlas
-      organization allows access, AI clients or agents use MongoDB-hosted tools in response to
-      natural-language requests, to explore data or manage Atlas resources, within the organization's
-      settings and user permissions.
-    </p>
-  </div>
-</section>
-
-<!-- Definitions -->
-<section class="section">
-  <h2 class="section-title reveal">What are they?</h2>
-  <p class="section-sub reveal">MongoDB offers two ways to bring Atlas into other experiences. Each serves a different initiator — a partner product, or an AI client.</p>
-  <div class="def-grid">
-    <div class="def-card partner reveal">
-      <div class="def-icon">🤝</div>
-      <span class="def-tag">Definition</span>
-      <h3>Partner API</h3>
-      <p>An <strong>approved partner application</strong> uses <strong>Atlas App Connections</strong> to obtain an Atlas user's authorization, then calls the <strong>Partner API directly</strong> with that user's permissions.</p>
-      <p>It is a way to connect and manage Atlas through the partner's product — it does <strong>not itself query documents</strong> inside a database.</p>
-    </div>
-    <div class="def-card mcp reveal">
-      <div class="def-icon">🤖</div>
-      <span class="def-tag">Definition</span>
-      <h3>Remote MCP</h3>
-      <p>MongoDB's <strong>hosted Model Context Protocol (MCP) server</strong> lets supported <strong>AI clients and agents</strong> use MongoDB tools.</p>
-      <p>Depending on permissions, an assistant can <strong>explore and query data</strong> or <strong>manage Atlas resources</strong> through those tools.</p>
+    <div class="def-grid">
+      <div class="def-card partner reveal">
+        <div class="def-icon">🤝</div>
+        <span class="def-tag">Definition</span>
+        <h3>Partner API</h3>
+        <p>An <strong>approved partner application</strong> uses <strong>Atlas App Connections</strong> to obtain an Atlas user's authorization, then calls the <strong>Partner API directly</strong> with that user's permissions.</p>
+        <p>It is a way to connect and manage Atlas through the partner's product — it does <strong>not itself query documents</strong> inside a database.</p>
+      </div>
+      <div class="def-card mcp reveal">
+        <div class="def-icon">🤖</div>
+        <span class="def-tag">Definition</span>
+        <h3>Remote MCP</h3>
+        <p>MongoDB's <strong>hosted Model Context Protocol (MCP) server</strong> lets supported <strong>AI clients and agents</strong> use MongoDB tools.</p>
+        <p>Depending on permissions, an assistant can <strong>explore and query data</strong> or <strong>manage Atlas resources</strong> through those tools.</p>
+      </div>
     </div>
   </div>
 </section>
