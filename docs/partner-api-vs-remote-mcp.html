@@ -1331,13 +1331,13 @@
       </div>
       <div class="example-callout">
         <div class="example-title">💡 Example — control plane in action</div>
-        <strong>Priya</strong>, a developer at <strong>Acme Retail</strong>, uses the partner platform <strong>NovaDeploy</strong> to spin up a new microservice. NovaDeploy's own UI walks her through picking Atlas as the database — behind the scenes it calls the Partner API to provision resources in Acme Retail's Atlas org.
+        A developer at the customer <strong>Acme Retail</strong> uses the partner platform <strong>NovaDeploy</strong> to spin up a new microservice. NovaDeploy's own UI walks them through picking Atlas as the database — behind the scenes it calls the Partner API to provision resources in Acme Retail's Atlas org.
         <div class="ui-flow">
           <div class="ui-screen">
             <div class="ui-bar"><span class="dot"></span><span class="dot"></span><span class="dot g"></span><span class="ui-app">NovaDeploy · New Service Setup</span></div>
             <div class="ui-body">
               <div class="ui-row"><span class="k">Customer</span><span class="v">Acme Retail (Atlas org)</span></div>
-              <div class="ui-row"><span class="k">Step 1</span><span class="v">Priya clicks <em>"Connect MongoDB Atlas"</em> → signs in &amp; authorizes NovaDeploy</span></div>
+              <div class="ui-row"><span class="k">Step 1</span><span class="v">Customer clicks <em>"Connect MongoDB Atlas"</em> → signs in &amp; authorizes NovaDeploy</span></div>
               <div class="ui-row"><span class="k">Step 2</span><span class="v">Picks <span class="ui-pill">Project: orders-prod</span> <span class="ui-pill">Cluster: M10 · AWS us-east-1</span></span></div>
               <div class="ui-row"><span class="k">Step 3</span><span class="v">Clicks <em>"Provision"</em> — NovaDeploy calls Partner API to create the cluster</span></div>
             </div>
@@ -1348,7 +1348,7 @@
             <div class="ui-body">
               <div class="ui-row"><span class="k">Project</span><span class="v">orders-prod</span></div>
               <div class="ui-row"><span class="k">Cluster</span><span class="v">orders-cluster-0 · <span class="ui-pill">M10 · Creating…</span></span></div>
-              <div class="ui-row"><span class="k">Initiated by</span><span class="v">NovaDeploy (Partner API) on behalf of priya@acme-retail.com</span></div>
+              <div class="ui-row"><span class="k">Initiated by</span><span class="v">NovaDeploy (Partner API) on behalf of the Acme Retail user</span></div>
             </div>
           </div>
         </div>
@@ -1369,12 +1369,12 @@
       </div>
       <div class="example-callout">
         <div class="example-title">💡 Example — data plane in action</div>
-        <strong>Priya</strong> at <strong>Acme Retail</strong> opens her AI coding assistant (connected to Atlas via Remote MCP) and asks a natural-language question about the <code>orders</code> collection her team just provisioned. The assistant calls MongoDB-hosted tools to explore the data — Priya never leaves her AI client.
+        A developer at the customer <strong>Acme Retail</strong> opens their AI coding assistant (connected to Atlas via Remote MCP) and asks a natural-language question about the <code>orders</code> collection their team just provisioned. The assistant calls MongoDB-hosted tools to explore the data — the developer never leaves the AI client.
         <div class="ui-flow">
           <div class="ui-screen">
             <div class="ui-bar"><span class="dot"></span><span class="dot"></span><span class="dot g"></span><span class="ui-app">AI Assistant · connected to Atlas (Acme Retail)</span></div>
             <div class="ui-body">
-              <div class="ui-msg user"><span class="who">Priya</span>"Which fields does the <code>orders</code> collection have, and how many orders came in last week?"</div>
+              <div class="ui-msg user"><span class="who">Customer</span>"Which fields does the <code>orders</code> collection have, and how many orders came in last week?"</div>
               <div class="ui-msg"><span class="who">Assistant · via MongoDB MCP tools</span>Calling <code>list_collections</code> → <code>orders</code> found in <span class="ui-pill blue">orders-prod</span><br>Calling <code>collection_schema</code> → 12 fields: <code>_id</code>, <code>customer_id</code>, <code>total</code>, <code>status</code>, <code>placed_at</code>…<br>Calling <code>aggregate</code> → <strong>4,812 orders</strong> in the last 7 days.</div>
               <div class="ui-msg"><span class="who">Assistant · reply</span>"The <code>orders</code> collection has 12 fields (id, customer_id, total, status, placed_at, …). Last week Acme Retail received <strong>4,812 orders</strong>."</div>
             </div>
