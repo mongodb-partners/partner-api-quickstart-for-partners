@@ -3,6 +3,57 @@
 A single-file FastAPI gateway (`mongo_mcp_gateway.py`) that connects to a MongoDB
 MCP server over JSON-RPC 2.0 and exposes the tools as HTTP endpoints.
 
+## What this repo does
+
+This project shows how to consume **MongoDB's Atlas-managed Remote MCP server**
+(`https://mcp.mongodb.com`) from any HTTP client — curl, a web app, a backend
+service, or an AI agent — without implementing the MCP protocol yourself.
+
+**The problem it solves.** MCP servers speak JSON-RPC 2.0 over Streamable HTTP
+with an OAuth handshake, session negotiation, and SSE-framed responses. That's
+fine for MCP-native AI clients, but awkward to call from a plain REST/HTTP
+consumer. This gateway bridges the two worlds:
+
+```
+caller ──HTTP/REST──> mongo_mcp_gateway.py ──JSON-RPC 2.0 / Streamable HTTP──> MongoDB Remote MCP
+                       (FastAPI: auth, validation, allowlists)                (44 Atlas + data tools)
+```
+
+**How it works, end to end:**
+
+1. **Authenticates** with your Atlas MCP service account (`mdb_sa_id_…` /
+   `mdb_sa_sk_…`) using OAuth 2.0 `client_credentials` against
+   `https://cloud.mongodb.com/api/oauth/token`, caching and auto-refreshing the
+   token before it expires.
+2. **Performs the MCP handshake** (`initialize` → `notifications/initialized`),
+   negotiates the protocol version, and captures the `Mcp-Session-Id` that the
+   server requires on every subsequent request.
+3. **Establishes a data-plane connection** via `remote-atlas-connect` (using
+   your project id + cluster name) and remembers the returned `connectionId`.
+   That id is then injected automatically — only into tools whose schema
+   actually accepts it — so callers never deal with it.
+4. **Discovers and re-exposes the server's tools** as simple REST endpoints:
+   - curated, guardrailed routes (`/api/collections`, `/api/query`) with
+     collection allowlists, filter-operator allowlists, and result caps;
+   - an optional generic passthrough (`POST /api/call`) that can invoke **any**
+     of the 44 advertised tools (data, Atlas admin, Stream Processing, and
+     knowledge-base tools).
+5. **Parses both response formats** the server may send — plain JSON or
+   `text/event-stream` (SSE) — and surfaces JSON-RPC errors and MCP tool errors
+   (`isError`) as proper HTTP errors.
+
+**Security model:** keep your service-account credentials server-side in env
+vars; optionally require an `X-API-Key` header on all `/api/*` routes; leave
+generic tool calling disabled for untrusted callers and expose only the curated
+routes. Database content returned by tools is wrapped in
+`<untrusted-user-data …>` tags and must be treated as data, never instructions.
+
+**Also works with a self-hosted MCP server** (`mongodb-mcp-server --transport
+http`): point `MCP_SERVER_URL` at it and skip the Atlas credentials.
+
+The rest of this file is a complete curl reference for every tool the server
+advertises.
+
 ## Setup
 
 ```bash
