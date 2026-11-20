@@ -648,6 +648,138 @@
   }
 
   /* ============================================================
+     Code shell, disclosure mock, checklist, legal note
+     ============================================================ */
+  .code-shell {
+    background: var(--mdb-dark);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 4px 0;
+  }
+
+  .code-shell .code-shell-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #8aa79e;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .code-shell pre {
+    margin: 0;
+    padding: 14px 16px;
+    overflow-x: auto;
+    color: #d6e4df;
+    font-family: "Sohne Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.6;
+    white-space: pre;
+  }
+
+  .code-shell pre code { background: none; padding: 0; color: inherit; }
+
+  .disclosure-mock {
+    background: #fff;
+    border: 2px solid var(--mdb-green);
+    border-radius: 14px;
+    box-shadow: var(--shadow-lift);
+    overflow: hidden;
+  }
+
+  .disclosure-mock .dm-bar {
+    background: var(--mdb-green-soft);
+    border-bottom: 1px solid rgba(0, 104, 74, 0.25);
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mdb-green-dark);
+  }
+
+  .disclosure-mock .dm-body {
+    padding: 20px 22px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--mdb-text);
+  }
+
+  .disclosure-mock .dm-body p { margin: 0 0 12px; }
+
+  .disclosure-mock .dm-fields {
+    background: #f4f7f5;
+    border: 1px solid var(--mdb-border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 0 0 12px;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .disclosure-mock .dm-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .checklist li {
+    display: flex;
+    gap: 12px;
+    padding: 9px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--mdb-muted);
+    list-style: none;
+    align-items: flex-start;
+  }
+
+  .checklist li strong { color: var(--mdb-dark); }
+
+  .checklist li::before {
+    content: "☐";
+    color: var(--mdb-green);
+    font-size: 16px;
+    line-height: 1.3;
+    flex-shrink: 0;
+  }
+
+  .checklist li + li { border-top: 1px dashed var(--mdb-border); }
+
+  .legal-note {
+    margin-top: 18px;
+    background: rgba(0, 108, 250, 0.06);
+    border: 1px solid rgba(0, 108, 250, 0.25);
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--mdb-text);
+  }
+
+  .legal-note .legal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--mdb-blue);
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  /* ============================================================
      Collapsible route tiles
      ============================================================ */
   .route-stack {
@@ -1012,6 +1144,10 @@
       <span class="stat-chip"><strong>0</strong> backups · uptime SLA on M0</span>
       <span class="stat-chip"><strong>M10+</strong> unlocks the full platform</span>
     </div>
+    <p class="lede" style="font-size:13px; margin-top:26px; color:#8aa79e;">
+      Technical guidance only — MongoDB reviews and approves your confirmation screen and disclosure language before launch.
+      Building these flows does not by itself qualify the partner for any incentives, which separate written terms would cover.
+    </p>
   </div>
 </section>
 
@@ -1193,8 +1329,14 @@
   </div>
 
   <div class="warn-callout reveal">
-    <div class="warn-title">⚠️ Before any upgrade</div>
-    Plan for roughly <strong>~10 minutes of downtime</strong> while the tier scales, preserve any existing snapshots the customer needs beforehand, and restart application clients afterwards to validate connectivity.
+    <div class="warn-title">⚠️ Before any upgrade — the fine print your customer must hear</div>
+    <ul class="checklist" style="margin: 10px 0 0;">
+      <li><span><strong>Downtime is required</strong> for M0 → Flex/dedicated. Halt writes throughout the operation and don't promise a fixed duration — plan for roughly ~10 minutes while the tier scales. Atlas migrates the live data but replaces the source deployment; restart application clients afterwards and verify before resuming writes.</span></li>
+      <li><span><strong>M0 has no managed snapshots</strong> — export anything important beforehand with <code>mongodump</code>. If backups were enabled on the Free cluster, its existing snapshots are <strong>deleted after the upgrade</strong> and can't be recovered — download or restore what you need first.</span></li>
+      <li><span><strong>Not reversible:</strong> a dedicated cluster can't be downgraded in place back to M0 or Flex. Don't present the upgrade as freely reversible.</span></li>
+      <li><span><strong>The oplog is not preserved</strong> when moving to dedicated — affected Database Triggers must be resumed without their old resume tokens.</span></li>
+      <li><span><strong>OAuth authorization ≠ spending consent.</strong> Roles, organization delegation settings, valid billing, and supported tier/provider/region combinations still apply. No silent agent upgrades, no reselling, no markup — usage is billed to the customer's Atlas organization, and the price must be disclosed before every paid operation.</span></li>
+    </ul>
   </div>
 
   <div class="route-stack reveal">
@@ -1236,16 +1378,56 @@
             <span class="mode-chip">Approved partner onboarding + registered OAuth client</span>
             <span class="mode-chip">User with Project Cluster Manager</span>
             <span class="mode-chip">Org allows third-party app connections</span>
+            <span class="mode-chip">Payment method on file in Atlas</span>
           </div>
         </div>
         <div class="access-steps">
-          <div class="access-step">Complete the <strong>Partner API OAuth flow</strong> (OAuth 2.1 Authorization Code + PKCE) so the customer authorizes your app to act with their Atlas permissions.</div>
-          <div class="access-step">With the customer's explicit confirmation, send <code>POST /api/atlas/v2/groups/{groupId}/clusters/tenantUpgrade</code> with the delegated bearer token — using <code>Accept: application/vnd.atlas.2023-01-01+json</code> and the M10 target configuration from the tenant-upgrade schema.</div>
-          <div class="access-step">Track the upgrade via the cluster status until <code>stateName</code> is <code>IDLE</code>, then restart app clients and validate.</div>
+          <div class="access-step"><strong>Customer chooses "Upgrade MongoDB" in your product.</strong> In your database/integration settings, let the customer select the connected Atlas organization, project, and existing M0 cluster. Show the current tier and make clear they are upgrading <em>that</em> cluster — not creating a new one. If Atlas isn't connected yet, run the <strong>Partner API OAuth 2.1 Authorization Code + PKCE flow</strong>: redirect to <code>https://cloud.mongodb.com/oauth/authorize</code> (<code>response_type=code</code>, <code>client_id</code>, registered <code>redirect_uri</code>, <code>code_challenge</code>, <code>code_challenge_method=S256</code>, unique <code>state</code>); validate <code>state</code> and the <code>iss</code> issuer on callback; exchange the code at <code>POST https://authorize.mongodb.com/tokens</code> (<code>grant_type=authorization_code</code>, <code>code</code>, <code>code_verifier</code>, <code>redirect_uri</code>, <code>client_id</code>, plus <code>client_secret</code> for confidential clients). Store tokens securely and use the access token as <code>Authorization: Bearer …</code>.</div>
+          <div class="access-step"><strong>Discover the customer's M0 cluster</strong> with the delegated token: <code>GET /api/atlas/v2/orgs</code> → <code>GET /api/atlas/v2/orgs/{orgId}/groups</code> → <code>GET /api/atlas/v2/groups/{groupId}/clusters</code>. Confirm the selected cluster is Free/M0 and capture its name and project ID. If no organization is returned, guide the customer to ask an Organization Owner to enable third-party app connections (Organization Settings → App Connections). The authorizing user needs at least <strong>Project Cluster Manager</strong> on the project.</div>
+          <div class="access-step"><strong>Explain the paid change and obtain confirmation.</strong> Before any billable call, show the MongoDB-approved disclosure (below): the selected cluster and destination tier (e.g. M10), the provider/region and configuration, a link to MongoDB pricing, a statement that charges are billed directly to the customer's Atlas organization, and the expected downtime and snapshot warnings. <strong>Customer confirmation is required</strong> — never let an AI agent silently initiate a paid upgrade.</div>
+          <div class="access-step"><strong>Check billing readiness.</strong> A payment method is configured at the Atlas organization level. The Partner API does <em>not</em> redirect the customer's browser to Atlas Billing — if the org has no payment method, the upgrade request fails with <code>402 NO_PAYMENT_INFORMATION_FOUND</code> (see the handoff below). Don't retry automatically; send the customer to Atlas Billing, then let them resume with selections preserved and confirm again.</div>
+          <div class="access-step"><strong>Submit the upgrade</strong> — the documented tenant-upgrade endpoint, not create-cluster:</div>
         </div>
-        <div class="example-callout" style="margin-top: 0;">
-          <div class="example-title">💳 Billing</div>
-          The upgrade starts paid billing immediately — surface the tier, region, and expected charges in your UI and get explicit customer confirmation before calling <code>tenantUpgrade</code>.
+        <div class="code-shell">
+          <div class="code-shell-bar"><span>HTTP — Upgrade One Shared-Tier Cluster</span></div>
+          <pre><code>POST https://cloud.mongodb.com/api/atlas/v2/groups/{groupId}/clusters/tenantUpgrade
+Authorization: Bearer &lt;ACCESS_TOKEN&gt;
+Accept: application/vnd.atlas.2023-01-01+json
+Content-Type: application/json
+
+{
+  "name": "&lt;existing-m0-cluster-name&gt;",
+  "providerSettings": {
+    "providerName": "AWS",
+    "instanceSizeName": "M10"
+  }
+}</code></pre>
+        </div>
+        <div class="access-steps" style="counter-reset: step 5;">
+          <div class="access-step"><strong>Handle the asynchronous upgrade.</strong> Poll the cluster status until <code>stateName</code> is <code>IDLE</code> and show progress. Handle authorization, permission, validation, and billing failures in your UI. When it finishes, prompt the customer to restart application clients, check the connection, and verify the app before resuming writes. Don't invent or reuse a cluster-create payload — this is the tenant-upgrade operation.</div>
+        </div>
+        <div class="warn-callout" style="margin-top: 14px;">
+          <div class="warn-title">💳 The missing-billing handoff (402) — you own it, not Atlas</div>
+          <p style="margin: 0 0 10px;">If the customer's Atlas organization has no payment method on file, the upgrade (or create) request returns:</p>
+          <div class="code-shell">
+            <div class="code-shell-bar"><span>Response — 402 Payment Required</span></div>
+            <pre><code>{
+  "error": 402,
+  "reason": "Payment Required",
+  "detail": "No payment information was found for group &lt;groupId&gt;. Go to
+    https://cloud.mongodb.com/v2#/org/&lt;orgId&gt;/checkout?type=editPayment
+    to add a payment method in Atlas.",
+  "errorCode": "NO_PAYMENT_INFORMATION_FOUND"
+}</code></pre>
+          </div>
+          <ul class="checklist" style="margin-top: 10px;">
+            <li><span><strong>Stop the flow</strong> — do not retry the upgrade automatically; it cannot succeed until a payment method is added.</span></li>
+            <li><span><strong>Tell the customer clearly</strong> that a payment method is required and that it is added in Atlas, not in your product.</span></li>
+            <li><span><strong>Deep-link to Atlas Billing</strong> for their organization (<code>https://cloud.mongodb.com/v2#/org/&lt;orgId&gt;/checkout?type=editPayment</code>). Adding it requires the <strong>Organization Owner</strong> or <strong>Organization Billing Admin</strong> role (Organization → Billing → Payment Method → Edit → Save Payment Method) — if the user can't, point them to their Organization Owner.</span></li>
+            <li><span><strong>Provide a way back.</strong> When the customer returns, restore the same upgrade screen with selections preserved and require explicit confirmation again before resubmitting.</span></li>
+            <li><span><strong>Never collect or store card details</strong> — payment information is entered only in Atlas.</span></li>
+          </ul>
+          <p style="margin: 10px 0 0; font-size: 12.5px; color: var(--mdb-muted);">The published documentation describes an in-product payment prompt in the Atlas UI; it does not document an automatic Billing-page redirect for the Partner API. Implement the manual handoff and integration-test the exact billing-readiness behavior before launch.</p>
         </div>
       </div>
     </details>
@@ -1263,12 +1445,12 @@
         </div>
         <div class="access-steps">
           <div class="access-step">Connect a supported AI client to <strong>MongoDB Atlas Managed MCP</strong> — user-delegated (authorize in the browser) or an admin-provisioned MCP configuration authorized for the target project.</div>
-          <div class="access-step">After confirming the project and the customer's approval, call <code>atlas-upgrade-cluster</code> with target tier <strong>M10</strong> — the tool supports Free-to-M10 upgrades.</div>
+          <div class="access-step">After confirming the project and the customer's <strong>explicit approval</strong>, call <code>atlas-upgrade-cluster</code> with target tier <strong>M10</strong> — the tool supports Free-to-M10 upgrades. An agent must never initiate a paid upgrade without a human confirmation step.</div>
           <div class="access-step">Poll with <code>atlas-inspect-cluster</code> until the status is <code>IDLE</code>, then restart app clients and verify.</div>
         </div>
         <div class="example-callout" style="margin-top: 0;">
           <div class="example-title">💳 Billing</div>
-          Paid billing starts when the upgrade is applied — confirm tier and charges with the customer first. Confirm <code>atlas-upgrade-cluster</code> exists in your MCP deployment before relying on it (see the MCP Server tool reference).
+          Paid billing starts when the upgrade is applied — confirm tier and charges with the customer first, and never let an agent run a paid upgrade without an explicit human approval step (OAuth authorization is not spending consent). Confirm <code>atlas-upgrade-cluster</code> exists in your MCP deployment before relying on it (see the MCP Server tool reference).
         </div>
       </div>
     </details>
@@ -1297,10 +1479,12 @@
       </div>
       <div class="access-steps">
         <div class="access-step"><strong>Authorize:</strong> redirect the customer to <code>https://cloud.mongodb.com/oauth/authorize</code> using OAuth 2.1 Authorization Code + PKCE (<code>response_type=code</code>, <code>client_id</code>, registered <code>redirect_uri</code>, <code>code_challenge</code>, <code>code_challenge_method=S256</code>, <code>state</code>).</div>
-        <div class="access-step"><strong>Get a token:</strong> exchange the callback code at <code>POST https://authorize.mongodb.com/tokens</code> (<code>grant_type=authorization_code</code>, <code>code</code>, <code>code_verifier</code>, <code>redirect_uri</code>, <code>client_id</code>; plus <code>client_secret</code> for confidential clients). Use the returned access token as <code>Authorization: Bearer …</code>.</div>
-        <div class="access-step"><strong>Select the project:</strong> call <code>GET /api/atlas/v2/orgs</code>, then <code>GET /api/atlas/v2/orgs/{orgId}/groups</code>. The customer needs a role that permits cluster creation, and the organization must allow third-party app connections.</div>
-        <div class="access-step"><strong>Create the paid cluster:</strong> after the customer confirms tier, region, configuration, and charges, call <code>POST /api/atlas/v2/groups/{groupId}/clusters</code> with the cluster name, type, and replication specification for the selected paid tier. Poll <code>GET …/clusters/{clusterName}</code> until <code>stateName</code> is <code>IDLE</code>.</div>
-        <div class="access-step"><strong>Connect securely:</strong> create a least-privilege DB user via <code>POST …/databaseUsers</code>, restrict network access via <code>POST …/accessList</code>, then read the connection string from the cluster resource and pass it to the app over a secure channel.</div>
+        <div class="access-step"><strong>Get a token:</strong> validate <code>state</code> and the <code>iss</code> issuer on the callback, then exchange the code at <code>POST https://authorize.mongodb.com/tokens</code> (<code>grant_type=authorization_code</code>, <code>code</code>, <code>code_verifier</code>, <code>redirect_uri</code>, <code>client_id</code>; plus <code>client_secret</code> for confidential clients). Use the returned access token as <code>Authorization: Bearer …</code>.</div>
+        <div class="access-step"><strong>Select the project and configure:</strong> call <code>GET /api/atlas/v2/orgs</code>, then <code>GET /api/atlas/v2/orgs/{orgId}/groups</code>. Let the customer pick the project and configure the new cluster's name, tier, provider, region, and other supported settings. The customer needs a role that permits cluster creation, and the organization must allow third-party app connections.</div>
+        <div class="access-step"><strong>Show the price and obtain confirmation:</strong> before the billable call, show the selected tier, provider, region, and configuration; link to the MongoDB pricing page; and state clearly that charges are billed directly to the customer's Atlas organization. Use the MongoDB-provided disclosure language (below) and get explicit confirmation <em>immediately before</em> submitting. MongoDB reviews and approves your confirmation screen before launch. Never let an AI agent silently create a paid cluster.</div>
+        <div class="access-step"><strong>Check billing readiness:</strong> the Partner API does not redirect the customer to Atlas Billing. If the create request returns <code>402 NO_PAYMENT_INFORMATION_FOUND</code>, stop, don't retry, and hand the customer off to Atlas Billing (<code>https://cloud.mongodb.com/v2#/org/{orgId}/checkout?type=editPayment</code> — Organization Owner or Organization Billing Admin role required). When they return, restore the configuration, show the price and disclosure again, and require fresh confirmation. Never collect or store card details in your product.</div>
+        <div class="access-step"><strong>Create the cluster:</strong> after billing readiness and explicit confirmation, call <code>POST /api/atlas/v2/groups/{groupId}/clusters</code> with a body conforming to the Create One Cluster schema (name, type, replication spec for the selected paid tier). Do not use the <code>tenantUpgrade</code> endpoint — that is only for upgrading an existing shared-tier cluster. Poll <code>GET …/clusters/{clusterName}</code> until <code>stateName</code> is <code>IDLE</code>.</div>
+        <div class="access-step"><strong>Connect securely:</strong> create a least-privilege DB user via <code>POST …/databaseUsers</code>, restrict network access via <code>POST …/accessList</code>, then read the connection string from the cluster resource and pass it to the app over a secure channel. Guide the customer through connecting and validating their application.</div>
       </div>
       <div class="example-callout" style="margin-top: 4px;">
         <div class="example-title">💳 Billing</div>
@@ -1335,6 +1519,55 @@
   <div class="example-callout reveal">
     <div class="example-title">🖥️ Third option: Atlas UI</div>
     If your team is not yet onboarded as an approved Partner API design partner — or the customer simply wants direct control — the customer creates the paid cluster in the Atlas UI using the standard workflow, choosing M10 (or Flex for dev/test) at creation time. The Atlas picker shows the hourly price before they confirm, and billing goes to their own Atlas organization.
+  </div>
+</section>
+
+<!-- Customer disclosure -->
+<section class="section">
+  <h2 class="section-title reveal">The confirmation screen: required disclosure</h2>
+  <p class="section-sub reveal">Before making available any functionality that creates, upgrades, or otherwise initiates billable resources in a customer's MongoDB account, <strong>submit your implementation of the MongoDB-provided disclosure language — screenshots or a test environment showing wording, placement, and user flow — to MongoDB for approval.</strong> The reference confirmation:</p>
+
+  <div class="disclosure-mock reveal">
+    <div class="dm-bar">Reference confirmation dialog — adapt, then submit for approval</div>
+    <div class="dm-body">
+      <p>Clicking <strong>Confirm</strong> will <em>[create a new cluster / upgrade a cluster]</em> in your MongoDB Atlas project. This action is governed by your existing agreement with MongoDB. For pricing information visit <a href="https://www.mongodb.com/pricing" target="_blank" rel="noopener">MongoDB Pricing</a>.</p>
+      <div class="dm-fields">
+        Cluster Tier: <strong>&nbsp;[tier]&nbsp;</strong><br/>
+        Cloud Provider &amp; Region: <strong>&nbsp;[provider &amp; region]&nbsp;</strong>
+      </div>
+      <p>MongoDB Atlas usage will be billed by MongoDB to the payment method for this organization, beginning immediately and continuing until you downgrade or delete the cluster.</p>
+      <p>Upgrading a Free cluster or a Flex cluster to an M10 or larger cluster tier requires downtime. You can't scale a dedicated cluster back to a Free cluster or a Flex cluster. Any Free cluster backups are not retained after upgrade.</p>
+      <div class="dm-actions">
+        <button class="btn-outline" type="button">Cancel</button>
+        <button class="btn btn-green" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="guardrail reveal">
+    <div class="lock">🪪</div>
+    <div><strong>Every paid operation, every time.</strong> Show this disclosure immediately before the billable API call — on the first attempt and on every retry after a billing handoff. Nothing happens until the customer confirms, and no AI agent may confirm on their behalf.</div>
+  </div>
+</section>
+
+<!-- Implementation checklist -->
+<section class="section">
+  <h2 class="section-title reveal">Partner implementation checklist</h2>
+  <p class="section-sub reveal">The non-negotiables before your paid-tier flow goes live.</p>
+
+  <div class="access-card reveal">
+    <ul class="checklist">
+      <li><span>Use the <strong>customer-delegated OAuth token</strong>; never collect the customer's Atlas password or payment-card details in the partner app.</span></li>
+      <li><span>Validate <strong>organization app-connections settings</strong> and <strong>Project Cluster Manager</strong> permissions before submitting the paid request.</span></li>
+      <li><span>Present tier/cost and obtain <strong>affirmative approval</strong> using MongoDB-provided disclosure language immediately before the call — and submit the screen to MongoDB for approval before launch.</span></li>
+      <li><span>Handle <strong>missing billing (402)</strong> as a customer handoff to Atlas Billing; do not assume the API redirects the browser, and never auto-retry a paid operation.</span></li>
+      <li><span>Securely store OAuth tokens and <strong>redact bearer tokens, credentials, and connection strings</strong> from logs.</span></li>
+      <li><span>After success, report completion and guide the customer through <strong>reconnecting and validating their app</strong> via your partner integration surface.</span></li>
+    </ul>
+    <div class="legal-note">
+      <div class="legal-title">⚖️ Legal note</div>
+      This guide is technical guidance only. Building these flows does not by itself qualify the partner for any incentives, which separate written terms would cover.
+    </div>
   </div>
 </section>
 
