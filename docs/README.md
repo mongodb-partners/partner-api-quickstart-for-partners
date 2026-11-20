@@ -171,6 +171,21 @@ For the full onboarding process — what to provide, app configuration fields, a
 > [!NOTE]
 > **Don't confuse OAuth client credentials with other Atlas credentials.** The `client_id` / `client_secret` discussed in this guide belong to your partner OAuth app and are issued by MongoDB during onboarding. They are different from (a) **service account** credentials (`mdb_sa_id_...` / `mdb_sa_sk_...`) that you create yourself in Atlas for client-credentials access (see [Set Up a Test Atlas Environment](#set-up-a-test-atlas-environment)), and (b) the **MCP configuration** client ID/secret that Atlas generates when an admin creates an MCP configuration for the Remote MCP server (see the [MCP access models](https://www.mongodb.com/docs/mcp-server/remote-mcp/access-models)). None of these are end-user-generated.
 
+### Where the credentials are used at runtime
+
+The onboarding credentials authenticate **your application** to MongoDB's authorization server — they are used on *every* runtime flow, not just once, and they never appear in the end user's browser (the `client_id` appears only as a URL parameter identifying your app):
+
+| Runtime call | Endpoint | `client_id` | `client_secret` (confidential clients only) |
+|---|---|---|---|
+| Authorization request (per user connect) | `GET {CLOUD_BASE}/oauth/authorize` | ✅ URL parameter — identifies your app and its allowed `redirect_uri` | ❌ never in the browser |
+| Authorization-code exchange | `POST {OAUTH_BASE}/tokens` | ✅ body parameter (or Basic-auth username) | ✅ body parameter (or Basic-auth password) — proves the call comes from your backend |
+| Refresh-token grant (~every 10 min per connected user) | `POST {OAUTH_BASE}/tokens` | ✅ same as above | ✅ same as above |
+| Token revocation (user disconnect) | `POST {OAUTH_BASE}/tokens/revoke` | ✅ Basic-auth username | ✅ Basic-auth password |
+| Atlas Administration API calls | `{CLOUD_BASE}/api/atlas/v2/...` | ❌ | ❌ — these use only the delegated `Authorization: Bearer <access_token>` |
+
+> [!TIP]
+> This is why `client_secret` must live in a secrets manager reachable by your **backend** at runtime — the token exchange, refresh, and revocation calls all happen server-to-server, long after onboarding. Public (SPA) clients skip the secret entirely: PKCE alone authenticates them.
+
 ---
 
 ## Obtain an Access Token
