@@ -97,6 +97,9 @@ MongoDB will share:
 
 These credentials are issued by MongoDB for your **partner OAuth app**. They are distinct from **service account** credentials (which you or your customers create in Atlas for client-credentials access) and from **MCP configuration** credentials (which Atlas generates for the Remote MCP server) — see [Get Your OAuth Credentials](README.md#get-your-oauth-credentials).
 
+> [!TIP]
+> **Where they're used after onboarding:** `client_id` identifies your app on every authorization request, token exchange, refresh, and revocation call; `client_secret` authenticates those same server-to-server calls (token exchange, refresh, `/tokens/revoke`). Runtime Atlas Administration API calls use only the delegated access token — never the client credentials. The full mapping table is in the [Partner Integration Guide](README.md#where-the-credentials-are-used-at-runtime).
+
 Configure them in your `.env` alongside the environment endpoints — see [Environments](README.md#environments) in the Partner Integration Guide.
 
 ---
