@@ -1,11 +1,11 @@
-# Partner Onboarding — MongoDB Atlas Admin API - V2
+# Partner Onboarding — Atlas App Connections (Partner API)
 
-This guide covers the steps a partner goes through to register with MongoDB, receive OAuth credentials, and integrate the MongoDB Atlas Admin API - V2 into their product.
+This guide covers the steps a partner goes through to register with MongoDB, receive OAuth credentials, and integrate Atlas App Connections (user-delegated access to the Atlas Administration API) into their product.
 
 > [!NOTE]
 > Replace all placeholders (`<partner-name>`, `<partner-app-domain>`, etc.) with your own details.
 >
-> For technical details on token flows, API calls, and testing setup, refer to the [Partner Integration Guide](README.md).
+> For technical details on token flows, API calls, and testing setup, refer to the [Partner Integration Guide](README.md). MongoDB's official version of this flow is [Integrate Your App with Atlas App Connections](https://www.mongodb.com/docs/atlas/app-connections/partner-integration-guide/).
 
 ---
 
@@ -26,17 +26,17 @@ This guide covers the steps a partner goes through to register with MongoDB, rec
 
 ## How Credentials Are Issued
 
-MongoDB Atlas OAuth is currently **invite-only**. You do not create your OAuth app yourself — MongoDB provisions it for you.
+Atlas App Connections is currently available to **approved design partners**. To become one, submit the [Become a Partner](https://www.mongodb.com/company/partners/) form and include **"Partner API"** in the More Information field. You do not create your OAuth app yourself — MongoDB provisions it for you.
 
 | Step | Who does it |
 |---|---|
-| Partner contacts MongoDB partner team | **You** |
+| Partner applies via the Become a Partner form ("Partner API") | **You** |
 | MongoDB creates the OAuth app registration | **MongoDB** |
 | MongoDB shares `client_id` (and `client_secret` if applicable) | **MongoDB** |
 | Partner configures `.env` and starts the flow | **You** |
 
 > [!NOTE]
-> **Future state:** Partners will be able to self-register via **Atlas UI → Organization → Integrations → OAuth Apps**. This guide will be updated when self-serve is available.
+> **Future state:** Partners are planned to self-register and manage OAuth applications via Atlas (client ID/secret creation, redirect URIs, metadata, secret regeneration). See [Partner Delegation](partner-delegations.md). This guide will be updated when self-serve is available.
 
 ---
 
@@ -56,12 +56,12 @@ Once a user's delegated access token is obtained, your app can list orgs, manage
 
 ## Step 1: Initiate onboarding
 
-Contact your MongoDB partner manager or solutions engineer. Provide:
+Submit the [Become a Partner](https://www.mongodb.com/company/partners/) form with **"Partner API"** in the More Information field, or contact your MongoDB partner manager or solutions engineer. Provide:
 
 - **Company name:** `<partner-name>`
 - **Product name:** `<partner-product-name>`
 - **Use case:** Allow users to provision and connect an Atlas cluster from within your product
-- **Target environment:** Dev (`cloud-dev.mongodb.com`) to start
+- **Target environment:** Production (`cloud.mongodb.com`) — Atlas does not provide separate partner environments
 - **Technical contact:** name and email of the engineer owning the integration
 - **Operational contact:** email for app ownership and incident notifications
 
@@ -75,13 +75,13 @@ Work with the MongoDB team to define your app settings:
 |---|---|---|
 | `client_name` | `<partner-name>` | Shown on the Atlas consent screen |
 | `client_type` | `web_app` | Use `single_page_app` if your app has no backend |
-| `token_endpoint_auth_method` | `client_secret_basic` | Use `none` for public (SPA) clients |
-| `redirect_uris` | `https://<partner-app-domain>/oauth/atlas/callback` | HTTPS required in production |
+| `token_endpoint_auth_method` | `client_secret_basic` | Use `none` for public (SPA) clients — prefer secret-less PKCE where possible |
+| `redirect_uris` | `https://<partner-app-domain>/oauth/atlas/callback` | HTTPS required except loopback (`localhost`, `127.0.0.1`, `::1` may use HTTP); no fragments (`#`) |
 | `grant_types` | `["authorization_code", "refresh_token"]` | Omit `refresh_token` for public clients |
 | `access_token_lifetime` | `600` | 10 minutes |
 | `maximum_refresh_token_lifetime` | `2592000` | 30 days (confidential clients only) |
 | `allow_saved_consent` | `true` | User not re-prompted after first consent |
-| `resources` | `["https://api.mongodb.com/api/atlas"]` | Use `api-dev` for dev |
+| `resources` | `["https://cloud.mongodb.com/api/atlas"]` | Registration-time setting; production authorization requests do not send `resource` |
 
 ---
 
@@ -89,11 +89,13 @@ Work with the MongoDB team to define your app settings:
 
 MongoDB will share:
 
-- **`client_id`** — always provided; a UUID identifying your OAuth app
-- **`client_secret`** — confidential clients only (omitted for public/SPA clients)
+- **`client_id`** — always provided; identifies your OAuth app
+- **`client_secret`** — confidential clients only (omitted for public/SPA clients, which authenticate with only the `client_id` + PKCE)
 
 > [!WARNING]
-> Store `client_secret` in a secrets manager — never in source control or browser-accessible config.
+> Store `client_secret` in a secrets manager — never in source control or browser-accessible config. To rotate a suspected-compromised secret, contact MongoDB.
+
+These credentials are issued by MongoDB for your **partner OAuth app**. They are distinct from **service account** credentials (which you or your customers create in Atlas for client-credentials access) and from **MCP configuration** credentials (which Atlas generates for the Remote MCP server) — see [Get Your OAuth Credentials](README.md#get-your-oauth-credentials).
 
 Configure them in your `.env` alongside the environment endpoints — see [Environments](README.md#environments) in the Partner Integration Guide.
 
@@ -103,7 +105,7 @@ Configure them in your `.env` alongside the environment endpoints — see [Envir
 
 Follow [Obtain an Access Token](README.md#obtain-an-access-token) and [Use the Access Token](README.md#use-the-access-token) in the Partner Integration Guide to confirm your credentials work before writing product code.
 
-For setting up your own test Atlas account and enabling Delegated Partner Access on it, see [Set Up a Test Atlas Environment](README.md#set-up-a-test-atlas-environment) in the Partner Integration Guide.
+For setting up your own test Atlas account and enabling third-party app connections on it, see [Set Up a Test Atlas Environment](README.md#set-up-a-test-atlas-environment) in the Partner Integration Guide.
 
 ---
 
@@ -121,29 +123,34 @@ https://cloud.mongodb.com/oauth/authorize
   &code_challenge=<S256-pkce-challenge>
   &code_challenge_method=S256
   &state=<random-csrf-token>
-  &resource=https://api.mongodb.com/api/atlas
 ```
+
+> [!IMPORTANT]
+> Send **only** these parameters. The production authorization endpoint does not require a `resource` parameter — omit it, even though the OAuth 2.1 specification defines one.
 
 ### Callback handler
 
 At `https://<partner-app-domain>/oauth/atlas/callback`, your backend:
 
-1. **Validates `state`** (CSRF protection).
+1. **Validates `state`** (CSRF protection) and **`iss`** (must equal `https://authorize.mongodb.com` — prevents authorization-server mix-up attacks). Checks for an `error` parameter (e.g. `access_denied` when the user declines) before using the `code`.
 
-1. **Exchanges the code for tokens** (back-channel POST):
+1. **Exchanges the code for tokens** (back-channel POST) — codes are single-use and expire within 10 minutes:
 
    ```
    POST https://authorize.mongodb.com/tokens
    Content-Type: application/x-www-form-urlencoded
-   Authorization: Basic base64(<client_id>:<client_secret>)   # confidential clients only
 
    grant_type=authorization_code
    &code=<authorization-code>
    &code_verifier=<pkce-verifier>
    &redirect_uri=https://<partner-app-domain>/oauth/atlas/callback
+   &client_id=<your-client-id>
+   &client_secret=<your-client-secret>   # confidential clients only
    ```
 
-1. **Stores `refresh_token` server-side only** — never in the browser or logs.
+   Confidential clients may instead authenticate with HTTP Basic (`Authorization: Basic base64(client_id:client_secret)`) and omit `client_id`/`client_secret` from the body.
+
+1. **Stores `refresh_token` server-side only** — never in the browser or logs. Every refresh returns a **new** refresh token and immediately invalidates the previous one — always persist both new values atomically.
 
 ### Provisioning flow
 
@@ -152,10 +159,13 @@ Recommended Atlas API call sequence when onboarding a new user:
 ```
 1. GET  /api/atlas/v2/orgs
         → user selects their organization
+        (only orgs that allow third-party app connections are usable targets;
+         an empty list means no org has enabled them — a setup step, not a failure)
 
 2. POST /api/atlas/v2/groups
         { "name": "<project-name>", "orgId": "<selected-org-id>" }
         → create a dedicated Atlas project (or select an existing one)
+        → Atlas validates the orgId and returns 403 if that org has not opted in
 
 3. POST /api/atlas/v2/groups/{projectId}/clusters
         → provision an M0 free-tier cluster (or select an existing one)
@@ -180,7 +190,7 @@ The full walkthrough — with curl examples, a runnable script (`end_to_end.py`)
 
 ### Retrieve a connection string (data plane)
 
-The MongoDB Atlas Admin API - V2 covered in this guide is **control-plane only**, but the connection string your app needs for **direct database access** (CRUD operations, creating collections, building indexes) is already included in the cluster response — no separate API call is required. Once the cluster reports `stateName == "IDLE"`, read `connectionStrings.standardSrv` (`mongodb+srv://…`) and store it in your secrets manager alongside the refresh token — never in the browser or logs.
+The Atlas Administration API covered in this guide is **control-plane only**, but the connection string your app needs for **direct database access** (CRUD operations, creating collections, building indexes) is already included in the cluster response — no separate API call is required. Once the cluster reports `stateName == "IDLE"`, read `connectionStrings.standardSrv` (`mongodb+srv://…`) and store it in your secrets manager alongside the refresh token — never in the browser or logs.
 
 > [!WARNING]
 > **The connection string alone does not authenticate.** To actually connect, the project also needs:
@@ -194,12 +204,12 @@ The MongoDB Atlas Admin API - V2 covered in this guide is **control-plane only**
 
 ## Step 6: Promote to staging and production
 
-To promote your integration to staging and production:
+Atlas does not provide separate partner environments — you develop and launch against **production**. If MongoDB provisioned your OAuth client in an internal dev or staging environment for early testing, promote by asking your MongoDB partner contact to register the OAuth app in production:
 
-1. Ask your MongoDB partner contact to register the OAuth app in staging, then production.
+1. Ask your MongoDB partner contact to register the OAuth app in production.
 1. Use separate `CLIENT_ID` / `CLIENT_SECRET` per environment — stored in the appropriate secrets manager.
 1. Update `redirect_uris` to production HTTPS URLs.
-1. Confirm `published: true` so the app appears in the Atlas governance UX.
+1. Confirm `published: true` so the app appears in the Atlas governance UX (Organization Settings → App Connections).
 
 > [!NOTE]
 > Integration responsibilities split three ways — MongoDB, you (the partner), and the end user. The full ownership matrix is in the [Production Readiness Guide](PRODUCTION.md#responsibility-matrix).
@@ -222,7 +232,7 @@ Submit this to MongoDB when initiating onboarding ([Step 1](#step-1-initiate-onb
   ],
   "grant_types": ["authorization_code", "refresh_token"],
   "response_types": ["code"],
-  "resources": ["https://api.mongodb.com/api/atlas"],
+  "resources": ["https://cloud.mongodb.com/api/atlas"],
   "access_token_lifetime": 600,
   "maximum_refresh_token_lifetime": 2592000,
   "allow_saved_consent": true,
@@ -244,14 +254,17 @@ Submit this to MongoDB when initiating onboarding ([Step 1](#step-1-initiate-onb
 
 ## Security Checklist
 
-- [ ] `client_secret` stored in a secrets manager — not in source control or browser config
-- [ ] `redirect_uri` is HTTPS in staging and production
+- [ ] `client_secret` stored in a secrets manager — not in source control or browser config (prefer secret-less PKCE where your client type allows)
+- [ ] `redirect_uri` is HTTPS in production (HTTP allowed only for loopback addresses)
 - [ ] `state` parameter validated on every callback (CSRF protection)
-- [ ] PKCE `code_challenge` used on every authorization request
+- [ ] `iss` parameter validated on every callback (authorization-server mix-up protection)
+- [ ] PKCE `code_challenge` (S256) used on every authorization request — `plain` is rejected
 - [ ] `refresh_token` stored server-side only — never logged or sent to the browser
+- [ ] Every refresh persists the **new** refresh token (old one is invalidated immediately)
 - [ ] Token refresh errors surface graceful re-authentication — no raw error details exposed
 - [ ] Access tokens not written to application or infrastructure logs
 - [ ] `.env` is in `.gitignore` and has never been committed
+- [ ] Tokens revoked via `POST /tokens/revoke` when a user disconnects
 
 ---
 

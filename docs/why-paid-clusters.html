@@ -1257,12 +1257,12 @@
           <p class="req-label">Requirements</p>
           <div class="mode-chips" style="margin-top: 8px;">
             <span class="mode-chip">MCP deployment with <code>atlas-upgrade-cluster</code> available</span>
-            <span class="mode-chip">Atlas credentials authorized for the project</span>
+            <span class="mode-chip">AI client access enabled for the org, or an MCP configuration for the project</span>
             <span class="mode-chip">Customer approval</span>
           </div>
         </div>
         <div class="access-steps">
-          <div class="access-step">Configure the AI client with <strong>MongoDB MCP</strong> and Atlas credentials authorized for the target project.</div>
+          <div class="access-step">Connect a supported AI client to <strong>MongoDB Atlas Managed MCP</strong> — user-delegated (authorize in the browser) or an admin-provisioned MCP configuration authorized for the target project.</div>
           <div class="access-step">After confirming the project and the customer's approval, call <code>atlas-upgrade-cluster</code> with target tier <strong>M10</strong> — the tool supports Free-to-M10 upgrades.</div>
           <div class="access-step">Poll with <code>atlas-inspect-cluster</code> until the status is <code>IDLE</code>, then restart app clients and verify.</div>
         </div>
@@ -1314,12 +1314,12 @@
         <p class="req-label">Requirements</p>
         <div class="mode-chips" style="margin-top: 8px;">
           <span class="mode-chip">MCP deployment with <code>atlas-create-cluster</code> available</span>
-          <span class="mode-chip">Atlas API credentials / service account for the project</span>
+          <span class="mode-chip">MCP configuration (client ID/secret + roles) for the project</span>
           <span class="mode-chip">Customer approval of tier, region &amp; charges</span>
         </div>
       </div>
       <div class="access-steps">
-        <div class="access-step">Configure the AI client with <strong>MongoDB MCP</strong> and an Atlas API credential/service account authorized for the target project.</div>
+        <div class="access-step">Connect a supported AI client to <strong>MongoDB Atlas Managed MCP</strong> — user-delegated (authorize in the browser) or an admin-provisioned MCP configuration with roles scoped to the target project.</div>
         <div class="access-step">Use <code>atlas-list-orgs</code> and <code>atlas-list-projects</code> to select the target project, and <code>atlas-get-regions</code> to resolve the region.</div>
         <div class="access-step">After the customer confirms tier, region, and billing, call <code>atlas-create-cluster</code> with the project, cluster name, <strong>M10</strong> tier (or supported M10–M80), provider, region, and topology.</div>
         <div class="access-step">Poll with <code>atlas-inspect-cluster</code> until the status is <code>IDLE</code>.</div>

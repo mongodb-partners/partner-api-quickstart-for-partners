@@ -2,7 +2,7 @@
 
 **Add "Connect MongoDB Atlas" as a first-class database option in your product.** Users authorize access, select or create an Atlas resource, and begin building — without copying connection strings.
 
-This kit shows ISV and Technology Partners how to build that experience on the MongoDB Atlas Admin API - V2 with OAuth 2.1 delegated access: your users log in to Atlas directly, and your app receives short-lived, user-scoped tokens — you never see their credentials and never need an org-level API key.
+This kit shows ISV and Technology Partners how to build that experience with **Atlas App Connections** — the MongoDB Atlas OAuth 2.1 platform for user-delegated access to the Atlas Administration API (the "Partner API" path): your users log in to Atlas directly, and your app receives short-lived, user-scoped tokens — you never see their credentials and never need an org-level API key. (For AI clients and agents, the sibling path is the MongoDB-hosted **Remote MCP server** — see [Partner API vs Remote MCP](docs/partner-api-vs-remote-mcp.html).)
 
 ---
 
@@ -44,7 +44,7 @@ Before writing code, decide which shape your product needs:
 
 The fastest path through the kit:
 
-1. **[Onboard](docs/PARTNER.md)** — receive OAuth credentials from MongoDB (invite-only Early Access).
+1. **[Onboard](docs/PARTNER.md)** — receive OAuth credentials from MongoDB (approved design partners; apply via the [Become a Partner](https://www.mongodb.com/company/partners/) form with "Partner API" in the request).
 1. **[Get a token](docs/README.md#obtain-an-access-token)** — `python3 get_token.py` runs the OAuth 2.1 Authorization Code + PKCE flow.
 1. **[Complete the journey](docs/END-TO-END.md)** — `python3 end_to_end.py` provisions a project, M0 cluster, database user, and network access, then performs the first read/write.
 1. **[Design the experience](docs/UX-GUIDE.md)** — screens, states, and copy for your product.
@@ -65,9 +65,12 @@ The fastest path through the kit:
 ## Resources
 
 - [Atlas Administration API reference](https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2) — official endpoint documentation
+- [Atlas App Connections](https://www.mongodb.com/docs/atlas/app-connections/) — official user-delegated access platform overview
+- [Integrate Your App with Atlas App Connections](https://www.mongodb.com/docs/atlas/app-connections/partner-integration-guide/) — the official partner integration guide this kit complements
+- [MongoDB MCP Server](https://www.mongodb.com/docs/mcp-server/) — Remote MCP server, access models, and AI client management
 - [MongoDB Documentation](https://www.mongodb.com/docs/) — product documentation home
 - [GitHub repository](https://github.com/mongodb-partners/partner-api-quickstart-for-partners) — code and examples
-- Atlas App Connections overview, branding assets, and support/escalation path — available from your MongoDB partner contact during Early Access
+- MongoDB brand assets — see [MongoDB Brand Resources](https://www.mongodb.com/company/newsroom/brand-resources); support/escalation path available from your MongoDB partner contact
 
 > [!IMPORTANT]
 > **The runnable code in this repository is a development demo.** Tokens are stored in a plaintext `.token_store.json`, the OAuth callback is a local HTTP server, and all requests share one local token. Before building for real users, read the [Production Readiness Guide](docs/PRODUCTION.md).

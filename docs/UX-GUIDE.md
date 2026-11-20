@@ -91,14 +91,19 @@ The redirect to Atlas is a trust boundary. Set expectations **before** the user 
 
 > You're heading to MongoDB Atlas to authorize `<product>`. Review the permissions and click **Authorize** — you'll come right back here.
 
-**During the Atlas hosted flow** (owned by MongoDB): the user signs in and reviews the consent screen showing your app's name and logo (configured during [onboarding](PARTNER.md#step-2-agree-on-oauth-app-configuration)).
+**During the Atlas hosted flow** (owned by MongoDB): the user signs in (or creates an Atlas account) and reviews the consent screen showing your app's name and logo (configured during [onboarding](PARTNER.md#step-2-agree-on-oauth-app-configuration)). The consent screen lists the permissions being requested:
+
+- **Know which Atlas resources you have access to**
+- **Act on your behalf in Atlas organizations**
+
+It also tells the user that authorizing lets the app act in their Atlas resources just as they can — and that they can revoke access at any time.
 
 **On return** — validate `state`, exchange the code, and land the user on a clear continuation:
 
 > **Authorization successful** — now choose where your data should live.
 
 > [!NOTE]
-> If the user denies consent, do **not** strand them. Return to your database selection screen with: *"No problem — authorization was cancelled. You can connect MongoDB Atlas whenever you're ready."* and a working **Connect** button.
+> If the user denies consent, do **not** strand them. Atlas redirects back with `error=access_denied` — return to your database selection screen with: *"No problem — authorization was cancelled. You can connect MongoDB Atlas whenever you're ready."* and a working **Connect** button.
 
 ---
 
@@ -131,8 +136,8 @@ After authorization, let the user **select an existing resource or create a new 
 **Guidelines**
 
 - Default to the **create new M0** path for accounts with no existing clusters — it is the fastest route to value.
-- Populate pickers from `GET /orgs`, `GET /groups?orgId=…`, and `GET /groups/{id}/clusters` with the user's delegated token.
-- If the org list is empty, don't show a blank picker — explain that delegated access may be disabled and link to the fix (see [Recovery Guide](RECOVERY.md#no-organizations-returned)).
+- Populate pickers from `GET /orgs`, `GET /groups?orgId=…`, and `GET /groups/{id}/clusters` with the user's delegated token. Only organizations that allow third-party app connections are returned.
+- If the org list is empty, don't show a blank picker — explain that app connections may be disabled and link to the fix (Organization Settings → App Connections; see [Recovery Guide](RECOVERY.md#no-organizations-returned)). An empty list is a setup step, not an authorization failure.
 
 ---
 
@@ -185,7 +190,7 @@ Confirm with a real artifact — the first successful read/write — not just a 
 
 ## Screen 7: Reconnect after token expiry
 
-Access tokens live ~10 minutes; refresh tokens rotate and eventually expire. When reauthorization is required, be transparent and lightweight.
+Access tokens live ~10 minutes; refresh tokens rotate on every use and expire after 7 days idle or 30 days maximum (an Organization Owner can shorten this org-wide). When reauthorization is required, be transparent and lightweight.
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -216,9 +221,9 @@ Users must be able to disconnect from **both** sides — your product and Atlas.
 > This removes `<product>`'s access to your Atlas organization. Clusters and data in Atlas are **not** deleted. You can reconnect at any time.
 > `[ Disconnect ]`
 
-On disconnect, your backend must delete cached tokens and database credentials — see [Revocation cleanup](PRODUCTION.md#revocation-cleanup).
+On disconnect, your backend must revoke the stored tokens (`POST https://authorize.mongodb.com/tokens/revoke`), delete cached tokens and database credentials — see [Revocation cleanup](PRODUCTION.md#revocation-cleanup).
 
-**In Atlas:** users can revoke your app from their authorized applications at any time. When that happens, your next API call returns `401` — clear cached credentials and show the reconnect screen rather than retrying in a loop.
+**In Atlas:** users can revoke your app at any time from **Atlas Settings → App Connections**. When that happens, your next refresh returns `invalid_grant` (the current access token may work for up to 10 more minutes) — clear cached credentials and show the reconnect screen rather than retrying in a loop. Note that revocation does **not** delete resources your app created (database users, clusters) — clean those up as part of your disconnect flow.
 
 ---
 
@@ -231,6 +236,7 @@ Ready-to-adapt strings for your UI:
 | Connect button | `Connect MongoDB Atlas` |
 | Connect subtitle | `Authorize <product> to create and manage Atlas clusters on your behalf.` |
 | Consent preface | `You're heading to MongoDB Atlas to sign in. We never see your MongoDB password.` |
+| Consent expectations | `MongoDB will ask you to authorize <product> — it can then act in Atlas with your permissions. You can revoke it anytime in Atlas Settings → App Connections.` |
 | Picker title | `Where should your data live?` |
 | Create-new option | `Create a new free cluster (M0)` |
 | Provisioning | `Creating your cluster… this usually takes 3–5 minutes.` |

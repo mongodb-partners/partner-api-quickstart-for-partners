@@ -1141,7 +1141,7 @@
 <div class="top-accent"></div>
 
 <div class="announce">
-  Partner API access is invite-only; Remote MCP is governed per Atlas organization.
+  Partner API access requires approved design-partner status; Remote MCP (Atlas Managed MCP Server) is GA and governed per Atlas organization.
   <a href="index.html#PARTNER.md">Read the onboarding guide →</a>
 </div>
 
@@ -1176,16 +1176,16 @@
       <div class="def-card partner reveal">
         <div class="def-icon">🤝</div>
         <h3>Partner API</h3>
-        <p>Partner API is the <strong>scripted integration path</strong>: after MongoDB onboards the partner and provisions OAuth credentials, a customer authorizes the app, which then calls Atlas Administration APIs directly to manage Atlas resources.</p>
-        <p>An <strong>approved partner application</strong> uses <strong>Atlas App Connections</strong> to obtain an Atlas user's authorization, then calls the <strong>Partner API directly</strong> with that user's permissions.</p>
+        <p>Partner API is the <strong>scripted integration path</strong>: after MongoDB onboards the partner (approved design partners) and provisions OAuth credentials, a customer authorizes the app, which then calls Atlas Administration APIs directly to manage Atlas resources.</p>
+        <p>An <strong>approved partner application</strong> uses <strong>Atlas App Connections</strong> — MongoDB's OAuth 2.1 platform — to obtain an Atlas user's authorization, then calls the <strong>Atlas Administration API directly</strong> with that user's permissions.</p>
         <p>It is a way to connect and manage Atlas through the partner's product — it does <strong>not itself query documents</strong> inside a database.</p>
       </div>
       <div class="def-card mcp reveal">
         <div class="def-icon">🤖</div>
         <h3>Remote MCP</h3>
-        <p>Remote MCP is the <strong>AI-driven path</strong>: when the customer's Atlas organization allows access, AI clients or agents use MongoDB-hosted tools in response to natural-language requests, to explore data or manage Atlas resources, within the organization's settings and user permissions.</p>
-        <p>MongoDB's <strong>hosted Model Context Protocol (MCP) server</strong> lets supported <strong>AI clients and agents</strong> use MongoDB tools.</p>
-        <p>Depending on permissions, an assistant can <strong>explore and query data</strong> or <strong>manage Atlas resources</strong> through those tools.</p>
+        <p>Remote MCP — the <strong>MongoDB Atlas Managed MCP Server</strong>, now GA — is the <strong>AI-driven path</strong>: when the customer's Atlas organization allows access, supported AI clients use MongoDB-hosted tools in response to natural-language requests, to explore data or manage Atlas resources, within the organization's settings and user permissions.</p>
+        <p>It supports <strong>two access models</strong>: <strong>user-delegated</strong> (a person authorizes an AI client such as Claude, ChatGPT, Cursor, Devin, or Grok Build from its marketplace, via Atlas App Connections) and <strong>programmatic</strong> (an admin provisions an <strong>MCP configuration</strong> — with its own client ID/secret and assigned roles — for an unattended agent).</p>
+        <p>Depending on the org's access mode (read / read-write) and the user's Atlas role, an assistant can <strong>explore and query data</strong> or <strong>manage Atlas resources</strong> through those tools.</p>
       </div>
     </div>
   </div>
@@ -1200,17 +1200,17 @@
   <div class="phase-strip reveal">
     <div class="phase-label">
       <strong>Partner onboarding</strong>
-      <span>One-time (invite-only)</span>
+      <span>One-time (design partners)</span>
     </div>
     <div class="phase-flow">
       <div class="phase-step">
         <span class="n">1</span>
-        <div>Partner contacts MongoDB partner team to initiate onboarding</div>
+        <div>Partner applies via the Become a Partner form ("Partner API")</div>
       </div>
       <div class="phase-arrow">→</div>
       <div class="phase-step">
         <span class="n">2</span>
-        <div>MongoDB provisions OAuth app — <code>client_id</code> + <code>client_secret</code> + <code>redirect_uris</code></div>
+        <div>MongoDB provisions OAuth app — <code>client_id</code> (+ <code>client_secret</code> for confidential clients) + <code>redirect_uris</code></div>
       </div>
       <div class="phase-arrow">→</div>
       <div class="phase-step">
@@ -1235,14 +1235,14 @@
         <div class="path-arrow">↓ <span>signs in to Atlas &amp; authorizes the app</span></div>
         <div class="path-node">
           <span class="node-icon">🔐</span>
-          <div>Atlas App Connections<small>OAuth consent — user grants the partner app access</small></div>
+          <div>Atlas App Connections<small>OAuth 2.1 + PKCE consent — user grants the partner app access</small></div>
         </div>
         <div class="path-arrow">↓ <span>delegated, user-scoped access</span></div>
         <div class="path-node highlight">
           <span class="node-icon">⚡</span>
-          <div>Atlas Partner API<small>Called directly by the partner app — no MCP server in between</small></div>
+          <div>Atlas Administration API (Partner API)<small>Called directly by the partner app — no MCP server in between</small></div>
         </div>
-        <div class="path-arrow">↓ <span>user's Atlas role applies</span></div>
+        <div class="path-arrow">↓ <span>user's Atlas role + org app-connections setting apply</span></div>
         <div class="path-node">
           <span class="node-icon">🌿</span>
           <div>Atlas resources<small>Organizations, projects, clusters — control plane</small></div>
@@ -1257,19 +1257,19 @@
       <div class="path-track">
         <div class="path-node">
           <span class="node-icon">💬</span>
-          <div>AI Client / Agent: Person or Unattended Agent<small>Supported assistants from their marketplace — authorized in the browser, or admin-provisioned for autonomous agents</small></div>
+          <div>AI Client / Agent: Person or Unattended Agent<small>Supported AI clients (Claude, ChatGPT, Cursor, Codex, Devin, Grok Build…) from their marketplace — or an admin-provisioned MCP configuration for autonomous agents</small></div>
         </div>
-        <div class="path-arrow">↓ <span>user grants access via OAuth consent</span></div>
+        <div class="path-arrow">↓ <span>user-delegated: OAuth consent via App Connections · programmatic: MCP configuration client credentials</span></div>
         <div class="path-node">
           <span class="node-icon">🔐</span>
-          <div>App Connections<small>OAuth consent: Intelligent consent for partner platform to access MongoDB</small></div>
+          <div>App Connections / MCP Configuration<small>OAuth consent for interactive users, or admin-provisioned roles + client ID/secret for agents</small></div>
         </div>
         <div class="path-arrow">↓ <span>tool calls over MCP</span></div>
         <div class="path-node highlight">
           <span class="node-icon">🛠️</span>
-          <div>MongoDB hosted MCP server<small>Exposes MongoDB tools to the client or agent</small></div>
+          <div>MongoDB Atlas Managed MCP server<small>Exposes MongoDB tools to the client or agent</small></div>
         </div>
-        <div class="path-arrow">↓ <span>read or read/write mode + user's Atlas role</span></div>
+        <div class="path-arrow">↓ <span>org access mode (read / read-write) + user's Atlas role</span></div>
         <div class="path-node">
           <span class="node-icon">🌿</span>
           <div>Atlas resources &amp; data<small>Manage Atlas resources or explore and query data</small></div>
@@ -1324,7 +1324,7 @@
     <div class="access-card reveal">
       <h3>🤝 Accessing the Partner API</h3>
       <div class="access-steps">
-        <div class="access-step"><span><strong>Start with MongoDB's partner process.</strong> The public integration guide is intended for approved design partners — apply via the <strong>Become a Partner</strong> form with “Partner API” in the request.</span></div>
+        <div class="access-step"><span><strong>Start with MongoDB's partner process.</strong> The official integration guide is intended for approved design partners — apply via the <strong>Become a Partner</strong> form with “Partner API” in the request. Public clients use secret-less PKCE; confidential clients also receive a <code>client_secret</code>.</span></div>
         <div class="access-step"><span><strong>User begins in the partner's application</strong>, signs in to Atlas, and authorizes that application.</span></div>
         <div class="access-step"><span><strong>The partner app calls permitted Partner API operations</strong> on the user's behalf.</span></div>
         <div class="access-step"><span><strong>Access is gated twice:</strong> by the user's Atlas role <em>and</em> by whether the Atlas organization allows third-party app connections.</span></div>
@@ -1362,10 +1362,10 @@
         <span class="mode-chip">Unattended — automated agent</span>
       </div>
       <div class="access-steps">
-        <div class="access-step"><span><strong>Interactive use:</strong> a person connects a supported AI client from that client's marketplace and authorizes it in the browser.</span></div>
-        <div class="access-step"><span><strong>Organization control:</strong> an Atlas Organization Owner controls whether AI clients can connect, and sets a <strong>read</strong> or <strong>read/write</strong> mode; the user's Atlas role further limits what the client can do.</span></div>
-        <div class="access-step"><span><strong>Unattended agents:</strong> an administrator provisions an MCP configuration with assigned roles.</span></div>
-        <div class="access-step"><span><strong>Both models use the hosted MongoDB MCP server.</strong></span></div>
+        <div class="access-step"><span><strong>Interactive use (user-delegated):</strong> a person connects a supported AI client — Claude, ChatGPT, Cursor, Codex, Devin, fx, Grok Build — from that client's marketplace and authorizes it in the browser via Atlas App Connections.</span></div>
+        <div class="access-step"><span><strong>Organization control:</strong> an Atlas Organization Owner controls whether AI clients can connect, and sets a <strong>read</strong> or <strong>read/write</strong> access mode; the user's Atlas role further limits what the client can do. Disabled by default for existing orgs.</span></div>
+        <div class="access-step"><span><strong>Unattended agents (programmatic):</strong> an Organization or Project Owner provisions an <strong>MCP configuration</strong> with assigned Atlas roles, an optional IP access list, and a generated client ID/secret (shown once).</span></div>
+        <div class="access-step"><span><strong>Both models use the MongoDB Atlas Managed MCP server</strong> — and share its rate limits (2,000 req/min per IP, 500 req/min per user).</span></div>
       </div>
       <div class="example-callout">
         <div class="example-title">💡 Example — data plane in action</div>
@@ -1389,7 +1389,7 @@
 <section class="section">
   <div class="guardrail reveal">
     <div class="lock">🔒</div>
-    <div><strong>Neither route bypasses governance.</strong> Both paths are bound by the same permissions and organization controls that govern them — the user's Atlas role, org-level app-connection settings, and org-owner MCP modes.</div>
+    <div><strong>Neither route bypasses governance.</strong> Both paths are bound by the same permissions and organization controls that govern them — the user's Atlas role, the org-level third-party app connections setting (Organization Settings → App Connections), and org-owner AI-client access modes. Revoking access never deletes resources a path already created (database users, service accounts) — cleanup is a separate step.</div>
   </div>
 </section>
 

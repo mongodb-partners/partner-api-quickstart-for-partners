@@ -42,18 +42,22 @@ This guide covers what changes when real users connect their Atlas accounts.
 
 ### OAuth flow hardening
 
-- [ ] Callback endpoints are **HTTPS only** in staging and production
+- [ ] Callback endpoints are **HTTPS only** in production (HTTP allowed only for loopback addresses during development)
 - [ ] `state` is a random, single-use value bound to the user's session and **validated on every callback** (CSRF protection)
-- [ ] PKCE `code_challenge` / `code_verifier` (S256) used on every authorization request — public and confidential clients alike
-- [ ] `client_secret` lives in a secrets manager (AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault); confidential-client exchanges use HTTP Basic auth server-side only
+- [ ] `iss` on the callback is validated against the authorization base (`https://authorize.mongodb.com`) — prevents authorization-server mix-up attacks
+- [ ] Authorization requests send **only** the documented parameters (`response_type`, `client_id`, `redirect_uri`, `code_challenge`, `code_challenge_method`, `state`) — no `resource` parameter for production clients
+- [ ] PKCE `code_challenge` / `code_verifier` (S256) used on every authorization request — public and confidential clients alike (`plain` is rejected)
+- [ ] `client_secret` lives in a secrets manager (AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault); confidential-client exchanges authenticate server-side only (body or HTTP Basic)
 - [ ] Authorization codes treated as single-use and short-lived; never logged
 
 ### Token refresh and rotation
 
-- [ ] Refresh happens **proactively** (e.g. at 50–80% of the 600-second lifetime), not only after a `401`
-- [ ] The **newly returned refresh token is always persisted** — MongoDB may rotate it on every use; keeping the old value breaks the chain
+- [ ] Refresh happens **proactively** (e.g. at 50–80% of the `expires_in` lifetime), not only after a `401`
+- [ ] Access tokens treated as short-lived (currently 600 s — read `expires_in`, don't hardcode); refresh tokens bounded by a 7-day idle / 30-day maximum lifetime that Organization Owners can shorten org-wide
+- [ ] The **newly returned refresh token is always persisted** — every refresh returns a new refresh token and **immediately invalidates** the previous one; keeping the old value breaks the chain
 - [ ] Concurrent refreshes for the same tenant are serialized (row lock / mutex / single-flight) so two workers don't race and invalidate each other's rotated token
 - [ ] A failed refresh with `invalid_grant` marks the connection as *needs reauthorization* and triggers the reconnect UX — no retry loop
+- [ ] Disconnects revoke tokens server-side (`POST https://authorize.mongodb.com/tokens/revoke` with `token_type_hint`) instead of letting them linger
 
 ### Atlas API resilience
 
@@ -83,7 +87,7 @@ This guide covers what changes when real users connect their Atlas accounts.
 | Token | Lifetime | Production handling |
 |---|---|---|
 | Access token | 600 s (10 min) | Proactive refresh; never exposed to browsers or logs |
-| Refresh token | Configured per client (e.g. 30 days) | Persist every rotated value immediately; serialize concurrent refreshes; treat `invalid_grant` as *reauthorization required* |
+| Refresh token | 7-day idle / 30-day max lifetime (org-configurable) | Persist every rotated value immediately (each refresh returns a **new** refresh token and invalidates the old one); serialize concurrent refreshes; treat `invalid_grant` as *reauthorization required* |
 | Authorization code | Seconds, single-use | Exchange immediately; never store |
 
 Recommended refresh sequence per tenant:
@@ -113,12 +117,19 @@ A user can end the relationship two ways — handle both:
 1. Leave Atlas resources (project/cluster/data) untouched unless the user explicitly asks for deletion
 1. Show: *"Disconnected. Your Atlas data was not deleted."*
 
-**User revokes in Atlas** (authorized applications)
+**User revokes in Atlas** (Atlas Settings → App Connections)
 
-1. Your next API call returns `401`, and refresh returns `invalid_grant`
+1. Your next API call returns `401` within ~10 minutes (the current access token stays valid until it expires; the refresh token is invalidated immediately), and refresh returns `invalid_grant`
 1. Clear cached credentials, mark the tenant *reconnect required*
 1. Stop background jobs for that tenant — do not retry in a loop
 1. Surface the reconnect prompt ([UX Guide](UX-GUIDE.md#screen-7-reconnect-after-token-expiry))
+
+**Org Owner disables app connections** (Organization Settings → App Connections)
+
+1. Atlas checks the org setting on every Administration API call, so requests against that org start returning `403 Forbidden` **immediately**
+1. Same handling as above: clear state, stop jobs, prompt the user — and note that their org admin controls the setting
+
+Also plan for **MongoDB disabling your OAuth client** (incident response / partner offboarding): the authorization endpoint returns `error=access_denied` with `client is disabled`, and the token endpoint returns `401 invalid_client` for every grant type — including refresh. Treat this as terminal: stop retrying, surface the failure, and contact the MongoDB partner team.
 
 ---
 
@@ -126,17 +137,17 @@ A user can end the relationship two ways — handle both:
 
 | Area | MongoDB | Partner (you) | End user |
 |---|---|---|---|
-| OAuth client registration | Provision and configure (invite-only model today; self-serve planned) | Supply redirect URIs, app metadata, logo, contacts | — |
+| OAuth client registration | Provision and configure (design-partner model today; self-serve planned) | Supply redirect URIs, app metadata, logo, contacts | — |
 | OAuth flow | Operate authorization server, consent screen, token issuance | Implement redirect, callback, `state`/PKCE validation, token exchange | Authenticate and consent |
 | Atlas resource selection | Provide Admin API | Build the picker, provisioning states, and error handling | Choose organization / project / cluster |
 | Provisioning | Provision infrastructure; report `stateName` | Poll to `IDLE`; create database user and access list; store credentials securely | Wait (or keep working — notified when ready) |
 | Database credentials | Define lifecycle expectations via API | Generate, store, rotate, and use credentials server-side | Approve the overall access grant |
-| Org-level controls | Expose `delegationSettings`, governance UX | Surface "delegation disabled" states with admin guidance | Org Owner enables/disables delegated access |
-| Revocation | Invalidate grants and tokens | Delete cached credentials, disconnect UI, stop jobs | Revoke from Atlas authorized applications |
-| Audit | Record delegated actions Atlas-side | Log integration lifecycle events per tenant | Review authorized applications |
+| Org-level controls | Expose `delegationSettings` + Org Settings → App Connections UX | Surface "app connections disabled" states with admin guidance | Org Owner enables/disables app connections, sets max token lifetime |
+| Revocation | Invalidate grants and tokens | Delete cached credentials, disconnect UI, stop jobs, revoke via `/tokens/revoke` | Revoke from Atlas Settings → App Connections |
+| Audit | Record delegated actions Atlas-side | Log integration lifecycle events per tenant | Review connected apps (Atlas Settings → App Connections) |
 
 > [!NOTE]
-> Onboarding is currently invite-only and manually provisioned by MongoDB. Self-service app registration in Atlas is planned — see [Partner Delegation: Current & Future State](partner-delegations.md).
+> Onboarding currently requires approved design-partner status and manual provisioning by MongoDB. Self-service app registration in Atlas is planned — see [Partner Delegation: Current & Future State](partner-delegations.md).
 
 ---
 

@@ -63,7 +63,7 @@ sequenceDiagram
 ## Before you begin
 
 - You have a `client_id` from MongoDB — see [Get Your OAuth Credentials](README.md#get-your-oauth-credentials).
-- Delegated Partner Access is enabled on your test organization — see [Set Up a Test Atlas Environment](README.md#set-up-a-test-atlas-environment).
+- Delegated Partner Access (third-party app connections) is enabled on your test organization — see [Set Up a Test Atlas Environment](README.md#set-up-a-test-atlas-environment).
 - You have obtained a delegated access token:
 
   ```bash
@@ -130,7 +130,7 @@ Everything `end_to_end.py` does, as individual API calls you can map into your o
 ### Setup
 
 ```bash
-API_BASE=https://api-dev.mongodb.com
+API_BASE=https://cloud.mongodb.com   # internal dev clients: https://api-dev.mongodb.com
 ACCESS_TOKEN=$(python3 -c \
   "import json; print(json.load(open('.token_store.json'))['access_token'])")
 ```

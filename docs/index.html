@@ -1992,7 +1992,7 @@
 <div id="view-home">
 
   <div class="announce">
-    Now in Early Access — Atlas OAuth for partners is invite-only.
+    Atlas App Connections for partners is available to approved design partners — Remote MCP (MongoDB Atlas Managed MCP Server) is now GA.
     <a data-doc-link="PARTNER.md">Read the onboarding guide →</a>
   </div>
 
@@ -2031,7 +2031,7 @@
       <div class="hero-stats">
         <span class="stat-chip"><strong>OAuth 2.1</strong> Authorization Code + PKCE</span>
         <span class="stat-chip"><strong>600s</strong> delegated token lifetime</span>
-        <span class="stat-chip"><strong>3</strong> environments · dev → staging → prod</span>
+        <span class="stat-chip"><strong>7d / 30d</strong> refresh idle / max lifetime</span>
         <span class="stat-chip"><strong>0</strong> user credentials handled</span>
       </div>
     </div>
@@ -2040,7 +2040,7 @@
   <!-- Architecture diagram -->
   <section class="section">
     <h2 class="section-title reveal">Onboarding at a glance</h2>
-    <p class="section-sub reveal">From invite-only partner onboarding to the runtime OAuth 2.1 delegated access flow — the full picture in one diagram.</p>
+    <p class="section-sub reveal">From design-partner onboarding to the runtime OAuth 2.1 delegated access flow — the full picture in one diagram.</p>
     <div class="diagram-card reveal">
       <a href="onboarding-architecture.png" target="_blank" rel="noopener">
         <img src="onboarding-architecture.png" alt="Architecture diagram: MongoDB Atlas Admin API - V2 partner onboarding and delegated access flow" loading="lazy" />
@@ -2093,7 +2093,7 @@
       <a class="card reveal" data-doc-link="partner-delegations.md">
         <div class="card-icon">🔐</div>
         <h3>Partner Delegation</h3>
-        <p>How organization opt-in and user consent work today (M1) — and the scoped delegation and governance coming next.</p>
+        <p>How organization opt-in and user consent work today — and the scoped delegation and governance coming next.</p>
         <span class="card-link">Current &amp; future state <span class="arrow">→</span></span>
       </a>
       <a class="card reveal" href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">
@@ -2133,8 +2133,7 @@
   &redirect_uri=https://app.example.com/oauth/atlas/callback
   &code_challenge=<S256-pkce-challenge>
   &code_challenge_method=S256
-  &state=<random-csrf-token>
-  &resource=https://api.mongodb.com/api/atlas</code></pre>
+  &state=<random-csrf-token></code></pre>
         </div>
       </div>
 
@@ -2150,16 +2149,17 @@
       </div>
 
       <div class="flow-panel" role="tabpanel">
-        <p><strong>Exchange the code for tokens.</strong> Your backend POSTs the authorization code and PKCE verifier to the token endpoint — a back-channel call the browser never sees.</p>
+        <p><strong>Exchange the code for tokens.</strong> Your backend POSTs the authorization code and PKCE verifier to the token endpoint — a back-channel call the browser never sees. Confidential clients authenticate with the <code>client_id</code> / <code>client_secret</code> (body or HTTP Basic); public clients send only the <code>client_id</code>.</p>
         <div class="code-shell">
           <div class="code-shell-bar"><span>SHELL — token exchange</span><button class="copy-btn">Copy</button></div>
           <pre><code class="language-bash">curl -X POST "https://authorize.mongodb.com/tokens" \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -H "Authorization: Basic $(echo -n '&lt;client_id&gt;:&lt;client_secret&gt;' | base64)" \
   -d "grant_type=authorization_code" \
   -d "code=&lt;authorization-code&gt;" \
   -d "code_verifier=&lt;pkce-verifier&gt;" \
-  -d "redirect_uri=https://app.example.com/oauth/atlas/callback"</code></pre>
+  -d "redirect_uri=https://app.example.com/oauth/atlas/callback" \
+  -d "client_id=&lt;your-client-id&gt;" \
+  -d "client_secret=&lt;your-client-secret&gt;"  # confidential clients only</code></pre>
         </div>
       </div>
 
@@ -2167,7 +2167,7 @@
         <p><strong>Call the Atlas Admin API.</strong> Use the delegated access token as a Bearer token. It is scoped to what the logged-in user is allowed to do — no org-level API key needed.</p>
         <div class="code-shell">
           <div class="code-shell-bar"><span>SHELL — authenticated API call</span><button class="copy-btn">Copy</button></div>
-          <pre><code class="language-bash">curl "https://api.mongodb.com/api/atlas/v2/orgs" \
+          <pre><code class="language-bash">curl "https://cloud.mongodb.com/api/atlas/v2/orgs" \
   -H "Authorization: Bearer &lt;access_token&gt;" \
   -H "Accept: application/vnd.atlas.2025-03-12+json"</code></pre>
         </div>
@@ -2296,13 +2296,12 @@
                 Authorize Partner Application
               </div>
               <div class="mock-auth-sub"><strong>Partner Application</strong> is requesting access to your Atlas account</div>
-              <div class="mock-perm"><span class="check">✓</span>Read the organizations you belong to</div>
-              <div class="mock-perm"><span class="check">✓</span>Create and manage projects on your behalf</div>
-              <div class="mock-perm"><span class="check">✓</span>Create, view, and delete clusters on your behalf</div>
-              <div class="mock-footnote" style="margin-top:14px;">Resource: <code>https://api.mongodb.com/api/atlas</code></div>
+              <div class="mock-perm"><span class="check">✓</span>Know which Atlas resources you have access to</div>
+              <div class="mock-perm"><span class="check">✓</span>Act on your behalf in Atlas organizations</div>
+              <div class="mock-footnote" style="margin-top:14px;">By authorizing, you allow it to access and take actions in your Atlas resources just as you can — you can revoke access at any time (Atlas Settings → App Connections).</div>
               <div class="mock-actions">
-                <button class="btn-outline" id="demo-deny">Deny</button>
-                <button class="btn btn-green" data-demo-next>Allow</button>
+                <button class="btn-outline" id="demo-deny">Decline</button>
+                <button class="btn btn-green" data-demo-next>Authorize</button>
               </div>
               <div class="mock-error" id="demo-deny-error">
                 <strong>error=access_denied</strong> — the user declined. Your app should handle this
@@ -2321,7 +2320,8 @@
               <h4>Authorization granted ✓</h4>
               <p>Atlas redirected the browser back to your app's <code>redirect_uri</code> with a single-use authorization code. Your backend validates <code>state</code> (CSRF check) before continuing.</p>
               <div class="inline-code"><span class="k">code</span>=splxlOBeZQQYbYS6WxSbIA
-<span class="k">state</span>=7f3a9c1e2b4d <span class="c">✓ matches the value your app sent</span></div>
+<span class="k">state</span>=7f3a9c1e2b4d <span class="c">✓ matches the value your app sent</span>
+<span class="k">iss</span>=https://authorize.mongodb.com <span class="c">✓ expected authorization server</span></div>
               <button class="btn btn-green btn-sm" data-demo-next>Exchange code for tokens</button>
             </div>
           </div>
@@ -2334,14 +2334,15 @@
               <div class="pane-label">Request — your backend (back-channel)</div>
               <pre class="demo-code"><span class="k">POST</span> https://authorize.mongodb.com/tokens
 <span class="c">Content-Type:</span> application/x-www-form-urlencoded
-<span class="c">Authorization:</span> Basic MG9hMWIyYzNk…OkRFTU8=
 
 <span class="k">grant_type</span>=authorization_code
 <span class="k">&code</span>=splxlOBeZQQYbYS6WxSbIA
 <span class="k">&code_verifier</span>=dBjftJeZ4CVP-mB92K27uhbUJU
   1p1r_wW1gFWFOEjXk
 <span class="k">&redirect_uri</span>=https://partner-app.example.com
-  /oauth/atlas/callback</pre>
+  /oauth/atlas/callback
+<span class="k">&client_id</span>=0oa1b2c3d4e5f6g7h8i9
+<span class="k">&client_secret</span>=DEMO… <span class="c"># confidential clients</span></pre>
             </div>
             <div>
               <div class="pane-label">Response — 200 OK</div>
@@ -2365,7 +2366,7 @@
           <div class="demo-split">
             <div>
               <div class="pane-label">Request — Bearer token + versioned Accept header</div>
-              <pre class="demo-code"><span class="k">GET</span> https://api.mongodb.com/api/atlas/v2/orgs
+              <pre class="demo-code"><span class="k">GET</span> https://cloud.mongodb.com/api/atlas/v2/orgs
 <span class="c">Authorization:</span> Bearer eyJhbGciOiJSUzI1NiIs…
 <span class="c">Accept:</span> application/vnd.atlas.2025-03-12+json</pre>
               <div style="margin-top:16px;">
@@ -2598,7 +2599,7 @@
   <!-- Delegation playground -->
   <section class="section">
     <h2 class="section-title reveal">See how access is decided</h2>
-    <p class="section-sub reveal">In the current M1 model, the partner token reaches an organization only when the <strong>user is a member</strong> and the <strong>org owner enabled delegation</strong>. Flip the toggles — then call the API to see what comes back.</p>
+    <p class="section-sub reveal">In the current model, the partner token reaches an organization only when the <strong>user is a member</strong> and the <strong>org owner enabled third-party app connections</strong> (Organization Settings → App Connections, or <code>delegationSettings: READ_WRITE</code>). Flip the toggles — then call the API to see what comes back.</p>
     <div class="playground reveal">
       <div class="pg-grid">
         <div>
@@ -2672,7 +2673,7 @@
         </div>
       </div>
       <div class="pg-tabs">
-        <button class="demo-pill pg-tab active" data-pgtab="now">Today — project access (M1)</button>
+        <button class="demo-pill pg-tab active" data-pgtab="now">Today — project access (current launch)</button>
         <button class="demo-pill pg-tab" data-pgtab="future">Future — scoped delegation</button>
       </div>
 
@@ -2681,7 +2682,7 @@
         <div id="pg-tree"></div>
         <div class="pg-note">
           <strong>No project picker today:</strong> consent covers <strong>every project in every eligible org</strong>
-          the user can access. Selecting a single org, project, or cluster is not possible yet — the grant is broad by design in M1.
+          the user can access. Selecting a single org, project, or cluster is not possible yet — the grant is broad by design in the current launch.
         </div>
       </div>
 
@@ -2702,14 +2703,14 @@
           </div>
         </div>
         <div class="pg-note">
-          <strong>Planned, not available in M1:</strong> pick specific orgs, projects, clusters, roles,
+          <strong>Planned, not available today:</strong> pick specific orgs, projects, clusters, roles,
           and read-only vs read-write — potentially with an expiry. Shown for illustration only.
         </div>
       </div>
 
       <div class="pg-formula">
-        Effective access = <code>user membership</code> + <code>user roles</code> + <code>org delegation setting</code> + <code>supported endpoint</code>
-        · an org owner can set <code>DISALLOWED</code> at any time to cut off existing grants — no re-consent needed
+        Effective access = <code>user membership</code> + <code>user roles</code> + <code>org app-connections setting</code> + <code>endpoint not blocked for delegated access</code>
+        · an org owner can disable app connections at any time to cut off existing grants — no re-consent needed
       </div>
     </div>
   </section>
@@ -2717,12 +2718,12 @@
   <!-- Environment switcher -->
   <section class="section">
     <h2 class="section-title reveal">Pick your environment</h2>
-    <p class="section-sub reveal">Endpoints differ per environment. Start in dev, then promote through staging to production.</p>
+    <p class="section-sub reveal">Per the official guide, integrations develop and launch against <strong>production</strong> — Atlas does not provide separate partner environments. The dev and staging hosts below are MongoDB-internal environments, usable only if your MongoDB partner contact provisioned your OAuth client there.</p>
     <div class="reveal">
       <div class="env-picker" role="tablist" aria-label="Environments">
-        <button class="env-btn active" role="tab" aria-selected="true" data-env="dev">Dev</button>
-        <button class="env-btn" role="tab" aria-selected="false" data-env="stage">Staging</button>
-        <button class="env-btn" role="tab" aria-selected="false" data-env="prod">Production</button>
+        <button class="env-btn active" role="tab" aria-selected="true" data-env="prod">Production</button>
+        <button class="env-btn" role="tab" aria-selected="false" data-env="dev">Dev (internal)</button>
+        <button class="env-btn" role="tab" aria-selected="false" data-env="stage">Staging (internal)</button>
       </div>
       <div class="env-table-wrap">
         <table class="env-table">
@@ -3122,23 +3123,23 @@
     },
     {
       pill: '2 · Authorize',
-      url: 'https://cloud.mongodb.com/oauth/authorize?response_type=code&client_id=0oa1b2c3d4e5f6g7h8i9&redirect_uri=https%3A%2F%2Fpartner-app.example.com%2Foauth%2Fatlas%2Fcallback&code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM&code_challenge_method=S256&state=7f3a9c1e2b4d&resource=https%3A%2F%2Fapi.mongodb.com%2Fapi%2Fatlas',
-      desc: '<strong>Stage 2 — Redirect to Atlas.</strong> The browser lands on <code>cloud.mongodb.com/oauth/authorize</code> (check the URL bar) carrying your <code>client_id</code>, <code>redirect_uri</code>, PKCE challenge, <code>state</code> and the <code>resource</code> indicator. Atlas asks the user to sign in — your app never sees the credentials.'
+      url: 'https://cloud.mongodb.com/oauth/authorize?response_type=code&client_id=0oa1b2c3d4e5f6g7h8i9&redirect_uri=https%3A%2F%2Fpartner-app.example.com%2Foauth%2Fatlas%2Fcallback&code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM&code_challenge_method=S256&state=7f3a9c1e2b4d',
+      desc: '<strong>Stage 2 — Redirect to Atlas.</strong> The browser lands on <code>cloud.mongodb.com/oauth/authorize</code> (check the URL bar) carrying your <code>client_id</code>, <code>redirect_uri</code>, PKCE challenge and <code>state</code> — and nothing else: production clients do not send a <code>resource</code> parameter. Atlas asks the user to sign in — your app never sees the credentials.'
     },
     {
       pill: '3 · Consent',
       url: 'https://cloud.mongodb.com/oauth/authorize?…consent',
-      desc: '<strong>Stage 3 — User consent.</strong> Atlas shows a consent screen naming your app and the access it requests. <code>Allow</code> continues the flow; <code>Deny</code> returns the user with <code>error=access_denied</code> — try both. With <code>allow_saved_consent</code>, returning users skip this screen.'
+      desc: '<strong>Stage 3 — User consent.</strong> Atlas shows a consent screen naming your app and the access it requests. <code>Authorize</code> continues the flow; <code>Decline</code> returns the user with <code>error=access_denied</code> — try both. With <code>allow_saved_consent</code>, returning users skip this screen.'
     },
     {
       pill: '4 · Callback',
       url: 'https://partner-app.example.com/oauth/atlas/callback?code=splxlOBeZQQYbYS6WxSbIA&state=7f3a9c1e2b4d',
-      desc: '<strong>Stage 4 — Authorization code.</strong> Atlas redirects back to your <code>redirect_uri</code> with a single-use <code>code</code> (valid ~5 minutes). Your backend must validate <code>state</code> against the value it sent — this is your CSRF protection.'
+      desc: '<strong>Stage 4 — Authorization code.</strong> Atlas redirects back to your <code>redirect_uri</code> with a single-use <code>code</code> (valid ~10 minutes), your <code>state</code>, and an <code>iss</code> parameter. Your backend must validate <code>state</code> (CSRF protection) and <code>iss</code> against the authorization base (mix-up protection) before exchanging.'
     },
     {
       pill: '5 · Token exchange',
       url: '(back-channel — no browser involved)',
-      desc: '<strong>Stage 5 — Token exchange.</strong> Your backend POSTs the code + <code>code_verifier</code> to <code>authorize.mongodb.com/tokens</code>, authenticating with HTTP Basic (<code>client_id:client_secret</code>). Atlas returns a short-lived <code>access_token</code> (600 s) and, for confidential clients, a <code>refresh_token</code>. Store the refresh token server-side only.'
+      desc: '<strong>Stage 5 — Token exchange.</strong> Your backend POSTs the code + <code>code_verifier</code> to <code>authorize.mongodb.com/tokens</code> — confidential clients authenticate with <code>client_id</code>/<code>client_secret</code> (body or HTTP Basic), public clients send only the <code>client_id</code>. Atlas returns a short-lived <code>access_token</code> (600 s) and, for confidential clients, a <code>refresh_token</code>. Store the refresh token server-side only.'
     },
     {
       pill: '6 · API call',
@@ -3222,7 +3223,7 @@
 
   /* ---------------- Delegation playground ---------------- */
 
-  // Defaults mirror the documented M1 example: A = member + READ_WRITE,
+  // Defaults mirror the documented current-launch example: A = member + READ_WRITE,
   // B = member + DISALLOWED, C = not a member + READ_WRITE.
   const PG_ORGS = {
     A: { name: 'Org A', id: '64a1b2c3d4e5f6071829301a', deleg: 'READ_WRITE', member: true },
@@ -3274,7 +3275,7 @@
     renderPgTree();
   }
 
-  /* --- Today tab: project-level view under the broad M1 grant --- */
+  /* --- Today tab: project-level view under the broad current-launch grant --- */
 
   const PG_PROJECTS = {
     A: [
@@ -3467,6 +3468,12 @@
   /* ---------------- Environment switcher ---------------- */
 
   const ENVIRONMENTS = {
+    prod: {
+      cloud: 'https://cloud.mongodb.com',
+      oauth: 'https://authorize.mongodb.com',
+      api: 'https://cloud.mongodb.com/api/atlas',
+      resource: '(not sent — omit the resource parameter)'
+    },
     dev: {
       cloud: 'https://cloud-dev.mongodb.com',
       oauth: 'https://authorize-dev.mongodb.com',
@@ -3478,12 +3485,6 @@
       oauth: 'https://authorize-stage.mongodb.com',
       api: 'https://api-stage.mongodb.com',
       resource: 'https://api-stage.mongodb.com/api/atlas'
-    },
-    prod: {
-      cloud: 'https://cloud.mongodb.com',
-      oauth: 'https://authorize.mongodb.com',
-      api: 'https://api.mongodb.com',
-      resource: 'https://api.mongodb.com/api/atlas'
     }
   };
 
@@ -3509,7 +3510,7 @@
   }
 
   envBtns.forEach((b) => b.addEventListener('click', () => setEnv(b.getAttribute('data-env'))));
-  setEnv('dev');
+  setEnv('prod');
 
   /* ---------------- Scroll reveal ---------------- */
 

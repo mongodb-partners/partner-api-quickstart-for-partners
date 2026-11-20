@@ -68,12 +68,14 @@ def load_env():
 
 
 def get_api_base(env):
-    cloud_base = env.get("CLOUD_BASE", "https://cloud-dev.mongodb.com")
+    # The Atlas Administration API is hosted on the cloud base in production
+    # (https://cloud.mongodb.com/api/atlas). The api.* host pattern applies only
+    # to the internal dev/staging environments.
+    cloud_base = env.get("CLOUD_BASE", "https://cloud.mongodb.com")
     return (
         cloud_base
         .replace("cloud-dev.", "api-dev.")
         .replace("cloud-stage.", "api-stage.")
-        .replace("//cloud.", "//api.")
     )
 
 
@@ -104,7 +106,7 @@ def refresh_access_token(env, store):
             "Re-run `python3 get_token.py` for a fresh browser login."
         )
 
-    oauth_base = env.get("OAUTH_BASE", "https://authorize-dev.mongodb.com")
+    oauth_base = env.get("OAUTH_BASE", "https://authorize.mongodb.com")
     client_id = env.get("CLIENT_ID", "")
     client_secret = env.get("CLIENT_SECRET") or None
 
@@ -219,7 +221,7 @@ def pick_organization(atlas, org_id=None):
     orgs = atlas.get("/api/atlas/v2/orgs").get("results", [])
     if not orgs:
         sys.exit(
-            "No organizations returned. Delegated Partner Access may be disabled on\n"
+            "No organizations returned. Third-party app connections may be disabled on\n"
             "your org — see docs/RECOVERY.md#no-organizations-returned."
         )
     if org_id:
