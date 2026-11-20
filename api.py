@@ -4,11 +4,7 @@ Atlas OAuth Demo — FastAPI proxy server
 Reads the access token from .token_store.json (written by get_token.py) and
 proxies requests to the Atlas Admin API.
 
-Start:
-    source oauthdemo/.venv/bin/activate
-    uvicorn oauthdemo.api:app --reload --port 8080
-
-Or from inside the oauthdemo/ directory:
+Start (from the repository root — the directory containing this file):
     source .venv/bin/activate
     uvicorn api:app --reload --port 8080
 """
@@ -52,12 +48,14 @@ def load_env() -> dict:
 
 def get_api_base() -> str:
     env = load_env()
-    cloud_base = env.get("CLOUD_BASE", "https://cloud-dev.mongodb.com")
+    # The Atlas Administration API is hosted on the cloud base in production
+    # (https://cloud.mongodb.com/api/atlas). The api.* host pattern applies only
+    # to the internal dev/staging environments.
+    cloud_base = env.get("CLOUD_BASE", "https://cloud.mongodb.com")
     return (
         cloud_base
         .replace("cloud-dev.", "api-dev.")
         .replace("cloud-stage.", "api-stage.")
-        .replace("//cloud.", "//api.")
     )
 
 
@@ -260,7 +258,7 @@ def refresh_token(body: RefreshTokenRequest = RefreshTokenRequest()):
     (e.g. the Partner Test SPA has `maximum_refresh_token_lifetime: -1`).
     """
     env = load_env()
-    oauth_base = env.get("OAUTH_BASE", "https://authorize-dev.mongodb.com")
+    oauth_base = env.get("OAUTH_BASE", "https://authorize.mongodb.com")
     client_id  = env.get("CLIENT_ID",  "")
     client_secret = env.get("CLIENT_SECRET") or None
 

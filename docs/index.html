@@ -13,6 +13,29 @@
 <script src="vendor/highlight.min.js"></script>
 
 <style>
+  /* MongoDB brand typefaces from mongodb.com (Sohne family), vendored locally
+     in docs/fonts/. If missing, the stacks below fall back to system fonts. */
+  @font-face {
+    font-family: "Sohne";
+    src: url("fonts/Sohne-Regular.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Sohne";
+    src: url("fonts/Sohne-Medium.woff2") format("woff2");
+    font-weight: 500; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Sohne";
+    src: url("fonts/Sohne-Bold.woff2") format("woff2");
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Sohne Mono";
+    src: url("fonts/SohneMono-Regular.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+
   :root {
     --mdb-dark: #001e2b;
     --mdb-dark-soft: #0b2b3a;
@@ -21,15 +44,42 @@
     --mdb-green-dark: #004732;
     --mdb-green-bright: #00ed64;
     --mdb-green-soft: #e3f4ee;
-    --mdb-bg: #f3f6f5;
-    --mdb-text: #1c2d38;
+    --mdb-bg: #fdfff5;
+    --mdb-text: #061621;
     --mdb-muted: #5f6f76;
-    --mdb-border: #e2e8ea;
+    --mdb-border: #d0d4cf;
     --mdb-sidebar-width: 288px;
     --radius: 12px;
     --shadow: 0 1px 2px rgba(0, 30, 43, 0.05), 0 10px 30px rgba(0, 30, 43, 0.07);
     --shadow-lift: 0 2px 6px rgba(0, 30, 43, 0.08), 0 18px 44px rgba(0, 30, 43, 0.14);
     --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* mongodb.com/docs theme (leafygreen palette) — docs reader view only */
+    --dc-bg: #ffffff;
+    --dc-bg-subtle: #f9fbfa;
+    --dc-text: #1c2d38;
+    --dc-text-secondary: #3d4f58;
+    --dc-gray: #5c6c75;
+    --dc-gray-light: #889397;
+    --dc-border: #e8edeb;
+    --dc-border-dark: #c1c7c6;
+    --dc-green: #00a35c;
+    --dc-green-dark: #00684a;
+    --dc-green-darker: #023430;
+    --dc-green-bright: #00ed64;
+    --dc-green-light: #e3fcf7;
+    --dc-blue: #006cfa;
+    --dc-blue-dark: #083c90;
+    --dc-blue-light: #e1f7ff;
+    --dc-yellow: #e2a500;
+    --dc-yellow-light: #fef7e0;
+    --dc-yellow-dark: #944f01;
+    --dc-red: #d04537;
+    --dc-red-light: #fdecea;
+    --dc-red-dark: #97051e;
+    --dc-font-body: "Sohne", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --dc-font-heading: "Sohne", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --dc-font-mono: "Sohne Mono", Menlo, ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", monospace;
   }
 
   * { box-sizing: border-box; }
@@ -38,7 +88,7 @@
 
   body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Sohne", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--mdb-text);
     background: var(--mdb-bg);
     -webkit-font-smoothing: antialiased;
@@ -492,7 +542,7 @@
   }
 
   .code-shell pre code {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     background: transparent;
     color: #d6e4df;
   }
@@ -600,7 +650,7 @@
 
   .demo-url {
     flex: 1;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 12px;
     color: #43565e;
     background: #fff;
@@ -629,7 +679,7 @@
     padding: 1px 7px;
     border-radius: 5px;
     font-size: 0.88em;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
   .demo-controls { display: flex; gap: 10px; margin-top: 16px; }
@@ -746,7 +796,7 @@
     padding: 2px 8px;
     border-radius: 6px;
     font-size: 12px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
   /* --- Mock chat application --- */
@@ -831,7 +881,7 @@
     padding: 1px 6px;
     border-radius: 5px;
     font-size: 11.5px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
   .mock-chat-input {
@@ -851,7 +901,7 @@
     color: #d6e4df;
     border-radius: 8px;
     padding: 9px 13px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 11.5px;
     line-height: 1.7;
     white-space: pre;
@@ -984,7 +1034,7 @@
   }
 
   .mock-error.show { display: block; animation: fadeUp 0.25s ease both; }
-  .mock-error code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; }
+  .mock-error code { font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; }
 
   /* --- Callback spinner --- */
   .spinner {
@@ -1009,7 +1059,7 @@
     color: #d6e4df;
     border-radius: 10px;
     padding: 14px 18px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 12px;
     line-height: 1.7;
     overflow-x: auto;
@@ -1046,7 +1096,7 @@
     color: #d6e4df;
     border-radius: 10px;
     padding: 16px 18px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 12px;
     line-height: 1.75;
     overflow-x: auto;
@@ -1111,7 +1161,7 @@
 
   .pg-org-head .pg-id {
     margin-left: auto;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 10.5px;
     color: #6e8a80;
     font-weight: 400;
@@ -1280,7 +1330,7 @@
     border-radius: 10px;
     padding: 10px 14px;
     margin-bottom: 9px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 11.5px;
     color: #d6e4df;
     line-height: 1.7;
@@ -1306,7 +1356,7 @@
     padding: 1px 7px;
     border-radius: 5px;
     font-size: 11px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
   @media (max-width: 860px) {
@@ -1377,7 +1427,7 @@
     padding: 3px 9px;
     border-radius: 6px;
     font-size: 13px;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   }
 
   /* ============================================================
@@ -1408,7 +1458,7 @@
   }
 
   .op-method {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 11.5px;
     font-weight: 700;
     padding: 5px 10px;
@@ -1421,7 +1471,7 @@
   .op-method.post { background: #fff3d6; color: #8a6100; }
   .op-method.delete { background: #fde8e7; color: #a12c25; }
 
-  .op-path { color: var(--mdb-text); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; word-break: break-all; }
+  .op-path { color: var(--mdb-text); font-family: "Sohne Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; word-break: break-all; }
 
   /* ============================================================
      Footer (dark, mongodb.com style)
@@ -1472,12 +1522,20 @@
   }
 
   /* ============================================================
-     Docs reader view (sidebar + markdown)
+     Docs reader view — mongodb.com/docs theme
+     (Sohne type, white canvas, dark unified header,
+      leafygreen sidenav, blue content links, "On this page" rail)
      ============================================================ */
   #view-docs { display: none; }
-  #view-docs.active { display: flex; min-height: 100vh; }
+  #view-docs.active { display: flex; flex-direction: column; min-height: 100vh; }
   #view-home.hidden { display: none; }
-  body.reader .site-header, body.reader .announce { display: none; }
+  body.reader .site-header, body.reader .announce, body.reader .top-accent { display: none; }
+
+  body.reader {
+    background: var(--dc-bg);
+    color: var(--dc-text);
+    font-family: var(--dc-font-body);
+  }
 
   .top-accent {
     position: fixed;
@@ -1487,38 +1545,119 @@
     z-index: 60;
   }
 
+  /* ---------- Unified dark header (like mongodb.com/docs) ---------- */
+  .docs-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    height: 64px;
+    padding: 0 24px;
+    background: var(--mdb-dark);
+    color: #ffffff;
+  }
+
+  .docs-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .docs-brand .name { font-size: 16px; font-weight: 500; letter-spacing: 0.01em; }
+  .docs-brand .divider { width: 1px; height: 22px; background: rgba(255, 255, 255, 0.22); }
+  .docs-brand .product { font-size: 14px; color: var(--dc-border-dark); }
+
+  .docs-search {
+    position: relative;
+    flex: 1;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  .docs-search svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--dc-gray-light);
+    pointer-events: none;
+  }
+
+  .docs-search input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 8px;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 13.5px;
+    padding: 9px 14px 9px 38px;
+    outline: none;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .docs-search input::placeholder { color: var(--dc-gray-light); }
+  .docs-search input:hover { border-color: rgba(255, 255, 255, 0.3); }
+
+  .docs-search input:focus {
+    border-color: var(--dc-green-bright);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0 3px rgba(0, 237, 100, 0.18);
+  }
+
+  .docs-header-links { display: flex; align-items: center; gap: 20px; }
+
+  .docs-header-links a {
+    color: var(--dc-border);
+    font-size: 13.5px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+  }
+
+  .docs-header-links a:hover { color: var(--dc-green-bright); }
+
+  /* ---------- Body: sidenav + article + "On this page" rail ---------- */
+  .docs-body { display: flex; flex: 1; align-items: stretch; }
+
   .sidebar {
     width: var(--mdb-sidebar-width);
     flex-shrink: 0;
-    background: var(--mdb-dark);
-    color: #dbe7e3;
-    padding: 28px 0 0;
+    align-self: flex-start;
+    background: var(--dc-bg);
+    color: var(--dc-text);
+    border-right: 1px solid var(--dc-border);
+    padding: 8px 0 24px;
     position: sticky;
-    top: 0;
-    height: 100vh;
+    top: 64px;
+    height: calc(100vh - 64px);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
   }
 
   .sidebar::-webkit-scrollbar { width: 8px; }
-  .sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: rgba(28, 45, 56, 0.14); border-radius: 4px; }
 
   .sidebar-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 0 24px 22px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    margin-bottom: 18px;
+    padding: 16px 24px 14px;
+    border-bottom: 1px solid var(--dc-border);
+    margin-bottom: 10px;
     cursor: pointer;
   }
 
   .sidebar-header span {
-    font-weight: 700;
-    font-size: 15px;
+    font-weight: 500;
+    font-size: 14.5px;
     letter-spacing: 0.01em;
-    color: #ffffff;
+    color: #001e2b;
     line-height: 1.35;
   }
 
@@ -1526,72 +1665,89 @@
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    margin: 0 24px 14px;
-    color: #8aa79e;
+    margin: 2px 24px 12px;
+    color: var(--dc-gray);
     font-size: 13px;
+    font-weight: 500;
     text-decoration: none;
     cursor: pointer;
     transition: color 0.15s ease;
   }
 
-  .back-home:hover { color: var(--mdb-green-bright); }
+  .back-home:hover { color: var(--dc-green-dark); }
 
-  .nav-group { margin-bottom: 10px; }
+  .nav-group { margin-bottom: 8px; }
 
   .nav-group-title {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: #6e8a80;
-    padding: 10px 26px 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #001e2b;
+    padding: 12px 26px 4px;
   }
 
   .nav-link {
+    position: relative;
     display: block;
-    margin: 2px 14px;
-    padding: 9px 14px;
-    color: #c4d4cf;
+    margin: 1px 12px;
+    padding: 7px 14px 7px 26px;
+    color: var(--dc-text-secondary);
     text-decoration: none;
-    font-size: 14px;
-    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 400;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease;
   }
 
-  .nav-link:hover { background: rgba(255, 255, 255, 0.07); color: #ffffff; }
+  .nav-link:hover { background: var(--dc-bg-subtle); color: #001e2b; }
 
   .nav-link.active {
-    background: rgba(0, 237, 100, 0.14);
-    box-shadow: inset 3px 0 0 var(--mdb-green-bright);
-    color: #ffffff;
-    font-weight: 600;
+    background: var(--dc-green-light);
+    color: var(--dc-green-dark);
+    font-weight: 500;
+  }
+
+  .nav-link.active::before {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 7px;
+    bottom: 7px;
+    width: 3px;
+    border-radius: 2px;
+    background: var(--dc-green);
   }
 
   .sidebar-footer {
     margin-top: auto;
-    padding: 18px 26px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 16px 26px;
+    border-top: 1px solid var(--dc-border);
     font-size: 12px;
-    color: #6e8a80;
+    color: var(--dc-gray-light);
     letter-spacing: 0.02em;
   }
 
   .main {
     flex: 1;
     min-width: 0;
-    padding: 48px 56px 40px;
-    max-width: 980px;
+    padding: 40px 48px 48px;
+  }
+
+  .article-wrap {
+    display: flex;
+    gap: 56px;
+    max-width: 1160px;
+    margin: 0 auto;
+    align-items: flex-start;
   }
 
   #content {
-    background: #ffffff;
-    border: 1px solid var(--mdb-border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 48px 56px;
-    font-size: 15.5px;
-    line-height: 1.75;
+    flex: 1;
+    min-width: 0;
+    max-width: 780px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--dc-text);
   }
 
   #content.loaded > * { animation: fadeUp 0.35s ease both; }
@@ -1602,79 +1758,74 @@
   }
 
   #content h1 {
-    font-size: 30px;
-    letter-spacing: -0.02em;
-    color: var(--mdb-dark);
+    font-family: var(--dc-font-heading);
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    color: #001e2b;
     margin-top: 0;
+    margin-bottom: 20px;
     padding-bottom: 0;
     border-bottom: none;
   }
 
-  #content h1::after {
-    content: "";
-    display: block;
-    width: 56px;
-    height: 4px;
-    border-radius: 2px;
-    margin-top: 16px;
-    background: linear-gradient(90deg, var(--mdb-green), var(--mdb-green-bright));
-  }
-
   #content h2 {
-    font-size: 22px;
-    letter-spacing: -0.01em;
-    color: var(--mdb-dark);
-    margin-top: 2.4em;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--mdb-border);
-    scroll-margin-top: 24px;
+    font-family: var(--dc-font-heading);
+    font-size: 23px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: #001e2b;
+    margin-top: 2em;
+    margin-bottom: 0.6em;
+    scroll-margin-top: 88px;
   }
 
-  #content h3 { font-size: 17px; color: var(--mdb-dark); margin-top: 1.9em; }
-  #content h4 { font-size: 15px; color: var(--mdb-dark); margin-top: 1.6em; }
+  #content h3 { font-size: 18px; font-weight: 500; color: #001e2b; margin-top: 1.8em; margin-bottom: 0.5em; scroll-margin-top: 88px; }
+  #content h4 { font-size: 16px; font-weight: 600; color: #001e2b; margin-top: 1.6em; }
   #content p { margin: 1em 0; }
 
   #content a {
-    color: var(--mdb-green);
+    color: var(--dc-blue);
     text-decoration: none;
-    border-bottom: 1px solid rgba(0, 104, 74, 0.25);
-    transition: color 0.15s ease, border-color 0.15s ease;
+    transition: color 0.15s ease;
   }
 
-  #content a:hover { color: var(--mdb-green-dark); border-bottom-color: var(--mdb-green-dark); }
+  #content a:hover { color: var(--dc-blue-dark); text-decoration: underline; }
 
   #content code {
-    background: #edf4f0;
-    color: #0b3b2e;
-    padding: 2px 7px;
-    border-radius: 6px;
-    font-size: 0.88em;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    background: var(--dc-bg-subtle);
+    border: 1px solid var(--dc-border);
+    color: #001e2b;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-family: var(--dc-font-mono);
   }
 
   #content pre {
-    background: #f6f8f7;
-    border: 1px solid var(--mdb-border);
-    border-radius: 10px;
+    background: var(--dc-bg-subtle);
+    border: 1px solid var(--dc-border);
+    border-radius: 12px;
     padding: 18px 20px;
     overflow-x: auto;
     line-height: 1.6;
     position: relative;
   }
 
-  #content pre code { background: none; padding: 0; color: inherit; font-size: 13.5px; }
+  #content pre code { background: none; border: none; padding: 0; color: #001e2b; font-size: 13.5px; }
 
   .doc-copy {
     position: absolute;
     top: 10px;
     right: 10px;
     background: #fff;
-    border: 1px solid var(--mdb-border);
-    color: var(--mdb-muted);
+    border: 1px solid var(--dc-border-dark);
+    color: var(--dc-text-secondary);
     font-family: inherit;
-    font-size: 11.5px;
-    font-weight: 600;
-    padding: 4px 11px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
     border-radius: 6px;
     cursor: pointer;
     opacity: 0;
@@ -1682,61 +1833,129 @@
   }
 
   #content pre:hover .doc-copy { opacity: 1; }
-  .doc-copy:hover { background: var(--mdb-green-soft); color: var(--mdb-green-dark); }
-  .doc-copy.copied { background: var(--mdb-green); border-color: var(--mdb-green); color: #fff; opacity: 1; }
+  .doc-copy:hover { background: var(--dc-bg-subtle); border-color: var(--dc-gray-light); color: #001e2b; }
+  .doc-copy.copied { background: var(--dc-green-light); border-color: var(--dc-green); color: var(--dc-green-dark); opacity: 1; }
 
   .table-wrap {
     overflow-x: auto;
-    border-radius: 10px;
+    border-radius: 8px;
     margin: 1.6em 0;
-    border: 1px solid var(--mdb-border);
+    border: 1px solid var(--dc-border);
   }
 
   #content table { border-collapse: collapse; width: 100%; margin: 0; font-size: 14px; }
 
   #content th, #content td {
     border: none;
-    border-bottom: 1px solid var(--mdb-border);
+    border-bottom: 1px solid var(--dc-border);
     padding: 10px 14px;
     text-align: left;
   }
 
   #content tr:last-child td { border-bottom: none; }
-  #content th { background: var(--mdb-green-soft); color: var(--mdb-green-dark); font-weight: 600; }
-  #content tbody tr:nth-child(even) { background: #fafcfb; }
-  #content tbody tr:hover { background: var(--mdb-green-soft); }
+  #content th { background: var(--dc-bg-subtle); color: #001e2b; font-weight: 600; }
+  #content tbody tr:hover { background: var(--dc-bg-subtle); }
 
   #content blockquote {
-    border-left: 4px solid var(--mdb-green);
-    background: #f2faf6;
+    border-left: 3px solid var(--dc-border-dark);
+    background: none;
     margin: 1.6em 0;
-    padding: 14px 22px;
-    border-radius: 0 10px 10px 0;
-    color: #234138;
+    padding: 6px 18px;
+    color: var(--dc-text-secondary);
   }
 
-  #content blockquote code { background: rgba(255, 255, 255, 0.85); }
+  /* GitHub-style alerts (> [!NOTE] / [!TIP] / [!IMPORTANT] / [!WARNING] / [!CAUTION])
+     rendered as mongodb.com/docs admonition cards */
+  #content blockquote.alert {
+    border: 1px solid var(--dc-border);
+    border-left-width: 4px;
+    border-radius: 8px;
+    padding: 14px 20px;
+    color: var(--dc-text);
+  }
 
-  #content hr { border: none; height: 1px; background: var(--mdb-border); margin: 2.4em 0; }
+  #content blockquote.alert > p:first-of-type { margin-top: 0; }
+  #content blockquote.alert > p:last-child { margin-bottom: 0; }
+
+  .alert-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  #content blockquote.alert-note { border-left-color: var(--dc-blue); background: var(--dc-blue-light); }
+  #content blockquote.alert-note .alert-title { color: var(--dc-blue-dark); }
+
+  #content blockquote.alert-tip { border-left-color: var(--dc-green); background: var(--dc-green-light); }
+  #content blockquote.alert-tip .alert-title { color: var(--dc-green-dark); }
+
+  #content blockquote.alert-important { border-left-color: var(--dc-green-dark); background: var(--dc-green-light); }
+  #content blockquote.alert-important .alert-title { color: var(--dc-green-darker); }
+
+  #content blockquote.alert-warning { border-left-color: var(--dc-yellow); background: var(--dc-yellow-light); }
+  #content blockquote.alert-warning .alert-title { color: var(--dc-yellow-dark); }
+
+  #content blockquote.alert-caution { border-left-color: var(--dc-red); background: var(--dc-red-light); }
+  #content blockquote.alert-caution .alert-title { color: var(--dc-red-dark); }
+
+  #content hr { border: none; height: 1px; background: var(--dc-border); margin: 2.4em 0; }
   #content img { max-width: 100%; }
   #content ul, #content ol { padding-left: 1.5em; }
   #content li { margin: 0.35em 0; }
 
-  .loading { color: var(--mdb-muted); font-style: italic; animation: pulse 1.4s ease-in-out infinite; }
+  .loading { color: var(--dc-gray); font-style: italic; animation: pulse 1.4s ease-in-out infinite; }
 
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 
-  .reader-footer {
-    margin-top: 28px;
-    padding-top: 18px;
+  /* ---------- "On this page" rail ---------- */
+  .toc {
+    width: 216px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 104px;
+    align-self: flex-start;
+    max-height: calc(100vh - 128px);
+    overflow-y: auto;
+    border-left: 1px solid var(--dc-border);
+    padding-left: 18px;
     font-size: 13px;
-    color: var(--mdb-muted);
+    line-height: 1.5;
+  }
+
+  .toc-title { font-weight: 500; color: #001e2b; margin-bottom: 8px; }
+
+  .toc a {
+    display: block;
+    color: var(--dc-gray);
+    text-decoration: none;
+    padding: 4px 0;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .toc a:hover { color: #001e2b; }
+  .toc a.lvl3 { padding-left: 16px; }
+  .toc a.active { color: var(--dc-green-dark); font-weight: 500; }
+
+  .reader-footer {
+    margin-top: 48px;
+    padding-top: 18px;
+    border-top: 1px solid var(--dc-border);
+    font-size: 13px;
+    color: var(--dc-gray-light);
     text-align: center;
   }
 
   /* ============================================================
      Responsive
      ============================================================ */
+  @media (max-width: 1200px) {
+    .toc { display: none; }
+  }
+
   @media (max-width: 960px) {
     .footer-inner { grid-template-columns: 1fr 1fr; }
     .hero-leaf { display: none; }
@@ -1745,16 +1964,23 @@
   @media (max-width: 860px) {
     .nav-links { display: none; }
     .flow { padding: 28px 20px; }
+    .docs-header-links { display: none; }
   }
 
   @media (max-width: 768px) {
-    #view-docs.active { flex-direction: column; }
-    .sidebar { width: 100%; height: auto; position: static; }
+    .docs-header { gap: 16px; padding: 0 16px; }
+    .docs-body { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--dc-border); }
     .sidebar-footer { display: none; }
-    .main { padding: 22px 16px; }
-    #content { padding: 28px 22px; }
+    .main { padding: 24px 18px 40px; }
+    .article-wrap { display: block; }
+    #content { max-width: none; }
     .hero-inner { padding: 64px 20px 60px; }
     .footer-inner { grid-template-columns: 1fr; gap: 26px; }
+  }
+
+  @media (max-width: 560px) {
+    .docs-search { display: none; }
   }
 </style>
 </head>
@@ -1766,21 +1992,21 @@
 <div id="view-home">
 
   <div class="announce">
-    Now in Early Access — Atlas OAuth for partners is invite-only.
+    Atlas App Connections for partners is available to approved design partners — Remote MCP (MongoDB Atlas Managed MCP Server) is now GA.
     <a data-doc-link="PARTNER.md">Read the onboarding guide →</a>
   </div>
 
   <header class="site-header">
     <nav class="nav">
       <a class="brand" data-home-link>
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
-          <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-          <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+        <svg viewBox="0 0 133 284" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
         </svg>
         Atlas Admin API - V2
       </a>
       <div class="nav-links">
         <a data-doc-link="README.md">Integration Guide</a>
+        <a data-doc-link="END-TO-END.md">Tutorial</a>
         <a data-doc-link="PARTNER.md">Partner Onboarding</a>
         <a href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">API Reference ↗</a>
         <a href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub ↗</a>
@@ -1791,9 +2017,8 @@
 
   <!-- Hero -->
   <section class="hero">
-    <svg class="hero-leaf" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-      <path d="M12 7v13" stroke="#00ed64" stroke-width="0.7" stroke-linecap="round"/>
+    <svg class="hero-leaf" viewBox="0 0 133 284" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
     </svg>
     <div class="hero-inner">
       <span class="eyebrow">MongoDB Atlas · OAuth 2.1 for Partners</span>
@@ -1806,7 +2031,7 @@
       <div class="hero-stats">
         <span class="stat-chip"><strong>OAuth 2.1</strong> Authorization Code + PKCE</span>
         <span class="stat-chip"><strong>600s</strong> delegated token lifetime</span>
-        <span class="stat-chip"><strong>3</strong> environments · dev → staging → prod</span>
+        <span class="stat-chip"><strong>7d / 30d</strong> refresh idle / max lifetime</span>
         <span class="stat-chip"><strong>0</strong> user credentials handled</span>
       </div>
     </div>
@@ -1815,7 +2040,7 @@
   <!-- Architecture diagram -->
   <section class="section">
     <h2 class="section-title reveal">Onboarding at a glance</h2>
-    <p class="section-sub reveal">From invite-only partner onboarding to the runtime OAuth 2.1 delegated access flow — the full picture in one diagram.</p>
+    <p class="section-sub reveal">From design-partner onboarding to the runtime OAuth 2.1 delegated access flow — the full picture in one diagram.</p>
     <div class="diagram-card reveal">
       <a href="onboarding-architecture.png" target="_blank" rel="noopener">
         <img src="onboarding-architecture.png" alt="Architecture diagram: MongoDB Atlas Admin API - V2 partner onboarding and delegated access flow" loading="lazy" />
@@ -1841,10 +2066,34 @@
         <p>Register with MongoDB, receive OAuth credentials, and take your integration from dev to production.</p>
         <span class="card-link">Open checklist <span class="arrow">→</span></span>
       </a>
+      <a class="card reveal" data-doc-link="END-TO-END.md">
+        <div class="card-icon">🚀</div>
+        <h3>End-to-End Tutorial</h3>
+        <p>From OAuth token to the first database read/write — project, M0 cluster, database user, network access, and a runnable demo script.</p>
+        <span class="card-link">Open tutorial <span class="arrow">→</span></span>
+      </a>
+      <a class="card reveal" data-doc-link="UX-GUIDE.md">
+        <div class="card-icon">🎨</div>
+        <h3>Partner UX Guide</h3>
+        <p>Design the "Connect MongoDB Atlas" experience — connect button, consent handoff, resource picker, provisioning states, and sample copy.</p>
+        <span class="card-link">Open UX guide <span class="arrow">→</span></span>
+      </a>
+      <a class="card reveal" data-doc-link="PRODUCTION.md">
+        <div class="card-icon">✅</div>
+        <h3>Production Readiness</h3>
+        <p>Demo vs. production architecture, per-tenant token storage, refresh-token rotation, revocation cleanup, and the launch checklist.</p>
+        <span class="card-link">Open checklist <span class="arrow">→</span></span>
+      </a>
+      <a class="card reveal" data-doc-link="RECOVERY.md">
+        <div class="card-icon">🛟</div>
+        <h3>Recovery Guide</h3>
+        <p>User-centered behavior for every failure mode — 401s, consent denied, revoked access, token rotation, and provisioning waits.</p>
+        <span class="card-link">Open recovery guide <span class="arrow">→</span></span>
+      </a>
       <a class="card reveal" data-doc-link="partner-delegations.md">
         <div class="card-icon">🔐</div>
         <h3>Partner Delegation</h3>
-        <p>How organization opt-in and user consent work today (M1) — and the scoped delegation and governance coming next.</p>
+        <p>How organization opt-in and user consent work today — and the scoped delegation and governance coming next.</p>
         <span class="card-link">Current &amp; future state <span class="arrow">→</span></span>
       </a>
       <a class="card reveal" href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">
@@ -1884,8 +2133,7 @@
   &redirect_uri=https://app.example.com/oauth/atlas/callback
   &code_challenge=<S256-pkce-challenge>
   &code_challenge_method=S256
-  &state=<random-csrf-token>
-  &resource=https://api.mongodb.com/api/atlas</code></pre>
+  &state=<random-csrf-token></code></pre>
         </div>
       </div>
 
@@ -1901,16 +2149,17 @@
       </div>
 
       <div class="flow-panel" role="tabpanel">
-        <p><strong>Exchange the code for tokens.</strong> Your backend POSTs the authorization code and PKCE verifier to the token endpoint — a back-channel call the browser never sees.</p>
+        <p><strong>Exchange the code for tokens.</strong> Your backend POSTs the authorization code and PKCE verifier to the token endpoint — a back-channel call the browser never sees. Confidential clients authenticate with the <code>client_id</code> / <code>client_secret</code> (body or HTTP Basic); public clients send only the <code>client_id</code>.</p>
         <div class="code-shell">
           <div class="code-shell-bar"><span>SHELL — token exchange</span><button class="copy-btn">Copy</button></div>
           <pre><code class="language-bash">curl -X POST "https://authorize.mongodb.com/tokens" \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -H "Authorization: Basic $(echo -n '&lt;client_id&gt;:&lt;client_secret&gt;' | base64)" \
   -d "grant_type=authorization_code" \
   -d "code=&lt;authorization-code&gt;" \
   -d "code_verifier=&lt;pkce-verifier&gt;" \
-  -d "redirect_uri=https://app.example.com/oauth/atlas/callback"</code></pre>
+  -d "redirect_uri=https://app.example.com/oauth/atlas/callback" \
+  -d "client_id=&lt;your-client-id&gt;" \
+  -d "client_secret=&lt;your-client-secret&gt;"  # confidential clients only</code></pre>
         </div>
       </div>
 
@@ -1918,7 +2167,7 @@
         <p><strong>Call the Atlas Admin API.</strong> Use the delegated access token as a Bearer token. It is scoped to what the logged-in user is allowed to do — no org-level API key needed.</p>
         <div class="code-shell">
           <div class="code-shell-bar"><span>SHELL — authenticated API call</span><button class="copy-btn">Copy</button></div>
-          <pre><code class="language-bash">curl "https://api.mongodb.com/api/atlas/v2/orgs" \
+          <pre><code class="language-bash">curl "https://cloud.mongodb.com/api/atlas/v2/orgs" \
   -H "Authorization: Bearer &lt;access_token&gt;" \
   -H "Accept: application/vnd.atlas.2025-03-12+json"</code></pre>
         </div>
@@ -1972,9 +2221,8 @@
               <div class="mock-conn-title">Connectors</div>
               <div class="mock-conn">
                 <div class="mock-conn-icon">
-                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" aria-hidden="true">
-                    <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-                    <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                  <svg viewBox="0 0 133 284" height="17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
                   </svg>
                 </div>
                 <div class="mock-conn-body">
@@ -2017,9 +2265,8 @@
           <div class="mock-center">
             <div class="mock-auth-card">
               <div class="mock-auth-brand">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
-                  <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-                  <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                <svg viewBox="0 0 133 284" height="20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
                 </svg>
                 Sign in to MongoDB Atlas
               </div>
@@ -2043,20 +2290,18 @@
           <div class="mock-center">
             <div class="mock-auth-card">
               <div class="mock-auth-brand">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
-                  <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-                  <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                <svg viewBox="0 0 133 284" height="20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
                 </svg>
                 Authorize Partner Application
               </div>
               <div class="mock-auth-sub"><strong>Partner Application</strong> is requesting access to your Atlas account</div>
-              <div class="mock-perm"><span class="check">✓</span>Read the organizations you belong to</div>
-              <div class="mock-perm"><span class="check">✓</span>Create and manage projects on your behalf</div>
-              <div class="mock-perm"><span class="check">✓</span>Create, view, and delete clusters on your behalf</div>
-              <div class="mock-footnote" style="margin-top:14px;">Resource: <code>https://api.mongodb.com/api/atlas</code></div>
+              <div class="mock-perm"><span class="check">✓</span>Know which Atlas resources you have access to</div>
+              <div class="mock-perm"><span class="check">✓</span>Act on your behalf in Atlas organizations</div>
+              <div class="mock-footnote" style="margin-top:14px;">By authorizing, you allow it to access and take actions in your Atlas resources just as you can — you can revoke access at any time (Atlas Settings → App Connections).</div>
               <div class="mock-actions">
-                <button class="btn-outline" id="demo-deny">Deny</button>
-                <button class="btn btn-green" data-demo-next>Allow</button>
+                <button class="btn-outline" id="demo-deny">Decline</button>
+                <button class="btn btn-green" data-demo-next>Authorize</button>
               </div>
               <div class="mock-error" id="demo-deny-error">
                 <strong>error=access_denied</strong> — the user declined. Your app should handle this
@@ -2075,7 +2320,8 @@
               <h4>Authorization granted ✓</h4>
               <p>Atlas redirected the browser back to your app's <code>redirect_uri</code> with a single-use authorization code. Your backend validates <code>state</code> (CSRF check) before continuing.</p>
               <div class="inline-code"><span class="k">code</span>=splxlOBeZQQYbYS6WxSbIA
-<span class="k">state</span>=7f3a9c1e2b4d <span class="c">✓ matches the value your app sent</span></div>
+<span class="k">state</span>=7f3a9c1e2b4d <span class="c">✓ matches the value your app sent</span>
+<span class="k">iss</span>=https://authorize.mongodb.com <span class="c">✓ expected authorization server</span></div>
               <button class="btn btn-green btn-sm" data-demo-next>Exchange code for tokens</button>
             </div>
           </div>
@@ -2088,14 +2334,15 @@
               <div class="pane-label">Request — your backend (back-channel)</div>
               <pre class="demo-code"><span class="k">POST</span> https://authorize.mongodb.com/tokens
 <span class="c">Content-Type:</span> application/x-www-form-urlencoded
-<span class="c">Authorization:</span> Basic MG9hMWIyYzNk…OkRFTU8=
 
 <span class="k">grant_type</span>=authorization_code
 <span class="k">&code</span>=splxlOBeZQQYbYS6WxSbIA
 <span class="k">&code_verifier</span>=dBjftJeZ4CVP-mB92K27uhbUJU
   1p1r_wW1gFWFOEjXk
 <span class="k">&redirect_uri</span>=https://partner-app.example.com
-  /oauth/atlas/callback</pre>
+  /oauth/atlas/callback
+<span class="k">&client_id</span>=0oa1b2c3d4e5f6g7h8i9
+<span class="k">&client_secret</span>=DEMO… <span class="c"># confidential clients</span></pre>
             </div>
             <div>
               <div class="pane-label">Response — 200 OK</div>
@@ -2119,7 +2366,7 @@
           <div class="demo-split">
             <div>
               <div class="pane-label">Request — Bearer token + versioned Accept header</div>
-              <pre class="demo-code"><span class="k">GET</span> https://api.mongodb.com/api/atlas/v2/orgs
+              <pre class="demo-code"><span class="k">GET</span> https://cloud.mongodb.com/api/atlas/v2/orgs
 <span class="c">Authorization:</span> Bearer eyJhbGciOiJSUzI1NiIs…
 <span class="c">Accept:</span> application/vnd.atlas.2025-03-12+json</pre>
               <div style="margin-top:16px;">
@@ -2178,9 +2425,8 @@
               <div class="mock-conn-title">Connectors</div>
               <div class="mock-conn">
                 <div class="mock-conn-icon">
-                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" aria-hidden="true">
-                    <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-                    <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                  <svg viewBox="0 0 133 284" height="17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
                   </svg>
                 </div>
                 <div class="mock-conn-body">
@@ -2299,9 +2545,8 @@
               <div class="mock-conn-title">Connectors</div>
               <div class="mock-conn">
                 <div class="mock-conn-icon">
-                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" aria-hidden="true">
-                    <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-                    <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+                  <svg viewBox="0 0 133 284" height="17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
                   </svg>
                 </div>
                 <div class="mock-conn-body">
@@ -2354,7 +2599,7 @@
   <!-- Delegation playground -->
   <section class="section">
     <h2 class="section-title reveal">See how access is decided</h2>
-    <p class="section-sub reveal">In the current M1 model, the partner token reaches an organization only when the <strong>user is a member</strong> and the <strong>org owner enabled delegation</strong>. Flip the toggles — then call the API to see what comes back.</p>
+    <p class="section-sub reveal">In the current model, the partner token reaches an organization only when the <strong>user is a member</strong> and the <strong>org owner enabled third-party app connections</strong> (Organization Settings → App Connections, or <code>delegationSettings: READ_WRITE</code>). Flip the toggles — then call the API to see what comes back.</p>
     <div class="playground reveal">
       <div class="pg-grid">
         <div>
@@ -2428,7 +2673,7 @@
         </div>
       </div>
       <div class="pg-tabs">
-        <button class="demo-pill pg-tab active" data-pgtab="now">Today — project access (M1)</button>
+        <button class="demo-pill pg-tab active" data-pgtab="now">Today — project access (current launch)</button>
         <button class="demo-pill pg-tab" data-pgtab="future">Future — scoped delegation</button>
       </div>
 
@@ -2437,7 +2682,7 @@
         <div id="pg-tree"></div>
         <div class="pg-note">
           <strong>No project picker today:</strong> consent covers <strong>every project in every eligible org</strong>
-          the user can access. Selecting a single org, project, or cluster is not possible yet — the grant is broad by design in M1.
+          the user can access. Selecting a single org, project, or cluster is not possible yet — the grant is broad by design in the current launch.
         </div>
       </div>
 
@@ -2458,14 +2703,14 @@
           </div>
         </div>
         <div class="pg-note">
-          <strong>Planned, not available in M1:</strong> pick specific orgs, projects, clusters, roles,
+          <strong>Planned, not available today:</strong> pick specific orgs, projects, clusters, roles,
           and read-only vs read-write — potentially with an expiry. Shown for illustration only.
         </div>
       </div>
 
       <div class="pg-formula">
-        Effective access = <code>user membership</code> + <code>user roles</code> + <code>org delegation setting</code> + <code>supported endpoint</code>
-        · an org owner can set <code>DISALLOWED</code> at any time to cut off existing grants — no re-consent needed
+        Effective access = <code>user membership</code> + <code>user roles</code> + <code>org app-connections setting</code> + <code>endpoint not blocked for delegated access</code>
+        · an org owner can disable app connections at any time to cut off existing grants — no re-consent needed
       </div>
     </div>
   </section>
@@ -2473,12 +2718,12 @@
   <!-- Environment switcher -->
   <section class="section">
     <h2 class="section-title reveal">Pick your environment</h2>
-    <p class="section-sub reveal">Endpoints differ per environment. Start in dev, then promote through staging to production.</p>
+    <p class="section-sub reveal">Per the official guide, integrations develop and launch against <strong>production</strong> — Atlas does not provide separate partner environments. The dev and staging hosts below are MongoDB-internal environments, usable only if your MongoDB partner contact provisioned your OAuth client there.</p>
     <div class="reveal">
       <div class="env-picker" role="tablist" aria-label="Environments">
-        <button class="env-btn active" role="tab" aria-selected="true" data-env="dev">Dev</button>
-        <button class="env-btn" role="tab" aria-selected="false" data-env="stage">Staging</button>
-        <button class="env-btn" role="tab" aria-selected="false" data-env="prod">Production</button>
+        <button class="env-btn active" role="tab" aria-selected="true" data-env="prod">Production</button>
+        <button class="env-btn" role="tab" aria-selected="false" data-env="dev">Dev (internal)</button>
+        <button class="env-btn" role="tab" aria-selected="false" data-env="stage">Staging (internal)</button>
       </div>
       <div class="env-table-wrap">
         <table class="env-table">
@@ -2508,14 +2753,33 @@
     </div>
   </section>
 
+  <!-- Partner guidance pages -->
+  <section class="section">
+    <h2 class="section-title reveal">Partner guidance</h2>
+    <p class="section-sub reveal">Two ways to bring Atlas into other experiences — and how to steer every customer-facing workload onto a paid Atlas tier.</p>
+    <div class="card-grid">
+      <a class="card reveal" href="partner-api-vs-remote-mcp.html">
+        <div class="card-icon">🧭</div>
+        <h3>Partner API vs Remote MCP</h3>
+        <p>Definitions, access paths, and a side-by-side pictorial comparison — plus when to choose each path, or combine them in one journey.</p>
+        <span class="card-link">Open the comparison <span class="arrow">→</span></span>
+      </a>
+      <a class="card reveal" href="why-paid-clusters.html">
+        <div class="card-icon">📈</div>
+        <h3>Why paid tiers over M0</h3>
+        <p>Why your customers should run paid Atlas clusters — even in dev and stage — and exactly how to upgrade an existing M0 or create a paid cluster via the Atlas UI, Partner API, or Remote MCP.</p>
+        <span class="card-link">Open the guide <span class="arrow">→</span></span>
+      </a>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-inner">
       <div>
         <div class="footer-brand">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
-            <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-            <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+          <svg viewBox="0 0 133 284" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
           </svg>
           Atlas Admin API - V2
         </div>
@@ -2525,6 +2789,10 @@
         <h4>Documentation</h4>
         <a data-doc-link="README.md">Partner Integration Guide</a>
         <a data-doc-link="PARTNER.md">Partner Onboarding</a>
+        <a data-doc-link="END-TO-END.md">End-to-End Tutorial</a>
+        <a data-doc-link="UX-GUIDE.md">Partner UX Guide</a>
+        <a data-doc-link="PRODUCTION.md">Production Readiness</a>
+        <a data-doc-link="RECOVERY.md">Recovery Guide</a>
         <a data-doc-link="partner-delegations.md">Partner Delegation</a>
       </div>
       <div class="footer-col">
@@ -2544,49 +2812,83 @@
 
 <!-- ======================= DOCS READER VIEW ======================= -->
 <div id="view-docs">
-  <nav class="sidebar">
-    <div class="sidebar-header" data-home-link>
-      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
-        <path d="M12 2C7.5 6 4.5 10 4.5 14a7.5 7.5 0 0 0 15 0C19.5 10 16.5 6 12 2z" fill="#00ed64"/>
-        <path d="M12 7v13" stroke="#001e2b" stroke-width="1.4" stroke-linecap="round"/>
+  <header class="docs-header">
+    <div class="docs-brand" data-home-link>
+      <svg viewBox="0 0 133 284" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
       </svg>
-      <span>MongoDB Atlas<br/>Admin API - V2</span>
+      <span class="name">MongoDB Atlas</span>
+      <span class="divider"></span>
+      <span class="product">Admin API Documentation</span>
     </div>
-
-    <a class="back-home" data-home-link>← Back to home</a>
-
-    <div class="nav-group">
-      <div class="nav-group-title">Documentation</div>
-      <a class="nav-link" data-doc="README.md">Partner Integration Guide</a>
+    <div class="docs-search">
+      <svg viewBox="0 0 16 16" width="15" height="15" fill="none" aria-hidden="true">
+        <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/>
+        <path d="m11 11 3.2 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <input id="docs-search" type="search" placeholder="Search documentation" aria-label="Search guides" autocomplete="off" />
     </div>
-
-    <div class="nav-group">
-      <div class="nav-group-title">Onboarding</div>
-      <a class="nav-link" data-doc="PARTNER.md">Partner Onboarding Checklist</a>
+    <div class="docs-header-links">
+      <a href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">API Reference ↗</a>
+      <a href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub ↗</a>
     </div>
+  </header>
 
-    <div class="nav-group">
-      <div class="nav-group-title">Delegation Model</div>
-      <a class="nav-link" data-doc="partner-delegations.md">Current &amp; Future State</a>
-    </div>
+  <div class="docs-body">
+    <nav class="sidebar">
+      <div class="sidebar-header" data-home-link>
+        <span>Atlas Admin API - V2</span>
+      </div>
 
-    <div class="nav-group">
-      <div class="nav-group-title">Resources</div>
-      <a class="nav-link" href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">Atlas Admin API Reference ↗</a>
-      <a class="nav-link" href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub Repository ↗</a>
-    </div>
+      <a class="back-home" data-home-link>← Back to home</a>
 
-    <div class="sidebar-footer">OAuth 2.1 · Delegated Access</div>
-  </nav>
+      <div class="nav-group">
+        <div class="nav-group-title">Get Started</div>
+        <a class="nav-link" data-doc="README.md">Partner Integration Guide</a>
+        <a class="nav-link" data-doc="PARTNER.md">Partner Onboarding Checklist</a>
+      </div>
 
-  <main class="main">
-    <div id="content">
-      <p class="loading">Loading…</p>
-    </div>
-    <div class="reader-footer">
-      Copyright © MongoDB, Inc. — Atlas Admin API - V2 Documentation
-    </div>
-  </main>
+      <div class="nav-group">
+        <div class="nav-group-title">Build</div>
+        <a class="nav-link" data-doc="END-TO-END.md">End-to-End Tutorial</a>
+        <a class="nav-link" data-doc="UX-GUIDE.md">Partner UX Guide</a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Operate</div>
+        <a class="nav-link" data-doc="PRODUCTION.md">Production Readiness</a>
+        <a class="nav-link" data-doc="RECOVERY.md">Recovery Guide</a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Delegation Model</div>
+        <a class="nav-link" data-doc="partner-delegations.md">Current &amp; Future State</a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Resources</div>
+        <a class="nav-link" href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">Atlas Admin API Reference ↗</a>
+        <a class="nav-link" href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub Repository ↗</a>
+      </div>
+
+      <div class="sidebar-footer">OAuth 2.1 · Delegated Access</div>
+    </nav>
+
+    <main class="main">
+      <div class="article-wrap">
+        <div id="content">
+          <p class="loading">Loading…</p>
+        </div>
+        <aside class="toc" id="toc" aria-label="On this page">
+          <div class="toc-title">On this page</div>
+          <nav id="toc-links"></nav>
+        </aside>
+      </div>
+      <div class="reader-footer">
+        Copyright © MongoDB, Inc. — Atlas Admin API - V2 Documentation
+      </div>
+    </main>
+  </div>
 </div>
 
 <script>
@@ -2635,7 +2937,7 @@
     loadDoc(filename);
   }
 
-  const DOCS = ['README.md', 'PARTNER.md', 'partner-delegations.md'];
+  const DOCS = ['README.md', 'PARTNER.md', 'END-TO-END.md', 'UX-GUIDE.md', 'PRODUCTION.md', 'RECOVERY.md', 'partner-delegations.md'];
 
   function route() {
     const hash = (location.hash || '').slice(1);
@@ -2654,6 +2956,21 @@
     link.addEventListener('click', (e) => { e.preventDefault(); showDocs(link.getAttribute('data-doc')); });
   });
   window.addEventListener('hashchange', route);
+
+  /* ---------------- Sidenav search filter ---------------- */
+  const docsSearch = document.getElementById('docs-search');
+  docsSearch.addEventListener('input', () => {
+    const q = docsSearch.value.trim().toLowerCase();
+    document.querySelectorAll('.sidebar .nav-group').forEach((group) => {
+      let visible = 0;
+      group.querySelectorAll('.nav-link').forEach((link) => {
+        const show = !q || link.textContent.toLowerCase().includes(q);
+        link.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      group.style.display = visible ? '' : 'none';
+    });
+  });
 
   /* ---------------- Docs reader ---------------- */
 
@@ -2676,6 +2993,79 @@
     });
   }
 
+  // Convert GitHub-style alert markers (> [!NOTE] …) into branded callout cards.
+  const ALERT_ICONS = { note: 'ℹ', tip: '💡', important: '❗', warning: '⚠', caution: '⛔' };
+
+  function styleAlerts(root) {
+    root.querySelectorAll('blockquote').forEach((bq) => {
+      const first = bq.querySelector('p');
+      if (!first) return;
+      const marker = first.textContent.match(/^\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/);
+      if (!marker) return;
+      const type = marker[1].toLowerCase();
+
+      const textNode = Array.from(first.childNodes).find(
+        (n) => n.nodeType === Node.TEXT_NODE && n.textContent.includes('[!' + marker[1] + ']')
+      );
+      if (textNode) textNode.textContent = textNode.textContent.replace('[!' + marker[1] + ']', '').trimStart();
+      if (!first.textContent.trim() && first.childNodes.length === 0) first.remove();
+
+      bq.classList.add('alert', 'alert-' + type);
+      const label = document.createElement('div');
+      label.className = 'alert-title';
+      label.textContent = (ALERT_ICONS[type] || '') + ' ' + marker[1].charAt(0) + marker[1].slice(1).toLowerCase();
+      bq.insertBefore(label, bq.firstChild);
+    });
+  }
+
+  /* ---------------- "On this page" rail ---------------- */
+  const tocEl = document.getElementById('toc');
+  const tocLinksEl = document.getElementById('toc-links');
+  let tocObserver = null;
+
+  function slugifyHeading(text, seen) {
+    const base = text.toLowerCase().trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-') || 'section';
+    let slug = base;
+    let i = 2;
+    while (seen.has(slug)) slug = base + '-' + (i++);
+    seen.add(slug);
+    return slug;
+  }
+
+  function buildToc() {
+    if (tocObserver) { tocObserver.disconnect(); tocObserver = null; }
+    tocLinksEl.innerHTML = '';
+    const seen = new Set();
+    const headings = contentEl.querySelectorAll('h2, h3');
+    tocEl.style.display = headings.length ? '' : 'none';
+
+    headings.forEach((h) => {
+      h.id = slugifyHeading(h.textContent, seen);
+      const a = document.createElement('a');
+      a.textContent = h.textContent;
+      a.setAttribute('data-target', h.id);
+      if (h.tagName === 'H3') a.classList.add('lvl3');
+      // Note: location.hash drives doc routing, so TOC clicks only scroll.
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      tocLinksEl.appendChild(a);
+    });
+
+    // Scrollspy — highlight the section currently in view.
+    const links = Array.from(tocLinksEl.querySelectorAll('a'));
+    tocObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        links.forEach((l) => l.classList.toggle('active', l.getAttribute('data-target') === entry.target.id));
+      });
+    }, { rootMargin: '-80px 0px -75% 0px' });
+    headings.forEach((h) => tocObserver.observe(h));
+  }
+
   function animateContent() {
     contentEl.classList.remove('loaded');
     void contentEl.offsetHeight; // force reflow
@@ -2696,11 +3086,14 @@
       highlightAll(contentEl);
       wrapTables();
       addCopyButtons();
+      styleAlerts(contentEl);
+      buildToc();
       animateContent();
       window.scrollTo(0, 0);
     } catch (err) {
       contentEl.innerHTML =
         '<p style="color:#b3261e;">Failed to load <code>' + filename + '</code>: ' + err.message + '</p>';
+      buildToc();
     }
   }
 
@@ -2730,23 +3123,23 @@
     },
     {
       pill: '2 · Authorize',
-      url: 'https://cloud.mongodb.com/oauth/authorize?response_type=code&client_id=0oa1b2c3d4e5f6g7h8i9&redirect_uri=https%3A%2F%2Fpartner-app.example.com%2Foauth%2Fatlas%2Fcallback&code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM&code_challenge_method=S256&state=7f3a9c1e2b4d&resource=https%3A%2F%2Fapi.mongodb.com%2Fapi%2Fatlas',
-      desc: '<strong>Stage 2 — Redirect to Atlas.</strong> The browser lands on <code>cloud.mongodb.com/oauth/authorize</code> (check the URL bar) carrying your <code>client_id</code>, <code>redirect_uri</code>, PKCE challenge, <code>state</code> and the <code>resource</code> indicator. Atlas asks the user to sign in — your app never sees the credentials.'
+      url: 'https://cloud.mongodb.com/oauth/authorize?response_type=code&client_id=0oa1b2c3d4e5f6g7h8i9&redirect_uri=https%3A%2F%2Fpartner-app.example.com%2Foauth%2Fatlas%2Fcallback&code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM&code_challenge_method=S256&state=7f3a9c1e2b4d',
+      desc: '<strong>Stage 2 — Redirect to Atlas.</strong> The browser lands on <code>cloud.mongodb.com/oauth/authorize</code> (check the URL bar) carrying your <code>client_id</code>, <code>redirect_uri</code>, PKCE challenge and <code>state</code> — and nothing else: production clients do not send a <code>resource</code> parameter. Atlas asks the user to sign in — your app never sees the credentials.'
     },
     {
       pill: '3 · Consent',
       url: 'https://cloud.mongodb.com/oauth/authorize?…consent',
-      desc: '<strong>Stage 3 — User consent.</strong> Atlas shows a consent screen naming your app and the access it requests. <code>Allow</code> continues the flow; <code>Deny</code> returns the user with <code>error=access_denied</code> — try both. With <code>allow_saved_consent</code>, returning users skip this screen.'
+      desc: '<strong>Stage 3 — User consent.</strong> Atlas shows a consent screen naming your app and the access it requests. <code>Authorize</code> continues the flow; <code>Decline</code> returns the user with <code>error=access_denied</code> — try both. With <code>allow_saved_consent</code>, returning users skip this screen.'
     },
     {
       pill: '4 · Callback',
       url: 'https://partner-app.example.com/oauth/atlas/callback?code=splxlOBeZQQYbYS6WxSbIA&state=7f3a9c1e2b4d',
-      desc: '<strong>Stage 4 — Authorization code.</strong> Atlas redirects back to your <code>redirect_uri</code> with a single-use <code>code</code> (valid ~5 minutes). Your backend must validate <code>state</code> against the value it sent — this is your CSRF protection.'
+      desc: '<strong>Stage 4 — Authorization code.</strong> Atlas redirects back to your <code>redirect_uri</code> with a single-use <code>code</code> (valid ~10 minutes), your <code>state</code>, and an <code>iss</code> parameter. Your backend must validate <code>state</code> (CSRF protection) and <code>iss</code> against the authorization base (mix-up protection) before exchanging.'
     },
     {
       pill: '5 · Token exchange',
       url: '(back-channel — no browser involved)',
-      desc: '<strong>Stage 5 — Token exchange.</strong> Your backend POSTs the code + <code>code_verifier</code> to <code>authorize.mongodb.com/tokens</code>, authenticating with HTTP Basic (<code>client_id:client_secret</code>). Atlas returns a short-lived <code>access_token</code> (600 s) and, for confidential clients, a <code>refresh_token</code>. Store the refresh token server-side only.'
+      desc: '<strong>Stage 5 — Token exchange.</strong> Your backend POSTs the code + <code>code_verifier</code> to <code>authorize.mongodb.com/tokens</code> — confidential clients authenticate with <code>client_id</code>/<code>client_secret</code> (body or HTTP Basic), public clients send only the <code>client_id</code>. Atlas returns a short-lived <code>access_token</code> (600 s) and, for confidential clients, a <code>refresh_token</code>. Store the refresh token server-side only.'
     },
     {
       pill: '6 · API call',
@@ -2830,7 +3223,7 @@
 
   /* ---------------- Delegation playground ---------------- */
 
-  // Defaults mirror the documented M1 example: A = member + READ_WRITE,
+  // Defaults mirror the documented current-launch example: A = member + READ_WRITE,
   // B = member + DISALLOWED, C = not a member + READ_WRITE.
   const PG_ORGS = {
     A: { name: 'Org A', id: '64a1b2c3d4e5f6071829301a', deleg: 'READ_WRITE', member: true },
@@ -2882,7 +3275,7 @@
     renderPgTree();
   }
 
-  /* --- Today tab: project-level view under the broad M1 grant --- */
+  /* --- Today tab: project-level view under the broad current-launch grant --- */
 
   const PG_PROJECTS = {
     A: [
@@ -3075,6 +3468,12 @@
   /* ---------------- Environment switcher ---------------- */
 
   const ENVIRONMENTS = {
+    prod: {
+      cloud: 'https://cloud.mongodb.com',
+      oauth: 'https://authorize.mongodb.com',
+      api: 'https://cloud.mongodb.com/api/atlas',
+      resource: '(not sent — omit the resource parameter)'
+    },
     dev: {
       cloud: 'https://cloud-dev.mongodb.com',
       oauth: 'https://authorize-dev.mongodb.com',
@@ -3086,12 +3485,6 @@
       oauth: 'https://authorize-stage.mongodb.com',
       api: 'https://api-stage.mongodb.com',
       resource: 'https://api-stage.mongodb.com/api/atlas'
-    },
-    prod: {
-      cloud: 'https://cloud.mongodb.com',
-      oauth: 'https://authorize.mongodb.com',
-      api: 'https://api.mongodb.com',
-      resource: 'https://api.mongodb.com/api/atlas'
     }
   };
 
@@ -3117,7 +3510,7 @@
   }
 
   envBtns.forEach((b) => b.addEventListener('click', () => setEnv(b.getAttribute('data-env'))));
-  setEnv('dev');
+  setEnv('prod');
 
   /* ---------------- Scroll reveal ---------------- */
 

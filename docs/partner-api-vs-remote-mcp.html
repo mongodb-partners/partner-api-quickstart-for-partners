@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Partner API vs Remote MCP — MongoDB Atlas Integration Paths</title>
+<meta name="description" content="Partner API and Remote MCP — two ways to bring MongoDB Atlas into other experiences, how they differ, and how they combine." />
+
+<style>
+  /* MongoDB brand typefaces from mongodb.com (Sohne family), vendored locally
+     in docs/fonts/. If missing, the stacks below fall back to system fonts. */
+  @font-face {
+    font-family: "Sohne";
+    src: url("fonts/Sohne-Regular.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Sohne";
+    src: url("fonts/Sohne-Medium.woff2") format("woff2");
+    font-weight: 500; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Sohne";
+    src: url("fonts/Sohne-Bold.woff2") format("woff2");
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Sohne Mono";
+    src: url("fonts/SohneMono-Regular.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+
+  :root {
+    --mdb-dark: #001e2b;
+    --mdb-dark-soft: #0b2b3a;
+    --mdb-dark-softer: #11384a;
+    --mdb-green: #00684a;
+    --mdb-green-dark: #004732;
+    --mdb-green-bright: #00ed64;
+    --mdb-green-soft: #e3f4ee;
+    --mdb-bg: #fdfff5;
+    --mdb-text: #061621;
+    --mdb-muted: #5f6f76;
+    --mdb-border: #d0d4cf;
+    --mdb-blue-soft: #e1f7ff;
+    --mdb-blue: #006cfa;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(0, 30, 43, 0.05), 0 10px 30px rgba(0, 30, 43, 0.07);
+    --shadow-lift: 0 2px 6px rgba(0, 30, 43, 0.08), 0 18px 44px rgba(0, 30, 43, 0.14);
+    --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: "Sohne", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--mdb-text);
+    background: var(--mdb-bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: rgba(0, 237, 100, 0.28);
+    color: var(--mdb-dark);
+  }
+
+  .top-accent {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--mdb-green) 0%, var(--mdb-green-bright) 50%, var(--mdb-green) 100%);
+    z-index: 60;
+  }
+
+  /* ============================================================
+     Announcement bar (like mongodb.com blog banner)
+     ============================================================ */
+  .announce {
+    background: linear-gradient(90deg, var(--mdb-green-dark), var(--mdb-green) 60%, #0a7a56);
+    color: #eafaf2;
+    font-size: 13.5px;
+    text-align: center;
+    padding: 9px 16px;
+    letter-spacing: 0.01em;
+  }
+
+  .announce a {
+    color: var(--mdb-green-bright);
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+
+  .announce a:hover { text-decoration: underline; }
+
+  /* ============================================================
+     Top navigation (mongodb.com style)
+     ============================================================ */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(0, 30, 43, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 1.25;
+    flex-shrink: 0;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .nav-links a {
+    color: #c4d4cf;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .nav-links a:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 10px 18px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.18s var(--ease-spring), box-shadow 0.18s ease, background 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .btn-green {
+    background: var(--mdb-green-bright);
+    color: var(--mdb-dark);
+    box-shadow: 0 2px 10px rgba(0, 237, 100, 0.35);
+  }
+
+  .btn-green:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0, 237, 100, 0.45); }
+
+  .btn-ghost {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+  }
+
+  .btn-ghost:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
+
+  /* ============================================================
+     Hero (dark, mongodb.com style)
+     ============================================================ */
+  .hero {
+    position: relative;
+    background:
+      radial-gradient(900px 480px at 85% -10%, rgba(0, 237, 100, 0.16), transparent 60%),
+      radial-gradient(700px 420px at 10% 110%, rgba(0, 104, 74, 0.5), transparent 65%),
+      var(--mdb-dark);
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 24px 56px;
+    position: relative;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mdb-green-bright);
+    margin-bottom: 22px;
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 5.4vw, 62px);
+    line-height: 1.06;
+    letter-spacing: -0.025em;
+    margin: 0 0 22px;
+    max-width: 14em;
+  }
+
+  .hero h1 .accent { color: var(--mdb-green-bright); }
+
+  .hero p.lede {
+    font-size: clamp(16px, 1.6vw, 19px);
+    line-height: 1.6;
+    color: #b9cdc7;
+    max-width: 660px;
+    margin: 0 0 36px;
+  }
+
+  /* Floating leaf accent */
+  .hero-leaf {
+    position: absolute;
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 420px;
+    opacity: 0.13;
+    pointer-events: none;
+    animation: float 7s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(-52%); }
+    50% { transform: translateY(-48%); }
+  }
+
+  /* ============================================================
+     Sections
+     ============================================================ */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 8px;
+  }
+
+  .section:last-of-type {
+    padding-bottom: 48px;
+  }
+
+  .section-title {
+    font-size: clamp(26px, 3vw, 36px);
+    letter-spacing: -0.02em;
+    color: var(--mdb-dark);
+    margin: 0 0 12px;
+  }
+
+  .section-sub {
+    color: var(--mdb-muted);
+    font-size: 16px;
+    max-width: 680px;
+    margin: 0 0 40px;
+    line-height: 1.6;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.6s ease, transform 0.6s var(--ease-spring);
+  }
+
+  .reveal.revealed { opacity: 1; transform: none; }
+
+  /* ============================================================
+     Definition cards
+     ============================================================ */
+  .def-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 32px;
+  }
+
+  .def-card {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    padding: 30px 28px 26px;
+    box-shadow: var(--shadow);
+    transition: transform 0.22s var(--ease-spring), box-shadow 0.22s ease, border-color 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .def-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+
+  .def-card.partner::before { background: linear-gradient(90deg, var(--mdb-green), var(--mdb-green-bright)); }
+  .def-card.mcp::before { background: linear-gradient(90deg, var(--mdb-green-dark), var(--mdb-green)); }
+
+  .def-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lift);
+    border-color: rgba(0, 104, 74, 0.35);
+  }
+
+  .def-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: var(--mdb-green-soft);
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+  }
+
+  .def-card h3 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--mdb-dark);
+    letter-spacing: -0.01em;
+  }
+
+  .def-card p {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--mdb-muted);
+  }
+
+  .def-card p strong { color: var(--mdb-dark); }
+
+  /* ============================================================
+     Access-path diagrams (dark panels with node tracks)
+     ============================================================ */
+  .path-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .path-panel {
+    background: var(--mdb-dark);
+    border-radius: 20px;
+    padding: 32px 28px 28px;
+    color: #d6e4df;
+    box-shadow: var(--shadow-lift);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .path-panel h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .path-panel .path-sub {
+    margin: 0 0 22px;
+    font-size: 13.5px;
+    color: #8aa79e;
+    line-height: 1.55;
+  }
+
+  .path-track {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .path-node {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    padding: 13px 18px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .path-node .node-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba(0, 237, 100, 0.14);
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .path-node small { display: block; font-weight: 400; color: #8aa79e; margin-top: 3px; font-size: 12px; line-height: 1.45; }
+
+  .path-node.highlight {
+    background: rgba(0, 237, 100, 0.12);
+    border-color: rgba(0, 237, 100, 0.5);
+  }
+
+  .path-arrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--mdb-green-bright);
+    font-size: 18px;
+    padding: 6px 0 6px 22px;
+    line-height: 1;
+  }
+
+  .path-arrow span {
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #8aa79e;
+  }
+
+  /* Branching: split into control/data plane */
+  .path-branch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 4px 0;
+  }
+
+  .branch-arrow {
+    color: var(--mdb-green-bright);
+    font-size: 18px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .branch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .branch-node {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .branch-node .node-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(0, 237, 100, 0.14);
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .branch-node small {
+    display: block;
+    font-weight: 400;
+    color: #8aa79e;
+    margin-top: 3px;
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+
+  .path-note {
+    margin-top: 18px;
+    font-size: 12.5px;
+    color: #b9cdc7;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed rgba(0, 237, 100, 0.4);
+    border-radius: 10px;
+    padding: 10px 14px;
+    line-height: 1.55;
+  }
+
+  .path-note strong { color: var(--mdb-green-bright); }
+
+  /* ============================================================
+     Partner onboarding strip
+     ============================================================ */
+  .phase-strip {
+    background: var(--mdb-green-soft);
+    border: 1px solid rgba(0, 104, 74, 0.28);
+    border-radius: 16px;
+    padding: 22px 26px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin: 0 0 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .phase-label { flex-shrink: 0; min-width: 150px; }
+
+  .phase-label strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mdb-green-dark);
+  }
+
+  .phase-label span {
+    display: block;
+    font-size: 12px;
+    color: var(--mdb-muted);
+    margin-top: 4px;
+    line-height: 1.45;
+  }
+
+  .phase-flow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .phase-step {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 12px;
+    padding: 11px 14px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 12.5px;
+    color: var(--mdb-text);
+    line-height: 1.45;
+    flex: 1;
+  }
+
+  .phase-step .n {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--mdb-green-bright);
+    color: var(--mdb-dark);
+    font-weight: 800;
+    font-size: 13px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .phase-step code {
+    font-family: "Sohne Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    background: var(--mdb-green-soft);
+    border-radius: 4px;
+    padding: 0 4px;
+    color: var(--mdb-green-dark);
+  }
+
+  .phase-arrow {
+    color: var(--mdb-green);
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .phase-done {
+    background: var(--mdb-green-dark);
+    border: 1px solid var(--mdb-green-dark);
+    border-radius: 12px;
+    padding: 11px 16px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--mdb-green-bright);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ============================================================
+     Overlap (Venn)
+     ============================================================ */
+  .overlap-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: stretch;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .venn-card {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 30px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .venn {
+    position: relative;
+    height: 360px;
+  }
+
+  .venn-circle {
+    position: absolute;
+    top: 50%;
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    padding: 40px;
+    text-align: center;
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.4;
+    transition: transform 0.3s var(--ease-spring);
+  }
+
+  .venn-circle small { display: block; font-weight: 400; font-size: 12px; margin-top: 8px; line-height: 1.5; }
+
+  .venn-left {
+    left: calc(50% - 310px);
+    background: rgba(0, 104, 74, 0.14);
+    border: 2px solid rgba(0, 104, 74, 0.5);
+    color: var(--mdb-green-dark);
+    justify-content: flex-start;
+    padding-right: 190px;
+  }
+
+  .venn-right {
+    right: calc(50% - 310px);
+    background: rgba(0, 108, 250, 0.10);
+    border: 2px solid rgba(0, 108, 250, 0.4);
+    color: var(--mdb-blue);
+    justify-content: flex-end;
+    padding-left: 190px;
+  }
+
+  .venn-mid {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    background: var(--mdb-dark);
+    color: var(--mdb-green-bright);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-align: center;
+    width: 150px;
+    line-height: 1.45;
+    box-shadow: var(--shadow-lift);
+  }
+
+  .venn-mid small { display: block; color: #b9cdc7; font-weight: 400; margin-top: 4px; font-size: 10.5px; }
+
+  .venn-caption {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--mdb-muted);
+    line-height: 1.6;
+  }
+
+  .venn-caption strong { color: var(--mdb-dark); }
+
+  /* ============================================================
+     Access & examples
+     ============================================================ */
+  .access-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .access-card {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 28px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .access-card h3 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--mdb-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .access-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    counter-reset: step;
+  }
+
+  .access-step {
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--mdb-muted);
+    align-items: flex-start;
+  }
+
+  .access-step strong { color: var(--mdb-dark); }
+
+  .access-step::before {
+    counter-increment: step;
+    content: counter(step);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--mdb-green-soft);
+    color: var(--mdb-green-dark);
+    font-size: 12px;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .access-step + .access-step { border-top: 1px dashed var(--mdb-border); }
+
+  .mode-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .mode-chip {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mdb-green-dark);
+    background: var(--mdb-green-soft);
+    border: 1px solid rgba(0, 104, 74, 0.25);
+    padding: 6px 13px;
+    border-radius: 999px;
+  }
+
+  .example-callout {
+    background: var(--mdb-green-soft);
+    border: 1px solid rgba(0, 104, 74, 0.25);
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--mdb-text);
+  }
+
+  .example-callout .example-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--mdb-green-dark);
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  /* Mini UI flow mockups inside example callouts */
+  .ui-flow {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ui-screen {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 23, 13, 0.06);
+    overflow: hidden;
+    font-size: 12.5px;
+  }
+
+  .ui-screen .ui-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #f4f7f5;
+    border-bottom: 1px solid var(--mdb-border);
+    font-weight: 600;
+    color: var(--mdb-dark);
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+  }
+
+  .ui-screen .ui-bar .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--mdb-border);
+  }
+
+  .ui-screen .ui-bar .dot.g { background: var(--mdb-green-bright); }
+
+  .ui-screen .ui-bar .ui-app {
+    margin-left: 6px;
+    color: var(--mdb-muted);
+    font-weight: 500;
+  }
+
+  .ui-screen .ui-body {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ui-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--mdb-text);
+    line-height: 1.45;
+  }
+
+  .ui-row .k {
+    color: var(--mdb-muted);
+    font-size: 11.5px;
+    min-width: 92px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .ui-row .v { color: var(--mdb-dark); font-weight: 500; }
+
+  .ui-pill {
+    display: inline-block;
+    background: var(--mdb-green-soft);
+    color: var(--mdb-green-dark);
+    border: 1px solid rgba(0, 104, 74, 0.25);
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .ui-pill.blue {
+    background: rgba(0, 108, 250, 0.08);
+    color: var(--mdb-blue);
+    border-color: rgba(0, 108, 250, 0.3);
+  }
+
+  .ui-msg {
+    background: #f4f7f5;
+    border-left: 3px solid var(--mdb-green);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--mdb-text);
+    line-height: 1.5;
+    font-size: 12.5px;
+  }
+
+  .ui-msg.user {
+    background: rgba(0, 108, 250, 0.06);
+    border-left-color: var(--mdb-blue);
+  }
+
+  .ui-msg .who {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--mdb-muted);
+    margin-bottom: 3px;
+  }
+
+  .ui-msg code {
+    background: rgba(0, 23, 13, 0.06);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 11.5px;
+  }
+
+  .ui-conn {
+    display: flex;
+    justify-content: center;
+    color: var(--mdb-green);
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .ui-conn span {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--mdb-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-left: 8px;
+  }
+
+  /* ============================================================
+     Governance guardrail
+     ============================================================ */
+  .guardrail {
+    margin-top: 22px;
+    background: var(--mdb-dark);
+    color: #d6e4df;
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    box-shadow: var(--shadow-lift);
+  }
+
+  .guardrail .lock {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(0, 237, 100, 0.14);
+    border: 1px solid rgba(0, 237, 100, 0.45);
+    display: grid;
+    place-items: center;
+    font-size: 19px;
+    flex-shrink: 0;
+  }
+
+  .guardrail strong { color: var(--mdb-green-bright); }
+
+  /* ============================================================
+     Related links
+     ============================================================ */
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--mdb-border);
+    border-radius: 14px;
+    padding: 26px 24px 22px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.22s var(--ease-spring), box-shadow 0.22s ease, border-color 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lift);
+    border-color: rgba(0, 104, 74, 0.35);
+  }
+
+  .card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--mdb-green-soft);
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+  }
+
+  .card h3 {
+    margin: 0;
+    font-size: 17px;
+    color: var(--mdb-dark);
+    letter-spacing: -0.01em;
+  }
+
+  .card p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--mdb-muted);
+    flex: 1;
+  }
+
+  .card .card-link {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--mdb-green);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .card:hover .card-link { color: var(--mdb-green-dark); }
+  .card .card-link .arrow { transition: transform 0.18s var(--ease-spring); }
+  .card:hover .card-link .arrow { transform: translateX(4px); }
+
+  /* ============================================================
+     Footer (dark, mongodb.com style)
+     ============================================================ */
+  .site-footer {
+    background: var(--mdb-dark);
+    color: #8aa79e;
+    margin-top: 48px;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 24px 40px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 36px;
+  }
+
+  .footer-brand { color: #fff; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px; }
+  .footer-tag { font-size: 13.5px; line-height: 1.6; margin-top: 14px; max-width: 280px; }
+
+  .footer-col h4 {
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 14px;
+  }
+
+  .footer-col a {
+    display: block;
+    color: #8aa79e;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 5px 0;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .footer-col a:hover { color: var(--mdb-green-bright); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 20px 24px;
+    text-align: center;
+    font-size: 12.5px;
+  }
+
+  /* ============================================================
+     Responsive
+     ============================================================ */
+  @media (max-width: 960px) {
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    .hero-leaf { display: none; }
+    .path-grid, .overlap-grid, .access-grid { grid-template-columns: 1fr; }
+    .venn { height: 340px; }
+    .venn-circle { width: 320px; height: 320px; padding: 30px; }
+    .venn-left { left: calc(50% - 260px); padding-right: 160px; }
+    .venn-right { right: calc(50% - 260px); padding-left: 160px; }
+    .phase-strip { flex-direction: column; align-items: stretch; }
+    .phase-flow { flex-direction: column; align-items: stretch; }
+    .phase-arrow { transform: rotate(90deg); align-self: center; }
+    .phase-done { justify-content: center; }
+  }
+
+  @media (max-width: 860px) {
+    .nav-links { display: none; }
+  }
+
+  @media (max-width: 768px) {
+    .hero-inner { padding: 64px 20px 60px; }
+    .footer-inner { grid-template-columns: 1fr; gap: 26px; }
+  }
+
+  @media (max-width: 640px) {
+    .venn { height: auto; display: flex; flex-direction: column; gap: 12px; }
+    .venn-circle {
+      position: static;
+      transform: none;
+      left: auto;
+      right: auto;
+      width: 100%;
+      height: auto;
+      border-radius: 14px;
+      padding: 18px 22px;
+      justify-content: center;
+    }
+    .venn-mid { position: static; transform: none; width: 100%; border-radius: 12px; }
+    .path-branch, .branch-grid { grid-template-columns: 1fr; }
+    .path-branch .branch-arrow:last-child { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-accent"></div>
+
+<div class="announce">
+  Partner API access requires approved design-partner status; Remote MCP (Atlas Managed MCP Server) is GA and governed per Atlas organization.
+  <a href="index.html#PARTNER.md">Read the onboarding guide →</a>
+</div>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 133 284" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
+      </svg>
+      Atlas Admin API - V2
+    </a>
+    <div class="nav-links">
+      <a href="index.html#README.md">Integration Guide</a>
+      <a href="index.html#END-TO-END.md">Tutorial</a>
+      <a href="index.html#PARTNER.md">Partner Onboarding</a>
+      <a href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">API Reference ↗</a>
+      <a href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+    <a class="btn btn-green" href="index.html">← Back to home</a>
+  </nav>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <svg class="hero-leaf" viewBox="0 0 133 284" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
+  </svg>
+  <div class="hero-inner">
+    <span class="eyebrow">MongoDB Atlas · Integration Paths</span>
+    <h1>Integration paths for partners: <span class="accent">Two ways to bring Atlas into partner platform.</span></h1>
+    <div class="def-grid">
+      <div class="def-card partner reveal">
+        <div class="def-icon">🤝</div>
+        <h3>Partner API</h3>
+        <p>Partner API is the <strong>scripted integration path</strong>: after MongoDB onboards the partner (approved design partners) and provisions OAuth credentials, a customer authorizes the app, which then calls Atlas Administration APIs directly to manage Atlas resources.</p>
+        <p>An <strong>approved partner application</strong> uses <strong>Atlas App Connections</strong> — MongoDB's OAuth 2.1 platform — to obtain an Atlas user's authorization, then calls the <strong>Atlas Administration API directly</strong> with that user's permissions.</p>
+        <p>It is a way to connect and manage Atlas through the partner's product — it does <strong>not itself query documents</strong> inside a database.</p>
+      </div>
+      <div class="def-card mcp reveal">
+        <div class="def-icon">🤖</div>
+        <h3>Remote MCP</h3>
+        <p>Remote MCP — the <strong>MongoDB Atlas Managed MCP Server</strong>, now GA — is the <strong>AI-driven path</strong>: when the customer's Atlas organization allows access, supported AI clients use MongoDB-hosted tools in response to natural-language requests, to explore data or manage Atlas resources, within the organization's settings and user permissions.</p>
+        <p>It supports <strong>two access models</strong>: <strong>user-delegated</strong> (a person authorizes an AI client such as Claude, ChatGPT, Cursor, Devin, or Grok Build from its marketplace, via Atlas App Connections) and <strong>programmatic</strong> (an admin provisions an <strong>MCP configuration</strong> — with its own client ID/secret and assigned roles — for an unattended agent).</p>
+        <p>Depending on the org's access mode (read / read-write) and the user's Atlas role, an assistant can <strong>explore and query data</strong> or <strong>manage Atlas resources</strong> through those tools.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Access paths, pictorially -->
+<section class="section">
+  <h2 class="section-title reveal">Two paths into Atlas</h2>
+  <p class="section-sub reveal">The Partner API path is a direct call from the partner's product. The Remote MCP path goes through MongoDB's hosted MCP server, which exposes MongoDB tools to AI clients.</p>
+
+  <!-- One-time partner onboarding -->
+  <div class="phase-strip reveal">
+    <div class="phase-label">
+      <strong>Partner onboarding</strong>
+      <span>One-time (design partners)</span>
+    </div>
+    <div class="phase-flow">
+      <div class="phase-step">
+        <span class="n">1</span>
+        <div>Partner applies via the Become a Partner form ("Partner API")</div>
+      </div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-step">
+        <span class="n">2</span>
+        <div>MongoDB provisions OAuth app — <code>client_id</code> (+ <code>client_secret</code> for confidential clients) + <code>redirect_uris</code></div>
+      </div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-step">
+        <span class="n">3</span>
+        <div>Partner stores credentials in secrets manager, configures app</div>
+      </div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-done">✓ Partner Onboarded</div>
+    </div>
+  </div>
+
+  <div class="path-grid">
+    <!-- Partner API path -->
+    <div class="path-panel reveal">
+      <h3>🤝 Partner API path</h3>
+      <p class="path-sub">A partner application's own product flow — e.g. connecting a database during app setup.</p>
+      <div class="path-track">
+        <div class="path-node">
+          <span class="node-icon">👤</span>
+          <div>Atlas user<small>Begins inside the partner's application</small></div>
+        </div>
+        <div class="path-arrow">↓ <span>signs in to Atlas &amp; authorizes the app</span></div>
+        <div class="path-node">
+          <span class="node-icon">🔐</span>
+          <div>Atlas App Connections<small>OAuth 2.1 + PKCE consent — user grants the partner app access</small></div>
+        </div>
+        <div class="path-arrow">↓ <span>delegated, user-scoped access</span></div>
+        <div class="path-node highlight">
+          <span class="node-icon">⚡</span>
+          <div>Atlas Administration API (Partner API)<small>Called directly by the partner app — no MCP server in between</small></div>
+        </div>
+        <div class="path-arrow">↓ <span>user's Atlas role + org app-connections setting apply</span></div>
+        <div class="path-node">
+          <span class="node-icon">🌿</span>
+          <div>Atlas resources<small>Organizations, projects, clusters — control plane</small></div>
+        </div>
+      </div>
+      <div class="path-note"><strong>Direct integration:</strong> the authorized partner app calls the Partner API itself, as part of its own product experience.</div>
+    </div>
+    <!-- Remote MCP path -->
+    <div class="path-panel reveal">
+      <h3>🤖 Remote MCP path</h3>
+      <p class="path-sub">An AI client or agent using natural-language requests and MongoDB tools.</p>
+      <div class="path-track">
+        <div class="path-node">
+          <span class="node-icon">💬</span>
+          <div>AI Client / Agent: Person or Unattended Agent<small>Supported AI clients (Claude, ChatGPT, Cursor, Codex, Devin, Grok Build…) from their marketplace — or an admin-provisioned MCP configuration for autonomous agents</small></div>
+        </div>
+        <div class="path-arrow">↓ <span>user-delegated: OAuth consent via App Connections · programmatic: MCP configuration client credentials</span></div>
+        <div class="path-node">
+          <span class="node-icon">🔐</span>
+          <div>App Connections / MCP Configuration<small>OAuth consent for interactive users, or admin-provisioned roles + client ID/secret for agents</small></div>
+        </div>
+        <div class="path-arrow">↓ <span>tool calls over MCP</span></div>
+        <div class="path-node highlight">
+          <span class="node-icon">🛠️</span>
+          <div>MongoDB Atlas Managed MCP server<small>Exposes MongoDB tools to the client or agent</small></div>
+        </div>
+        <div class="path-arrow">↓ <span>org access mode (read / read-write) + user's Atlas role</span></div>
+        <div class="path-node">
+          <span class="node-icon">🌿</span>
+          <div>Atlas resources &amp; data<small>Manage Atlas resources or explore and query data</small></div>
+        </div>
+        <div class="path-branch">
+          <div class="branch-arrow">↓</div>
+          <div class="branch-arrow">↓</div>
+        </div>
+        <div class="branch-grid">
+          <div class="branch-node">
+            <span class="node-icon">🎛️</span>
+            <div>Control Plane<small>Projects, clusters, users, network — Atlas resource management</small></div>
+          </div>
+          <div class="branch-node">
+            <span class="node-icon">🗄️</span>
+            <div>Data Plane<small>Collections, documents, indexes — explore &amp; query data</small></div>
+          </div>
+        </div>
+      </div>
+      <div class="path-note"><strong>Tool interface:</strong> the AI client never calls Atlas directly — it invokes tools exposed through MongoDB's hosted MCP server.</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- How do they complement each other? -->
+<section class="section">
+  <h2 class="section-title reveal">How do they complement each other?</h2>
+  <p class="section-sub reveal">They overlap in some capabilities — but they are not direct substitutes. The right choice depends on the intended user journey, not solely on the operation being performed.</p>
+  <div class="overlap-grid">
+    <div class="venn-card reveal">
+      <div class="venn" role="img" aria-label="Venn diagram: Partner API (direct integration path for a partner product's workflow) overlaps with Remote MCP (tool interface for an AI experience) on managing Atlas resources when authorized.">
+        <div class="venn-circle venn-left">
+          <div>Partner API<small>Direct integration path for a partner application's product workflow — more controlled way of orchestration</small></div>
+        </div>
+        <div class="venn-circle venn-right">
+          <div>Remote MCP<small>Tool interface for an AI experience — limited capability of resource management, meant for data management with natural-language processing</small></div>
+        </div>
+        <div class="venn-mid">Manage Atlas resources<small>both paths — when authorized</small></div>
+      </div>
+      <p class="venn-caption"><strong>Overlap, not substitution.</strong> Both paths can be used to manage Atlas resources when authorized — but each exists for a different initiator and journey.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Access & examples -->
+<section class="section">
+  <h2 class="section-title reveal">Access &amp; examples</h2>
+  <p class="section-sub reveal">How each path is granted — and what a real journey looks like on each side.</p>
+  <div class="access-grid">
+    <!-- Partner API access -->
+    <div class="access-card reveal">
+      <h3>🤝 Accessing the Partner API</h3>
+      <div class="access-steps">
+        <div class="access-step"><span><strong>Start with MongoDB's partner process.</strong> The official integration guide is intended for approved design partners — apply via the <strong>Become a Partner</strong> form with “Partner API” in the request. Public clients use secret-less PKCE; confidential clients also receive a <code>client_secret</code>.</span></div>
+        <div class="access-step"><span><strong>User begins in the partner's application</strong>, signs in to Atlas, and authorizes that application.</span></div>
+        <div class="access-step"><span><strong>The partner app calls permitted Partner API operations</strong> on the user's behalf.</span></div>
+        <div class="access-step"><span><strong>Access is gated twice:</strong> by the user's Atlas role <em>and</em> by whether the Atlas organization allows third-party app connections.</span></div>
+      </div>
+      <div class="example-callout">
+        <div class="example-title">💡 Example — control plane in action</div>
+        A developer at the customer <strong>Acme Retail</strong> uses the partner platform <strong>NovaDeploy</strong> to spin up a new microservice. NovaDeploy's own UI walks them through picking Atlas as the database — behind the scenes it calls the Partner API to provision resources in Acme Retail's Atlas org.
+        <div class="ui-flow">
+          <div class="ui-screen">
+            <div class="ui-bar"><span class="dot"></span><span class="dot"></span><span class="dot g"></span><span class="ui-app">NovaDeploy · New Service Setup</span></div>
+            <div class="ui-body">
+              <div class="ui-row"><span class="k">Customer</span><span class="v">Acme Retail (Atlas org)</span></div>
+              <div class="ui-row"><span class="k">Step 1</span><span class="v">Customer clicks <em>"Connect MongoDB Atlas"</em> → signs in &amp; authorizes NovaDeploy</span></div>
+              <div class="ui-row"><span class="k">Step 2</span><span class="v">Picks <span class="ui-pill">Project: orders-prod</span> <span class="ui-pill">Cluster: M10 · AWS us-east-1</span></span></div>
+              <div class="ui-row"><span class="k">Step 3</span><span class="v">Clicks <em>"Provision"</em> — NovaDeploy calls Partner API to create the cluster</span></div>
+            </div>
+          </div>
+          <div class="ui-conn">↓<span>Partner API · control plane</span></div>
+          <div class="ui-screen">
+            <div class="ui-bar"><span class="dot"></span><span class="dot"></span><span class="dot g"></span><span class="ui-app">MongoDB Atlas · Acme Retail org</span></div>
+            <div class="ui-body">
+              <div class="ui-row"><span class="k">Project</span><span class="v">orders-prod</span></div>
+              <div class="ui-row"><span class="k">Cluster</span><span class="v">orders-cluster-0 · <span class="ui-pill">M10 · Creating…</span></span></div>
+              <div class="ui-row"><span class="k">Initiated by</span><span class="v">NovaDeploy (Partner API) on behalf of the Acme Retail user</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Remote MCP access -->
+    <div class="access-card reveal">
+      <h3>🤖 Accessing Remote MCP</h3>
+      <div class="mode-chips">
+        <span class="mode-chip">Interactive — person + AI client</span>
+        <span class="mode-chip">Unattended — automated agent</span>
+      </div>
+      <div class="access-steps">
+        <div class="access-step"><span><strong>Interactive use (user-delegated):</strong> a person connects a supported AI client — Claude, ChatGPT, Cursor, Codex, Devin, fx, Grok Build — from that client's marketplace and authorizes it in the browser via Atlas App Connections.</span></div>
+        <div class="access-step"><span><strong>Organization control:</strong> an Atlas Organization Owner controls whether AI clients can connect, and sets a <strong>read</strong> or <strong>read/write</strong> access mode; the user's Atlas role further limits what the client can do. Disabled by default for existing orgs.</span></div>
+        <div class="access-step"><span><strong>Unattended agents (programmatic):</strong> an Organization or Project Owner provisions an <strong>MCP configuration</strong> with assigned Atlas roles, an optional IP access list, and a generated client ID/secret (shown once).</span></div>
+        <div class="access-step"><span><strong>Both models use the MongoDB Atlas Managed MCP server</strong> — and share its rate limits (2,000 req/min per IP, 500 req/min per user).</span></div>
+      </div>
+      <div class="example-callout">
+        <div class="example-title">💡 Example — data plane in action</div>
+        A developer at the customer <strong>Acme Retail</strong> opens their AI coding assistant (connected to Atlas via Remote MCP) and asks a natural-language question about the <code>orders</code> collection their team just provisioned. The assistant calls MongoDB-hosted tools to explore the data — the developer never leaves the AI client.
+        <div class="ui-flow">
+          <div class="ui-screen">
+            <div class="ui-bar"><span class="dot"></span><span class="dot"></span><span class="dot g"></span><span class="ui-app">AI Assistant · connected to Atlas (Acme Retail)</span></div>
+            <div class="ui-body">
+              <div class="ui-msg user"><span class="who">Customer</span>"Which fields does the <code>orders</code> collection have, and how many orders came in last week?"</div>
+              <div class="ui-msg"><span class="who">Assistant · via MongoDB MCP tools</span>Calling <code>list_collections</code> → <code>orders</code> found in <span class="ui-pill blue">orders-prod</span><br>Calling <code>collection_schema</code> → 12 fields: <code>_id</code>, <code>customer_id</code>, <code>total</code>, <code>status</code>, <code>placed_at</code>…<br>Calling <code>aggregate</code> → <strong>4,812 orders</strong> in the last 7 days.</div>
+              <div class="ui-msg"><span class="who">Assistant · reply</span>"The <code>orders</code> collection has 12 fields (id, customer_id, total, status, placed_at, …). Last week Acme Retail received <strong>4,812 orders</strong>."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Governance -->
+<section class="section">
+  <div class="guardrail reveal">
+    <div class="lock">🔒</div>
+    <div><strong>Neither route bypasses governance.</strong> Both paths are bound by the same permissions and organization controls that govern them — the user's Atlas role, the org-level third-party app connections setting (Organization Settings → App Connections), and org-owner AI-client access modes. Revoking access never deletes resources a path already created (database users, service accounts) — cleanup is a separate step.</div>
+  </div>
+</section>
+
+<!-- Related links -->
+<section class="section">
+  <h2 class="section-title reveal">Keep exploring</h2>
+  <p class="section-sub reveal">Dive into the integration guide, or read MongoDB's MCP documentation.</p>
+  <div class="related-grid">
+    <a class="card reveal" href="index.html#README.md">
+      <div class="card-icon">📘</div>
+      <h3>Partner Integration Guide</h3>
+      <p>OAuth flows, environments, Atlas Admin API reference, FastAPI demo server, and test setup.</p>
+      <span class="card-link">Open guide <span class="arrow">→</span></span>
+    </a>
+    <a class="card reveal" href="index.html#PARTNER.md">
+      <div class="card-icon">🤝</div>
+      <h3>Partner Onboarding</h3>
+      <p>Register with MongoDB, receive OAuth credentials, and promote from dev to production.</p>
+      <span class="card-link">Open guide <span class="arrow">→</span></span>
+    </a>
+    <a class="card reveal" href="https://www.mongodb.com/docs/mcp-server/" target="_blank" rel="noopener">
+      <div class="card-icon">🛠️</div>
+      <h3>MongoDB MCP Server</h3>
+      <p>Hosted MCP server, MCP access models, and how to manage AI client access to Atlas.</p>
+      <span class="card-link">MongoDB Docs <span class="arrow">↗</span></span>
+    </a>
+    <a class="card reveal" href="index.html">
+      <div class="card-icon">🏠</div>
+      <h3>Back to the docs home</h3>
+      <p>Return to the interactive landing page — flow explorer, walkthrough, and environment picker.</p>
+      <span class="card-link">Go home <span class="arrow">→</span></span>
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <svg viewBox="0 0 133 284" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M90.8664 31.6355C78.9615 17.5034 68.7101 3.14588 66.6207 0.169133C66.3952 -0.0563777 66.0645 -0.0563777 65.8541 0.169133C63.7647 3.14588 53.5133 17.5034 41.5933 31.6355C-60.6055 162.011 57.692 249.99 57.692 249.99L58.6841 250.652C59.5709 264.228 61.7655 283.772 61.7655 283.772H70.589C70.589 283.772 72.7986 264.348 73.6704 250.652L74.6625 249.885C74.7677 249.885 193.08 162.011 90.8664 31.6355ZM66.1697 247.991C66.1697 247.991 60.8787 243.466 59.4507 241.15V240.925L65.8391 98.9581C65.8391 98.5221 66.5004 98.5221 66.5004 98.9581L72.8888 240.925V241.15C71.4608 243.466 66.1697 247.991 66.1697 247.991Z" fill="#00ED64"/>
+        </svg>
+        Atlas Admin API - V2
+      </div>
+      <p class="footer-tag">OAuth 2.1 delegated access for ISV and Technology Partners — call Atlas Admin API endpoints on behalf of your users.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Documentation</h4>
+      <a href="index.html#README.md">Partner Integration Guide</a>
+      <a href="index.html#PARTNER.md">Partner Onboarding</a>
+      <a href="index.html#END-TO-END.md">End-to-End Tutorial</a>
+      <a href="index.html#UX-GUIDE.md">Partner UX Guide</a>
+      <a href="index.html#PRODUCTION.md">Production Readiness</a>
+      <a href="index.html#RECOVERY.md">Recovery Guide</a>
+      <a href="index.html#partner-delegations.md">Partner Delegation</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2" target="_blank" rel="noopener">Atlas Admin API Reference ↗</a>
+      <a href="https://github.com/mongodb-partners/partner-api-quickstart-for-partners" target="_blank" rel="noopener">GitHub Repository ↗</a>
+      <a href="https://www.mongodb.com/docs/mcp-server/" target="_blank" rel="noopener">MongoDB MCP Server ↗</a>
+    </div>
+    <div class="footer-col">
+      <h4>MongoDB</h4>
+      <a href="https://www.mongodb.com/docs/" target="_blank" rel="noopener">Documentation ↗</a>
+      <a href="https://www.mongodb.com/products/platform/atlas-database" target="_blank" rel="noopener">MongoDB Atlas ↗</a>
+    </div>
+  </div>
+  <div class="footer-bottom">Copyright © MongoDB, Inc. — Atlas Admin API - V2 Documentation</div>
+</footer>
+
+<script>
+  /* ---------------- Scroll reveal ---------------- */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+</script>
+
+</body>
+</html>

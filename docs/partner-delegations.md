@@ -1,12 +1,15 @@
 # Partner Delegation — Current State and Future State
 
-This guide describes how partner delegation works today (Milestone 1), what is intentionally not available yet, and what MongoDB has planned for future phases.
+This guide describes how partner delegation works today, what is intentionally not available yet, and what MongoDB has planned for future phases.
+
+> [!NOTE]
+> The official terms are now **Atlas App Connections** (the OAuth 2.1 platform) and **third-party app connections** (the per-organization setting). The governing API remains `delegationSettings`. See [Atlas App Connections Overview](https://www.mongodb.com/docs/atlas/app-connections/) and [Manage Third-Party App Access to Atlas](https://www.mongodb.com/docs/atlas/app-connections/manage-app-access/).
 
 ---
 
 ## On this page
 
-- [Current capability: Milestone 1](#current-capability-milestone-1)
+- [Current capability](#current-capability)
 - [How delegation works, step by step](#how-delegation-works-step-by-step)
 - [Not available in the current model](#not-available-in-the-current-model)
 - [Planned future capabilities](#planned-future-capabilities)
@@ -15,12 +18,14 @@ This guide describes how partner delegation works today (Milestone 1), what is i
 
 ---
 
-## Current capability: Milestone 1
+## Current capability
 
 The current model is **organization-level opt-in plus user-level OAuth consent**. There is no per-user delegation toggle today.
 
 > [!IMPORTANT]
-> The `READ_ONLY` option shown in the delegation API applies to MCP. Partner API delegation currently supports only `DISALLOWED` and `READ_WRITE`. The current Partner API launch has full-delegation semantics and static permission handling.
+> The `delegatedPartnerAccess` API field currently supports only `DISALLOWED` and `READ_WRITE` for partner applications. The partner launch has full-delegation semantics and static permission handling — a connected app can act anywhere the authorizing user's Atlas permissions allow. (Separately, **AI clients** connecting through the Remote MCP server are governed by an organization-level read / read-write / disabled access mode — see [Manage AI Client Access](https://www.mongodb.com/docs/mcp-server/remote-mcp/manage-ai-client-access/).)
+
+**Default state:** App connections are **disabled by default** for existing organizations and for new organizations an existing Atlas user creates. They are **enabled by default** only for organizations a brand-new user creates at the time they sign up for Atlas.
 
 ---
 
@@ -28,11 +33,11 @@ The current model is **organization-level opt-in plus user-level OAuth consent**
 
 ### Step 1: MongoDB registers the partner OAuth application
 
-For invited partners, MongoDB manually creates the OAuth app and provides the partner with a `client_id` and secret. The app is initially configured for testing.
+For approved design partners, MongoDB manually creates the OAuth app and provides the partner with a `client_id` (plus a `client_secret` for confidential clients). Apply via the [Become a Partner](https://www.mongodb.com/company/partners/) form with "Partner API" in the request.
 
-### Step 2: An Organization Owner enables partner delegation
+### Step 2: An Organization Owner enables third-party app connections
 
-Existing organizations default to delegation disabled. The Organization Owner enables it using:
+The Organization Owner enables app connections either in the Atlas UI — **Organization Settings → App Connections → Allow users to connect third-party apps** — or via the API:
 
 ```http
 PATCH /api/atlas/v2/orgs/{orgId}/delegationSettings
@@ -43,7 +48,7 @@ Content-Type: application/vnd.atlas.2025-03-12+json
 }
 ```
 
-`delegatedPartnerAccess` currently supports only `DISALLOWED` and `READ_WRITE`. The endpoint requires Organization Owner privileges.
+`delegatedPartnerAccess` currently supports only `DISALLOWED` and `READ_WRITE`. The endpoint requires Organization Owner privileges. Organization Owners can also set a **maximum refresh token lifetime** for the organization from the same App Connections settings (default: 30-day maximum, 7-day idle).
 
 ### Step 3: The user must belong to the organization
 
@@ -51,14 +56,17 @@ The user must already be an Atlas member and can delegate only access they posse
 
 ### Step 4: The user authorizes the partner
 
-The partner starts the OAuth Authorization Code + PKCE flow. The user signs in, reviews the consent screen, and approves the application.
+The partner starts the OAuth Authorization Code + PKCE flow. The user signs in, reviews the consent screen, and approves the application. The consent screen tells the user the app can:
+
+- Know which Atlas resources you have access to
+- Act on your behalf in Atlas organizations
 
 > [!NOTE]
-> In the current M1 model, consent is broad: the user grants the partner access to **all eligible** Atlas organizations/projects associated with the user. There is no organization, project, or cluster picker yet.
+> In the current model, consent is broad: the user grants the partner access to **all eligible** Atlas organizations/projects associated with the user. There is no organization, project, or cluster picker yet.
 
 ### Step 5: MongoDB issues delegated tokens
 
-MongoDB stores the grant and issues access and refresh tokens to the partner application. The partner uses the access token as a bearer token when calling the Atlas Admin API on behalf of the user.
+MongoDB stores the grant and issues access and refresh tokens to the partner application. The partner uses the access token as a bearer token when calling the Atlas Administration API on behalf of the user.
 
 ### Step 6: MongoDB evaluates every API request
 
@@ -67,25 +75,30 @@ Effective access is determined by:
 ```
 User Atlas membership
 + User Atlas roles
-+ Organization delegation setting
-+ Supported Partner API endpoint
++ Organization app-connections setting
++ Endpoint not blocked for delegated access
 ```
+
+A completed authorization doesn't guarantee API calls succeed — Atlas evaluates the org's delegation setting and the user's roles **on every request**, not once at authorization time.
 
 ### Example
 
-| Organization | User membership | Delegation setting | Partner access |
+| Organization | User membership | App connections | Partner access |
 |---|---|---|---|
-| Org A | Yes | `READ_WRITE` | Yes |
-| Org B | Yes | `DISALLOWED` | No |
-| Org C | No | `READ_WRITE` | No |
+| Org A | Yes | Enabled (`READ_WRITE`) | Yes |
+| Org B | Yes | Disabled (`DISALLOWED`) | No |
+| Org C | No | Enabled (`READ_WRITE`) | No |
 
-A user who belongs to Org A, B, and C would not automatically expose all three organizations — only the organizations where delegation is enabled **and** the user has access.
+A user who belongs to Org A, B, and C would not automatically expose all three organizations — only the organizations where app connections are enabled **and** the user has access. `GET /api/atlas/v2/orgs` returns only those organizations.
 
 ### Step 7: The user or Organization Owner can stop access
 
-- The **user** can revoke the partner application from their authorized applications.
-- An **Organization Owner** can set the organization back to `DISALLOWED`.
+- The **user** can revoke the partner application at any time from **Atlas Settings → App Connections**. The refresh token is invalidated immediately; the current access token remains valid until it expires (up to 10 minutes).
+- An **Organization Owner** can disable app connections org-wide (Organization Settings → App Connections). Control-plane access ends **immediately** — Atlas checks the setting on every Administration API call.
 - Changing the organization setting removes that organization from existing grants **without requiring the user to authorize again**.
+
+> [!WARNING]
+> Revocation does **not** remove resources the app already created — database users (data plane) and service accounts or API keys (control plane) remain active until you remove them. See [Offboarding Best Practices](https://www.mongodb.com/docs/atlas/app-connections/manage-app-access/).
 
 ---
 
@@ -156,12 +169,13 @@ Admins are also expected to pre-approve particular organizations, projects, clus
 
 | Capability | Current | Planned |
 |---|---|---|
-| MongoDB-managed client registration | Yes | Self-service later |
-| Organization opt-in/out | Yes | Yes |
+| MongoDB-managed client registration | Yes (design partners) | Self-service later |
+| Organization opt-in/out | Yes (UI: Org Settings → App Connections) | Yes |
 | User OAuth consent | Yes | Yes |
+| Org-level max refresh token lifetime | Yes | Yes |
 | All eligible orgs/projects | Yes | Replaced by resource selection |
 | Per-project/cluster selection | No | Planned |
-| Read-only Partner API access | No current launch support | Planned |
+| Read-only Partner API access | No current launch support | Planned (read-only exists today only for AI clients via Remote MCP access modes) |
 | Admin approval workflows | No | Planned enterprise phase |
 | Per-user or per-grant admin revocation | No | Planned |
 | Detailed permission policies | Static/broad launch model | Planned granular policies |
@@ -171,7 +185,7 @@ Admins are also expected to pre-approve particular organizations, projects, clus
 ## Additional caveat
 
 > [!WARNING]
-> If a partner creates a new Atlas organization, that organization may still need its own delegation setting enabled before the partner can access it. Creating an organization does not necessarily make it automatically accessible to the existing delegated token.
+> If a partner creates a new Atlas organization, that organization may still need its own app connections setting enabled before the partner can access it — per the official guide, enabling app connections for a partner-created organization is a manual step (contact MongoDB to have the organization allowlisted). Creating an organization does not make it automatically accessible to the existing delegated token.
 
 ---
 
@@ -179,3 +193,5 @@ Admins are also expected to pre-approve particular organizations, projects, clus
 
 - [Partner Integration Guide](README.md) — token flows, curl examples, and testing setup
 - [Partner Onboarding](PARTNER.md) — register with MongoDB and integrate the flow into your product
+- [End-to-End Tutorial](END-TO-END.md) — from OAuth token to the first database read/write
+- [Production Readiness](PRODUCTION.md) — launch checklist, token lifecycle, responsibility matrix

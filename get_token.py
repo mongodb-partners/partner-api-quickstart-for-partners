@@ -266,16 +266,21 @@ def run_server(port):
 
 
 def build_auth_url(client_id, cloud_base, redirect_uri, resource, challenge):
-    params = urllib.parse.urlencode({
+    # The production Atlas authorization endpoint does not require a `resource`
+    # parameter — send only the documented parameters. The resource indicator is
+    # still sent when configured (e.g. clients provisioned in the internal dev
+    # environment, where it is required).
+    params = {
         "response_type": "code",
         "client_id": client_id,
         "redirect_uri": redirect_uri,
         "code_challenge": challenge,
         "code_challenge_method": "S256",
         "state": STATE,
-        "resource": resource,
-    })
-    return f"{cloud_base}/oauth/authorize?{params}"
+    }
+    if resource:
+        params["resource"] = resource
+    return f"{cloud_base}/oauth/authorize?{urllib.parse.urlencode(params)}"
 
 
 # ---------------------------------------------------------------------------
@@ -285,9 +290,9 @@ def build_auth_url(client_id, cloud_base, redirect_uri, resource, challenge):
 def main():
     env = load_env()
     default_client_id    = env.get("CLIENT_ID",     "")
-    default_oauth_base   = env.get("OAUTH_BASE",    "https://authorize-dev.mongodb.com")
-    default_cloud_base   = env.get("CLOUD_BASE",    "https://cloud-dev.mongodb.com")
-    default_resource     = env.get("RESOURCE",      "https://api-dev.mongodb.com/api/atlas")
+    default_oauth_base   = env.get("OAUTH_BASE",    "https://authorize.mongodb.com")
+    default_cloud_base   = env.get("CLOUD_BASE",    "https://cloud.mongodb.com")
+    default_resource     = env.get("RESOURCE",      "")
     default_client_secret = env.get("CLIENT_SECRET", None)
 
     parser = argparse.ArgumentParser(
@@ -302,7 +307,9 @@ def main():
     parser.add_argument("--cloud-base",     default=default_cloud_base,
                         help="Authorization endpoint base URL (default: from .env)")
     parser.add_argument("--resource",       default=default_resource,
-                        help="Resource audience parameter (default: from .env)")
+                        help="Resource indicator — leave empty for production clients "
+                             "(the production authorization endpoint does not require it); "
+                             "set it only for internal dev-environment clients")
     parser.add_argument("--redirect-port",  type=int, default=3000,
                         help="Local port for the OAuth callback (default: 3000)")
     parser.add_argument("--refresh-token",  nargs="?", const="__stored__", default=None,
@@ -381,7 +388,7 @@ def main():
     # If a refresh token was returned, show how to use it
     if token_data.get("refresh_token"):
         print("\nTo refresh without the browser, run:")
-        print(f"  python3 oauthdemo/get_token.py --refresh-token {token_data['refresh_token']}\n")
+        print(f"  python3 get_token.py --refresh-token {token_data['refresh_token']}\n")
 
 
 if __name__ == "__main__":
